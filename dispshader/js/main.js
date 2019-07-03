@@ -14,6 +14,7 @@ class Slider{
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
+    
     this.container;
     this.time = 0;
     this.Count = 5;
@@ -22,17 +23,21 @@ class Slider{
       refractionRatio: 0.92,
       aberration: 0.1,
       mirrorRefraction:  1 ,
-      amplitude:0.98,
+      progress: 1,
+      animtime: 5,
+      uWiggleScale:  0.5 ,
+      uWiggleDisplacement: 18.,
+      uWiggleSpeed:  0.33 ,
       bgcolor: "#"+ this.scene.background.getHexString ()
     }
     this.gui = new dat.GUI();
      this.gui.add(this.settings, 'refractionRatio', 0, 1, 0.001);
      this.gui.add(this.settings, 'aberration', 0, 1, 0.001);
      this.gui.add(this.settings, 'mirrorRefraction', 0, 1, 0.001);
-     this.gui.add(this.settings, 'amplitude', 0, 1, 0.001);
-    // this.gui.add(this.settings, 'uWiggleDisplacement', 0.001, 30, 0.001);
-    // this.gui.add(this.settings, 'uWiggleSpeed', 0.001, 1, 0.001);
-    // this.gui.add(this.settings, 'transparency', 0.001, 1, 0.001);
+     this.gui.add(this.settings, 'progress', -5, 5, 0.001);
+     this.gui.add(this.settings, 'uWiggleScale', 0.001, 1, 0.001);
+     this.gui.add(this.settings, 'uWiggleDisplacement', 0.001, 30, 0.001);
+     this.gui.add(this.settings, 'uWiggleSpeed', 0.001, 1, 0.001);
     this.gui.addColor( this.settings, 'bgcolor').onChange(bind(function(value) {
 				  this.scene.background = new THREE.Color (value);
 				 // console.log(this);
@@ -45,6 +50,9 @@ class Slider{
     document.body.appendChild( this.container );//  размещение контейнера в body
     this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
     
+    
+    
+
     this.raycaster= new THREE.Raycaster();
     //this.raycaster.far=1700;
     this.mouse = new THREE.Vector2();
@@ -78,8 +86,13 @@ class Slider{
             'textures/cubeMaps/Frame.jpg',
             'textures/cubeMaps/Frame.jpg'
           ] ) },
-
+        time: { type: 'f', value: 0 },
+        progress: { type: 'f', value: 1 },
+        uWiggleScale: { type: 'f', value: 0.001 },
+        uWiggleDisplacement: { type: 'f', value: 0.01 },
+        uWiggleSpeed: { type: 'f', value: 0.03 },
       },
+      
       // wireframe: true,
        transparent: true,
       vertexShader: document.getElementById( 'vertex' ).textContent,
@@ -147,30 +160,10 @@ this.animate();
     this.renderer.setSize( window.innerWidth, window.innerHeight );
 
   }
-  animclick(){
-    this.animbtn.innerHTML='Animating';
-    if(this.animindex){
-      
-      TweenMax.to(this.camera.position,this.settings.animtime*0.5,{x:4120});
-      //TweenMax.to(this.bigsphere.rotation,this.settings.animtime,{x:100});
-      TweenMax.to(this.material.uniforms.transparency,this.settings.animtime,{value:1});
-      TweenMax.to(this.material.uniforms.progress,this.settings.animtime,{value:1,onComplete:()=>{this.animindex--; this.animbtn.innerHTML='back'}});
-    }else{
-      TweenMax.to(this.camera.position,this.settings.animtime*0.5,{x:13000});
-     // TweenMax.to(this.bigsphere.rotation,this.settings.animtime,{x:-100});
-      TweenMax.to(this.material.uniforms.transparency,this.settings.animtime,{value:0});
-      TweenMax.to(this.material.uniforms.progress,this.settings.animtime,{value:-1,onComplete:()=>{this.animindex++;this.animbtn.innerHTML='foward'}});
-    }
-    
-  }
+  
   changeImaage(){
     let image = document.createElement('img');
     image.src = window.URL.createObjectURL(this.ImgLoader.files[0]);
-    // let ca=document.createElement("canvas");
-    // let ctx=ca.getContext("2d");
-    // ca.setAttribute("width",image.naturalWidth);
-    // ca.setAttribute("height",image.naturalHeight);
-    // ctx.drawImage(image,0,0);
     let cbtx = new THREE.CubeTextureLoader().load([image.src,image.src,image.src,image.src,image.src,image.src]);
    
    
@@ -182,16 +175,20 @@ this.animate();
   animate () {
     
 	  requestAnimationFrame( this.animate.bind(this) );
-      this.time += 0.001;
-	    // this.bigsphere.rotation.x+=0.001;
+     
        this.material.uniforms.refractionRatio.value = this.settings.refractionRatio;
        this.material.uniforms.aberration.value = this.settings.aberration;
        this.material.uniforms.mirrorRefraction.value = this.settings.mirrorRefraction;
-      // this.material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
-     // this.material.uniforms.progress.value = this.settings.progress;
-     // this.material.uniforms.transparency.value = this.settings.transparency;
+       this.time += 0.001;
+       this.bigsphere.rotation.x+=0.001;
+       this.material.uniforms.time.value = this.time;
+       this.material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
+       this.material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
+       this.material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
+       this.material.uniforms.progress.value = this.settings.progress;
   	  this.controls.update();
-  	  this.renderer.render( this.scene, this.camera );
+      this.renderer.render( this.scene, this.camera );
+     
 
   }
     onMouseMove ( evvent ) {
