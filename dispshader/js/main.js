@@ -22,12 +22,14 @@ class Slider{
       refractionRatio: 0.92,
       aberration: 0.1,
       mirrorRefraction:  1 ,
+      amplitude:0.98,
       bgcolor: "#"+ this.scene.background.getHexString ()
     }
     this.gui = new dat.GUI();
      this.gui.add(this.settings, 'refractionRatio', 0, 1, 0.001);
      this.gui.add(this.settings, 'aberration', 0, 1, 0.001);
      this.gui.add(this.settings, 'mirrorRefraction', 0, 1, 0.001);
+     this.gui.add(this.settings, 'amplitude', 0, 1, 0.001);
     // this.gui.add(this.settings, 'uWiggleDisplacement', 0.001, 30, 0.001);
     // this.gui.add(this.settings, 'uWiggleSpeed', 0.001, 1, 0.001);
     // this.gui.add(this.settings, 'transparency', 0.001, 1, 0.001);
@@ -65,6 +67,7 @@ class Slider{
         refractionRatio: { type: 'f', value: 0 },
         aberration: { type: 'f', value: 1  },
         mirrorRefraction: { type: 'f', value:1 },
+        amplitude: { type: 'f', value:0.98 },
         reflectionSampler: { value: new THREE.CubeTextureLoader()
           //.setPath( 'textures/cubeMaps/' )
           .load( [
@@ -75,6 +78,7 @@ class Slider{
             'textures/cubeMaps/Frame.jpg',
             'textures/cubeMaps/Frame.jpg'
           ] ) },
+
       },
       // wireframe: true,
        transparent: true,

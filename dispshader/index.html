@@ -74,13 +74,16 @@
             uniform float aberration;
             uniform float mirrorRefraction;
             uniform samplerCube reflectionSampler;
+            uniform float amplitude;
             
             void main() {
                 float x = mirrorRefraction * vRefract.x;
+                float y = mirrorRefraction * vRefract.x;
+                float z = mirrorRefraction * vRefract.x;
                 vec4 cubeColor = vec4(
-                    textureCube( reflectionSampler, vec3( x, vRefract.yz ) ).r,
-                    textureCube( reflectionSampler, vec3( x, vRefract.yz * 0.98 * aberration ) ).g,
-                    textureCube( reflectionSampler, vec3( x, vRefract.yz * 0.99 * aberration ) ).b,
+                    textureCube( reflectionSampler, vec3( x, vRefract.yz * aberration ) ).r,
+                    textureCube( reflectionSampler, vec3( y, vRefract.xz * aberration ) ).g,
+                    textureCube( reflectionSampler, vec3( z, vRefract.xy * aberration ) ).b,
                     1.0
                 );
                     
