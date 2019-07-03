@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+    <meta charset = "UTF-8"/>
+    	<title>Trianglefloater</title>
+    	<style type="text/css">
+    	 body, html{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+        overflow: hidden;
+        
+      }
+      .holdbutton {
+  -moz-box-shadow: 0px 1px 0px 0px #b0adb0;
+  -webkit-box-shadow: 0px 1px 0px 0px #b0adb0;
+  box-shadow: 0px 1px 0px 0px #b0adb0;
+  background-color:transparent;
+  -moz-border-radius:15px;
+  -webkit-border-radius:15px;
+  border-radius:15px;
+  border:2px solid #b8b1b8;
+  display:inline-block;
+  cursor:pointer;
+  color:#f0f2e9;
+  font-family:Arial;
+  font-size:20px;
+  font-weight:bold;
+  padding: 3px 27px;
+  text-decoration:none;
+  text-shadow:0px 1px 0px #ffffff;
+  top: 90%;
+  left: 45%;
+  position: absolute;
+  user-select:none;
+}
+.holdbutton:hover {
+    user-select:none;
+  background-color:transparent;
+   top: 90%;
+  left: 45%;
+  position: absolute;
+}
+.holdbutton:active {
+    user-select:none;
+   top: 90%;
+  left: 45%;
+  position: absolute;
+}
+    	
+   
+      
+     
+     
+    	</style>
+    	<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    	</head>
+    	<body >
+         <script  src="js/lib/three.js"></script>
+    	 <script  src="js/lib/OrbitControls.js"></script>
+    	 <script  src="js/lib/TessellateModifier.js"></script>
+    	 <script  src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.0/TweenMax.min.js"></script>
+    	 <script type="text/javascript" src="js/lib/dat.gui.min.js"></script>
+    	 <script id="fragment" type="x-shader/x-fragment">
+            precision highp float;
+            precision highp int;
+            
+            varying vec3 vRefract;
+            
+            uniform float aberration;
+            uniform float mirrorRefraction;
+            uniform samplerCube reflectionSampler;
+            
+            void main() {
+                float x = mirrorRefraction * vRefract.x;
+                vec4 cubeColor = vec4(
+                    textureCube( reflectionSampler, vec3( x, vRefract.yz ) ).r,
+                    textureCube( reflectionSampler, vec3( x, vRefract.yz * 0.98 * aberration ) ).g,
+                    textureCube( reflectionSampler, vec3( x, vRefract.yz * 0.99 * aberration ) ).b,
+                    1.0
+                );
+                    
+                cubeColor.w = 1.0;
+                gl_FragColor = cubeColor;
+            }
+    	 </script>
+    	  <script id="vertex" type="x-shader/x-vertex">
+    	     
+            precision highp float;
+            precision highp int;
+            
+            uniform float refractionRatio;
+            
+
+            
+            varying vec3 vRefract;
+            
+            void main() {
+                vec3 worldPosition = ( modelMatrix * vec4( position, 1.0 )).xyz;
+                vec3 cameraToVertex = normalize( worldPosition - cameraPosition );
+                vec3 worldNormal = normalize(
+                    mat3( modelMatrix[ 0 ].xyz, modelMatrix[ 1 ].xyz, modelMatrix[ 2 ].xyz ) * normal
+                );
+                vRefract = refract( cameraToVertex, worldNormal, refractionRatio );
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          </script>
+          <div class="file_upload">
+            <input type="file" id="imgLoader" multiple accept="image/*">
+        </div>
+    	  
+         <script  src="js/main.js"></script> 
+         
+    	</body>
+</html>
