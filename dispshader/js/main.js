@@ -66,14 +66,14 @@ class Slider{
         aberration: { type: 'f', value: 1  },
         mirrorRefraction: { type: 'f', value:1 },
         reflectionSampler: { value: new THREE.CubeTextureLoader()
-          .setPath( 'textures/cubeMaps/' )
+          //.setPath( 'textures/cubeMaps/' )
           .load( [
-            'Frame.jpg',
-            'Frame.jpg',
-            'Frame.jpg',
-            'Frame.jpg',
-            'Frame.jpg',
-            'Frame.jpg'
+            'textures/cubeMaps/Frame.jpg',
+            'textures/cubeMaps/Frame.jpg',
+            'textures/cubeMaps/Frame.jpg',
+            'textures/cubeMaps/Frame.jpg',
+            'textures/cubeMaps/Frame.jpg',
+            'textures/cubeMaps/Frame.jpg'
           ] ) },
       },
       // wireframe: true,
