@@ -1,0 +1,293 @@
+<!DOCTYPE HTML>
+<html>
+    <meta charset = "UTF-8"/>
+    	<title>Trianglefloater</title>
+    	<style type="text/css">
+    	 body, html{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+        overflow: hidden;
+        
+      }
+      .holdbutton {
+  -moz-box-shadow: 0px 1px 0px 0px #b0adb0;
+  -webkit-box-shadow: 0px 1px 0px 0px #b0adb0;
+  box-shadow: 0px 1px 0px 0px #b0adb0;
+  background-color:transparent;
+  -moz-border-radius:15px;
+  -webkit-border-radius:15px;
+  border-radius:15px;
+  border:2px solid #b8b1b8;
+  display:inline-block;
+  cursor:pointer;
+  color:#f0f2e9;
+  font-family:Arial;
+  font-size:20px;
+  font-weight:bold;
+  padding: 3px 27px;
+  text-decoration:none;
+  text-shadow:0px 1px 0px #ffffff;
+  top: 90%;
+  left: 45%;
+  position: absolute;
+  user-select:none;
+}
+.holdbutton:hover {
+    user-select:none;
+  background-color:transparent;
+   top: 90%;
+  left: 45%;
+  position: absolute;
+}
+.holdbutton:active {
+    user-select:none;
+   top: 90%;
+  left: 45%;
+  position: absolute;
+}
+    	
+   
+      
+     
+     
+    	</style>
+    	<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    	</head>
+    	<body >
+         <script  src="js/lib/three.js"></script>
+         
+    	 <script  src="js/lib/OrbitControls.js"></script>
+    	 <script  src="js/lib/TessellateModifier.js"></script>
+    	 <script  src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.0/TweenMax.min.js"></script>
+    	 <script type="text/javascript" src="js/lib/dat.gui.min.js"></script>
+    	 <script id="fragment" type="x-shader/x-fragment">
+            precision highp float;
+            precision highp int;
+            
+            varying vec3 vRefract;
+            varying vec2 vUv;
+			      uniform float time;
+
+            uniform float aberration;
+            uniform float mirrorRefraction;
+            uniform samplerCube reflectionSampler;
+            //Василеозерская 10/1
+            
+            void main() {
+              vec2 p = - 1.0 + 2.0 * vUv;
+				float a = time * 40.0;
+				float d, e, f, g = 1.0 / 40.0 ,h ,i ,r ,q;
+				e = 400.0 * ( p.x * 0.5 + 0.5 );
+				f = 400.0 * ( p.y * 0.5 + 0.5 );
+				i = 200.0 + sin( e * g + a / 150.0 ) * 20.0;
+				d = 200.0 + cos( f * g / 2.0 ) * 18.0 + cos( e * g ) * 7.0;
+				r = sqrt( pow( abs( i - e ), 2.0 ) + pow( abs( d - f ), 2.0 ) );
+				q = f / r;
+				e = ( r * cos( q ) ) - a / 2.0;
+				f = ( r * sin( q ) ) - a / 2.0;
+				d = sin( e * g ) * 176.0 + sin( e * g ) * 164.0 + r;
+				h = ( ( f + d ) + a / 2.0 ) * g;
+				i = cos( h + r * p.x / 1.3 ) * ( e + e + a ) + cos( q * g * 6.0 ) * ( r + h / 3.0 );
+				h = sin( f * g ) * 144.0 - sin( e * g ) * 212.0 * p.x;
+				h = ( h + ( f - e ) * q + sin( r - ( a + h ) / 7.0 ) * 10.0 + i / 4.0 ) * g;
+				i += cos( h * 2.3 * sin( a / 350.0 - q ) ) * 184.0 * sin( q - ( r * 4.3 + a / 12.0 ) * g ) + tan( r * g + h ) * 184.0 * cos( r * g + h );
+				i = mod( i / 5.6, 256.0 ) / 64.0;
+				if ( i < 0.0 ) i += 4.0;
+				if ( i >= 2.0 ) i = 4.0 - i;
+				d = r / 350.0;
+				d += sin( d * d * 8.0 ) * 0.52;
+				f = ( sin( a * g ) + 1.0 ) / 2.0;
+                float x = mirrorRefraction * vRefract.x;
+                float y = mirrorRefraction * vRefract.x;
+                float z = mirrorRefraction * vRefract.x;
+                vec4 cubeColor = vec4(
+                    textureCube( reflectionSampler, vec3( z, vRefract.yz *0.97* aberration*sin(h*p.x*a)/cos(d*p.y*a) ) ).r,
+                    textureCube( reflectionSampler, vec3( z, vRefract.xz  *0.98*aberration*sin(d*p.y*a)/sin(q*p.x*a) ) ).g,
+                    textureCube( reflectionSampler, vec3( z, vRefract.xy *0.99* aberration*tan(i*p.y*a)/sin(f*p.x*a) ) ).b,
+                    1.0
+                );
+                    
+                cubeColor.w = 1.0;
+                gl_FragColor = cubeColor;
+            }
+    	 </script>
+    	  <script id="vertex" type="x-shader/x-vertex">
+    	     
+            uniform float time;
+            varying vec2 vUv;
+            varying vec2 vUv1;
+            varying vec4 vPosition;
+            varying float tProgress;
+            uniform sampler2D texture1;
+            uniform sampler2D texture2;
+            uniform vec2 pixels;
+            uniform vec2 uvRate1;
+            uniform float progress;
+            attribute float offset;
+            attribute vec3 displacement;
+            uniform float refractionRatio;
+            
+               uniform float amplitude;
+
+  
+
+      precision highp float;
+      precision highp int;
+     
+      varying vec3 vRefract;
+
+      uniform float uWiggleScale;
+      uniform float uWiggleDisplacement;
+      uniform float uWiggleSpeed;
+      uniform float uRefractionRatio;
+
+      vec3 mod289(vec3 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 mod289(vec4 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 permute(vec4 x) {
+  return mod289(((x*34.0)+1.0)*x);
+}
+
+vec4 taylorInvSqrt(vec4 r) {
+  return 1.79284291400159 - 0.85373472095314 * r;
+}
+
+vec3 fade(vec3 t) {
+  return t*t*t*(t*(t*6.0-15.0)+10.0);
+}
+// Classic Perlin noise
+float cnoise(vec3 P) {
+  vec3 Pi0 = floor(P); // Integer part for indexing
+  vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+  Pi0 = mod289(Pi0);
+  Pi1 = mod289(Pi1);
+  vec3 Pf0 = fract(P); // Fractional part for interpolation
+  vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+  vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+  vec4 iy = vec4(Pi0.yy, Pi1.yy);
+  vec4 iz0 = Pi0.zzzz;
+  vec4 iz1 = Pi1.zzzz;
+
+  vec4 ixy = permute(permute(ix) + iy);
+  vec4 ixy0 = permute(ixy + iz0);
+  vec4 ixy1 = permute(ixy + iz1);
+
+  vec4 gx0 = ixy0 * (1.0 / 7.0);
+  vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+  gx0 = fract(gx0);
+  vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+  vec4 sz0 = step(gz0, vec4(0.0));
+  gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+  gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+  vec4 gx1 = ixy1 * (1.0 / 7.0);
+  vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+  gx1 = fract(gx1);
+  vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+  vec4 sz1 = step(gz1, vec4(0.0));
+  gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+  gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+  vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+  vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+  vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+  vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+  vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+  vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+  vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+  vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+  vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+  g000 *= norm0.x;
+  g010 *= norm0.y;
+  g100 *= norm0.z;
+  g110 *= norm0.w;
+  vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+  g001 *= norm1.x;
+  g011 *= norm1.y;
+  g101 *= norm1.z;
+  g111 *= norm1.w;
+
+  float n000 = dot(g000, Pf0);
+  float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+  float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+  float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+  float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+  float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+  float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+  float n111 = dot(g111, Pf1);
+
+  vec3 fade_xyz = fade(Pf0);
+  vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+  vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+  return 2.2 * n_xyz;
+}
+            
+            mat4 rotationMatrix(vec3 axis, float angle) {
+              axis = normalize(axis);
+              float s = sin(angle);
+              float c = cos(angle);
+               float oc = 1.0 - c;
+  
+              return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+              oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+              oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+              0.0,                                0.0,                                0.0,                                1.0);
+              }
+
+          vec3 rotatet(vec3 v, vec3 axis, float angle) {
+          mat4 m = rotationMatrix(axis, angle);
+              return vec3((m * vec4(v, 1.0)).x,(m * vec4(v, 1.0)).y,(m * vec4(v, 1.0)).z);
+      }
+            vec3 bezier4(vec3 a, vec3 b, vec3 c, vec3 d, float t) {    
+                return mix(mix(mix(a, b, t), mix(b, c, t), t), mix(mix(b, c, t), mix(c, d, t), t), t);
+            }
+           
+
+
+      void main() {
+          //vUv = uv;
+
+          // wiggle
+          float noise = cnoise(normalize(position) * uWiggleScale + ( time * uWiggleSpeed ) );//normalize(position)
+          vec3 pos = position - vec3(800.0,0.0,0.0) + normal * noise * vec3(uWiggleDisplacement);
+
+          vec3 worldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
+          vec3 cameraToVertex = normalize(worldPosition - cameraPosition);
+          vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
+
+          vRefract = refract(cameraToVertex, worldNormal, refractionRatio);
+          vUv = uv;
+        
+          vec3 newPosition =  normal * amplitude* displacement;
+          //vFresnelNormal = normalize(normalMatrix * normal);
+          vec4 modelPos = modelViewMatrix * vec4(pos+newPosition, 1.0);
+          //vFresnelPosition = modelPos.xyz;
+          
+                 vec3 newpos = position + vec3(-800.,0.,0.);
+                 tProgress = clamp(-1.,1., (progress - offset*0.001)/0.2 );
+                 newpos = mix(position, newpos, tProgress);
+                 newpos = bezier4(position, vec3(-400.,0.,1.) , vec3(-800.,0.,1.) ,newpos, tProgress);  
+                 gl_Position = projectionMatrix * modelViewMatrix * vec4( position+newpos*noise, 1.0 );//*nois
+                
+            }
+          </script>
+          <div class="file_upload">
+            <input type="file" id="imgLoader" >
+        </div>
+         <script  src="js/main.js"></script> 
+         
+    	</body>
+</html>
