@@ -21,7 +21,7 @@ function DispersionMaterial(parameters) {
   this.uWiggleSpeed = 0.33 ;
   this.progress = 1.;
   this.time = 0.;
-
+  this.DISPERSION_SAMPLES=30;
   var envmap_dispersion_pars_fragment = document.getElementById('envmap_dispersion_pars_fragment').textContent;
   var envmap_dispersion_fragment = document.getElementById('envmap_dispersion_fragment').textContent;
   var fragmentShader = THREE.ShaderLib.phong.fragmentShader;
@@ -237,7 +237,7 @@ mat4 m = rotationMatrix(axis, angle);
   this.uniforms.uWiggleSpeed={value:this.uWiggleSpeed}
   this.uniforms.progress = {  value:this.progress }
   this.uniforms.time = {  value:this.time }
-  
+  //this.uniforms.DISPERSION_SAMPLES={value:this.DISPERSION_SAMPLES}
 
   this.defines.DISPERSION_SAMPLES = this.dispersionSamples;
 }
@@ -268,13 +268,21 @@ class Slider{
       uWiggleSpeed:  0.33 ,
       refractionRatio: 0.8,
       dispersionSamples: 30,
+      dispersionBlendMultiplier:20,
       dispersion: 0.8,
       bgcolor: "#"+ this.scene.background.getHexString ()
     }
     this.gui = new dat.GUI();
      this.gui.add(this.settings, 'refractionRatio', 0, 1, 0.001);
-     this.gui.add(this.settings, 'dispersionSamples', 0, 50, 0.001);
-     this.gui.add(this.settings, 'dispersion', 0, 1, 0.001);
+     this.gui.add(this.settings, 'dispersionSamples', 0, 50, 1).onChange(bind(function(value) {
+       this.updateMaterial();
+     },this));
+     this.gui.add(this.settings, 'dispersionBlendMultiplier', 0, 50, 1).onChange(bind(function(value) {
+      this.updateMaterial();
+    },this));
+     this.gui.add(this.settings, 'dispersion', 0, 1, 0.001).onChange(bind(function(value) {
+      this.updateMaterial();
+    },this));
      this.gui.add(this.settings, 'progress', -5, 5, 0.001);
      this.gui.add(this.settings, 'uWiggleScale', 0.001, 1, 0.001);
      this.gui.add(this.settings, 'uWiggleDisplacement', 0.001, 30, 0.001);
@@ -324,6 +332,7 @@ class Slider{
       refractionRatio: 0.8,
       dispersionSamples: 30,
       dispersion: 0.8,
+      dispersionBlendMultiplier:20,
       time : 0 ,
       progress: 1, 
       uWiggleScale : 0.001 ,
@@ -437,6 +446,27 @@ this.animate();
     this.material.envMap = cbtx;
     
   }
+  updateMaterial(){
+    let tmpEnv= this.material.envMap;
+      this.bigsphere.material = new DispersionMaterial({ 
+        extensions: {
+          derivatives: '#extension GL_OES_standard_derivatives : enable'
+        },
+        side: THREE.DoubleSide,
+          envMap: tmpEnv,
+          refractionRatio: this.settings.refractionRatio,
+          dispersionSamples: this.settings.dispersionSamples,
+          dispersion: this.settings.dispersion,
+          dispersionBlendMultiplier:this.settings.dispersionBlendMultiplier,
+          time : 0 ,
+          progress: this.settings.progress, 
+          uWiggleScale : this.settings.uWiggleScale ,
+          uWiggleDisplacement :  this.settings.uWiggleDisplacement ,
+          uWiggleSpeed : this.settings.uWiggleSpeed ,
+      });
+      this.material.envMap.mapping = THREE.CubeRefractionMapping;;
+     // console.log(this);
+  }
 
   animate () {
     
@@ -445,7 +475,7 @@ this.animate();
         this.material.refractionRatio = this.settings.refractionRatio;
         this.material.dispersionSamples = this.settings.dispersionSamples;
         this.material.dispersion = this.settings.dispersion;
-       
+        this.material.dispersionBlendMultiplier = this.settings.dispersionBlendMultiplier;
        this.time += 0.001;
        this.bigsphere.rotation.x+=0.001;
        this.material.uniforms.time.value = this.time;
