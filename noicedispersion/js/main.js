@@ -273,7 +273,9 @@ class Slider{
       bgcolor: "#"+ this.scene.background.getHexString ()
     }
     this.gui = new dat.GUI();
-     this.gui.add(this.settings, 'refractionRatio', 0, 1, 0.001);
+     this.gui.add(this.settings, 'refractionRatio', 0, 1, 0.001).onChange(bind(function(value) {
+      this.updateMaterial();
+    },this));
      this.gui.add(this.settings, 'dispersionSamples', 0, 50, 1).onChange(bind(function(value) {
        this.updateMaterial();
      },this));
