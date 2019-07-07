@@ -445,7 +445,7 @@ this.animate();
    
    
     console.log(cbtx);
-    this.material.envMap = cbtx;
+    this.bigsphere.material.envMap = cbtx;
     
   }
   updateMaterial(){
