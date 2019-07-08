@@ -480,11 +480,11 @@ this.animate();
         this.material.dispersionBlendMultiplier = this.settings.dispersionBlendMultiplier;
        this.time += 0.001;
        this.bigsphere.rotation.x+=0.001;
-       this.material.uniforms.time.value = this.time;
-       this.material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
-       this.material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
-       this.material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
-       this.material.uniforms.progress.value = this.settings.progress;
+       this.bigsphere.material.uniforms.time.value = this.time;
+       this.bigsphere.material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
+       this.bigsphere.material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
+       this.bigsphere.material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
+       this.bigsphere.material.uniforms.progress.value = this.settings.progress;
   	  this.controls.update();
       this.renderer.render( this.scene, this.camera );
      
