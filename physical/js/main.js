@@ -61,42 +61,31 @@ function DispersionMaterial(parameters) {
   attribute float offset;
   attribute vec3 displacement;
   //uniform float refractionRatio;
-
   varying vec3 worldPositions;
   varying vec3 cameraToVertexs;
   varying vec3 worldNormals;
   
      uniform float amplitude;
-
-
-
 precision highp float;
 precision highp int;
-
 varying vec3 vRefract;
 //varying vec2 vUv;
-
 uniform float uWiggleScale;
 uniform float uWiggleDisplacement;
 uniform float uWiggleSpeed;
 uniform float uRefractionRatio;
-
 vec3 mod289(vec3 x) {
 return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
-
 vec4 mod289(vec4 x) {
 return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
-
 vec4 permute(vec4 x) {
 return mod289(((x*34.0)+1.0)*x);
 }
-
 vec4 taylorInvSqrt(vec4 r) {
 return 1.79284291400159 - 0.85373472095314 * r;
 }
-
 vec3 fade(vec3 t) {
 return t*t*t*(t*(t*6.0-15.0)+10.0);
 }
@@ -112,11 +101,9 @@ vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
 vec4 iy = vec4(Pi0.yy, Pi1.yy);
 vec4 iz0 = Pi0.zzzz;
 vec4 iz1 = Pi1.zzzz;
-
 vec4 ixy = permute(permute(ix) + iy);
 vec4 ixy0 = permute(ixy + iz0);
 vec4 ixy1 = permute(ixy + iz1);
-
 vec4 gx0 = ixy0 * (1.0 / 7.0);
 vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
 gx0 = fract(gx0);
@@ -124,7 +111,6 @@ vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
 vec4 sz0 = step(gz0, vec4(0.0));
 gx0 -= sz0 * (step(0.0, gx0) - 0.5);
 gy0 -= sz0 * (step(0.0, gy0) - 0.5);
-
 vec4 gx1 = ixy1 * (1.0 / 7.0);
 vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
 gx1 = fract(gx1);
@@ -132,7 +118,6 @@ vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
 vec4 sz1 = step(gz1, vec4(0.0));
 gx1 -= sz1 * (step(0.0, gx1) - 0.5);
 gy1 -= sz1 * (step(0.0, gy1) - 0.5);
-
 vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
 vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
 vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
@@ -141,7 +126,6 @@ vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
 vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
 vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
 vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
-
 vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
 g000 *= norm0.x;
 g010 *= norm0.y;
@@ -152,7 +136,6 @@ g001 *= norm1.x;
 g011 *= norm1.y;
 g101 *= norm1.z;
 g111 *= norm1.w;
-
 float n000 = dot(g000, Pf0);
 float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
 float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
@@ -161,7 +144,6 @@ float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
 float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
 float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
 float n111 = dot(g111, Pf1);
-
 vec3 fade_xyz = fade(Pf0);
 vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
 vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
@@ -174,13 +156,11 @@ return 2.2 * n_xyz;
     float s = sin(angle);
     float c = cos(angle);
      float oc = 1.0 - c;
-
     return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
     oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
     oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
     0.0,                                0.0,                                0.0,                                1.0);
     }
-
 vec3 rotatet(vec3 v, vec3 axis, float angle) {
 mat4 m = rotationMatrix(axis, angle);
     return vec3((m * vec4(v, 1.0)).x,(m * vec4(v, 1.0)).y,(m * vec4(v, 1.0)).z);
@@ -211,14 +191,11 @@ mat4 m = rotationMatrix(axis, angle);
     
     float noise = cnoise(normalize(position) * uWiggleScale + ( time * uWiggleSpeed ) );//normalize(position)
           vec3 pos = position - vec3(800.0,0.0,0.0) + normal * noise * vec3(uWiggleDisplacement);
-
            worldPositions = (modelMatrix * vec4(pos, 1.0)).xyz;
            cameraToVertexs = normalize(worldPositions - cameraPosition);
            worldNormals = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
-
           //vRefract = refract(cameraToVertex, worldNormal, refractionRatio);
           vUv = uv;
-
          
         
           vec3 newPosition =  normal * amplitude* displacement;
@@ -240,7 +217,7 @@ mat4 m = rotationMatrix(axis, angle);
 `
   fragmentShader = fragmentShader.replace('#include <envmap_pars_fragment>', '#include <envmap_pars_fragment>\n' + envmap_dispersion_pars_fragment);
   fragmentShader = fragmentShader.replace('gl_FragColor = vec4( outgoingLight, diffuseColor.a );', envmap_dispersion_fragment);
-  
+  fragmentShader = fragmentShader.replace('radiance += getLightProbeIndirectRadiance( geometry, Material_BlinnShininessExponent( material ), maxMipLevel );','//');
   this.uniforms = THREE.UniformsUtils.clone( THREE.ShaderLib.physical.uniforms );
   this.vertexShader = vertex_Shader;
   this.fragmentShader = fragmentShader;
@@ -552,14 +529,3 @@ let a = new Slider();
 
 
 //TweenMax.to(material.uniforms.progress,20,{value:5,repeat:-1});
-
-
-
-
-	
-
-
-
-
-
-
