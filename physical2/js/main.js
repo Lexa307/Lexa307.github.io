@@ -254,7 +254,7 @@ class Slider{
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     
     this.container;
-    this.time = 0;
+    this.time = 9.95;
     this.Count = 5;
     this.spheres = [];
     this.settings = {
@@ -263,9 +263,9 @@ class Slider{
       progress: 1,
       animtime: 5,
       roughness:0.5,
-      uWiggleScale:  0.5 ,
-      uWiggleDisplacement: 18.,
-      uWiggleSpeed:  0.33 ,
+      uWiggleScale:  0.454 ,
+      uWiggleDisplacement: 10.995,
+      uWiggleSpeed:  0.064 ,
       refractionRatio: 0.8,
       dispersionSamples: 30,
       dispersionBlendMultiplier:20,
@@ -364,7 +364,7 @@ class Slider{
       dispersionSamples: 30,
       dispersion: 0.8,
       dispersionBlendMultiplier:20,
-      time : 0 ,
+      time : 9.95 ,
       progress: 1, 
       uWiggleScale : 0.001 ,
       uWiggleDisplacement :  0.01 ,
@@ -417,7 +417,7 @@ class Slider{
         "mFresnelBias": 	{ type: "f", value: 0.1 },
         "mFresnelPower": 	{ type: "f", value: 2.0 },
         "mFresnelScale": 	{ type: "f", value: 1.0 },
-        "time": { type: 'f', value: 0 },
+        "time": { type: 'f', value: 9.95 },
         "progress": { type: 'f', value: 1.0 },
         "uWiggleScale": { type: 'f', value: 0.001 },
         "uWiggleDisplacement": { type: 'f', value: 0.01 },
@@ -470,6 +470,7 @@ class Slider{
      let ambientLight = new THREE.AmbientLight(0x999999); //0x999999
     // ambientLight.visible=true;
      this.scene.add(ambientLight);
+     
 
     this.light = new THREE.PointLight(0xff0000, 0.8,500);
     this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z);
@@ -545,6 +546,8 @@ this.animate();
        this.bigsphere.material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
        this.bigsphere.material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
        this.bigsphere.material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
+
+       
 
        this.core.material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
        this.core.material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
