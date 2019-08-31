@@ -353,12 +353,12 @@ class Slider{
     side: THREE.DoubleSide,
       envMap: new THREE.CubeTextureLoader()
     .load( [
-            'textures/cubeMaps/Frame.jpg',
-            'textures/cubeMaps/Frame.jpg',
-            'textures/cubeMaps/Frame.jpg',
-            'textures/cubeMaps/Frame.jpg',
-            'textures/cubeMaps/Frame.jpg',
-            'textures/cubeMaps/Frame.jpg'
+            'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+            'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+            'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+            'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+            'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+            'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg'
     ] ),
       refractionRatio: 0.8,
       dispersionSamples: 30,
