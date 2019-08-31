@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+    <meta charset = "UTF-8"/>
+    	<title>Trianglefloater</title>
+    	<style type="text/css">
+    	 body, html{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+        overflow: hidden;
+        
+      }
+      .holdbutton {
+  -moz-box-shadow: 0px 1px 0px 0px #b0adb0;
+  -webkit-box-shadow: 0px 1px 0px 0px #b0adb0;
+  box-shadow: 0px 1px 0px 0px #b0adb0;
+  background-color:transparent;
+  -moz-border-radius:15px;
+  -webkit-border-radius:15px;
+  border-radius:15px;
+  border:2px solid #b8b1b8;
+  display:inline-block;
+  cursor:pointer;
+  color:#f0f2e9;
+  font-family:Arial;
+  font-size:20px;
+  font-weight:bold;
+  padding: 3px 27px;
+  text-decoration:none;
+  text-shadow:0px 1px 0px #ffffff;
+  top: 90%;
+  left: 45%;
+  position: absolute;
+  user-select:none;
+}
+.holdbutton:hover {
+    user-select:none;
+  background-color:transparent;
+   top: 90%;
+  left: 45%;
+  position: absolute;
+}
+.holdbutton:active {
+    user-select:none;
+   top: 90%;
+  left: 45%;
+  position: absolute;
+}
+    	
+   
+      
+     
+     
+    	</style>
+    	<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    	</head>
+    	<body >
+         <script  src="js/lib/three.js"></script>
+         
+    	 <script  src="js/lib/OrbitControls.js"></script>
+       <script  src="js/lib/TessellateModifier.js"></script>
+       <script  src="js/lib/FresnelShader.js"></script>
+    	 <script  src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.0/TweenMax.min.js"></script>
+    	 <script type="text/javascript" src="js/lib/dat.gui.min.js"></script>
+
+    	  
+          <script id="envmap_dispersion_pars_fragment" type="x-shader/x-fragment">
+            
+            uniform float dispersion;
+            varying vec3 worldPositions;
+            varying vec3 cameraToVertexs;
+            varying vec3 worldNormals;
+            uniform float time;
+            //varying vec2 vUv;
+            uniform float dispersionBlendMultiplier;
+            
+            // https://www.shadertoy.com/view/ll2GD3
+            vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d ) {
+                return a + b*cos( 6.28318*(c*t+d) );
+            }
+            vec3 spectrum(float n) {
+                return pal( n, vec3(0.5,0.5,0.5),vec3(0.5,0.5,0.5),vec3(1.0,1.0,1.0),vec3(0.0,0.33,0.67) );
+            }
+            </script>
+            
+            <script id="envmap_dispersion_fragment" type="x-shader/x-fragment">
+            vec4 envColor = vec4(0);
+            
+            //vec3 cameraToVertex = normalize( vWorldPosition - cameraPosition );
+            //vec3 worldNormal = inverseTransformDirection( normal, viewMatrix );
+            
+            for (int i = 0; i < DISPERSION_SAMPLES; i++) {
+            
+              float wavelength = float(i) / float(DISPERSION_SAMPLES);
+            
+              float riMax = refractionRatio * (1. + dispersion);
+              float ri = mix(refractionRatio, riMax, wavelength);
+              vec3 reflectVec = refract( cameraToVertexs, worldNormals, ri );
+            
+              vec4 envColorSample = textureCube( envMap, vec3( flipEnvMap * reflectVec.x, reflectVec.yz ) );
+              vec3 queryReflectVec = vec3( flipEnvMap * reflectVec.x, reflectVec.yz );
+              vec4 envMapColor = textureCube( envMap, queryReflectVec, 0.5 );
+              
+              envColorSample = envMapTexelToLinear( envColorSample );
+              envColorSample.rgb *= spectrum(wavelength);
+              envColorSample.rgb /= float(DISPERSION_SAMPLES) / dispersionBlendMultiplier;
+              envColor.rgb += envColorSample.rgb ;
+            }
+            
+            
+            outgoingLight += envColor.xyz;
+            
+            gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+            </script>
+          <div class="file_upload">
+            <input type="file" id="imgLoader" >
+        </div>
+         <script  src="js/main.js"></script> 
+         
+    	</body>
+</html>
