@@ -308,8 +308,12 @@ this.animate();
     let cbtx = new THREE.CubeTextureLoader().load([image.src,image.src,image.src,image.src,image.src,image.src]);
    
    
-    console.log(cbtx);
-    this.bigsphere.material.envMap = cbtx;
+    let N = prompt("enter index of sphere (0 - 6)");
+     if(parseInt(N,10)<7&&parseInt(N,10)>=0){
+      this.arrB[N].material.uniforms.tCube.value = cbtx;
+     }
+
+    
     
   }
 
