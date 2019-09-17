@@ -496,7 +496,7 @@ class Slider{
     this.camera.position.set( 4125,  -500,  0);
     this.controls.update();
     this.bigtestgeometry=new THREE.IcosahedronGeometry(500, 4);
-   // this.bigtestgeometry.scale(  -1, 1, 1 );
+    //this.bigtestgeometry.scale(  -1, 1, 1 );
     let tessellateModifier = new THREE.TessellateModifier( 60 );
     tessellateModifier.modify( this.bigtestgeometry );
     this.bigtestgeometry = new THREE.BufferGeometry().fromGeometry( this.bigtestgeometry );
@@ -534,37 +534,12 @@ class Slider{
     // ambientLight.visible=true;
      //this.scene.add(ambientLight);
     for(let i =0;i<7;i++){
-      let meshCMaterial = new DispersionMaterial({ 
-        extensions: {
-          derivatives: '#extension GL_OES_standard_derivatives : enable'
-        },
-        side: THREE.DoubleSide,
-          envMap: new THREE.CubeTextureLoader()
-        .load( [
-                'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg'
-        ] ),
-          refractionRatio: 0.8,
-          dispersionSamples: 30,
-          dispersion: 0.8,
-          dispersionBlendMultiplier:20,
-          time : 9.95 ,
-          progress: 1, 
-          uWiggleScale : this.settings.uWiggleScale ,
-          uWiggleDisplacement :  this.settings.uWiggleDisplacement ,
-          uWiggleSpeed : this.settings.uWiggleSpeed ,
-      });
-      meshCMaterial.envMap.mapping = THREE.CubeReflectionMapping;
-
-      let cam =  new THREE.CubeCamera( 0.1, 5000, 512 );//set cubic cameras
-      cam.position.set(this.sceneParams[i].x,this.sceneParams[i].y,this.sceneParams[i].z);
 
       let meshBMaterial = new THREE.ShaderMaterial( 
         {
+          defines: {
+            DISPERSION_SAMPLES:50
+          },
             uniforms: 			{
               "mRefractionRatio": { type: "f", value: 1.02 },
               "mFresnelBias": 	{ type: "f", value: 0.1 },
@@ -575,27 +550,29 @@ class Slider{
               "uWiggleScale": { type: 'f', value: 0.001 },
               "uWiggleDisplacement": { type: 'f', value: 0.01 },
               "uWiggleSpeed": { type: 'f', value: 0.03 },
-              "tCube": 			{ type: "t", value:cam.renderTarget.texture } //  textureCube }
+              "refractionRatio":{ type: 'f', value: 0.8 }, 
+		          "dispersion": { type: 'f', value: 0.8 }, 
+              "dispersionBlendMultiplier":{ type: 'f', value: 20.0 },
+              "cameraPosition":{value:this.camera.position},
+              "tCube": 			{ type: "t", value:new THREE.CubeTextureLoader()
+              .load( [
+                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
+                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg'
+              ] ), } //  textureCube }
             },
           vertexShader:   this.fShader.vertexShader,
           fragmentShader: this.fShader.fragmentShader
         }   );
-      let meshC = new THREE.Mesh(this.bigtestgeometry,meshCMaterial);
       let meshB = new THREE.Mesh(this.bigtestgeometry,	meshBMaterial);
-      
-      
-      meshB.scale.x= meshB.scale.y= meshB.scale.z=1.2;
 
       meshB.position.set(this.sceneParams[i].x,this.sceneParams[i].y,this.sceneParams[i].z);
-      meshC.position.set(this.sceneParams[i].x,this.sceneParams[i].y,this.sceneParams[i].z);
-      console.log(meshC.material);
-
-      this.arrC.push(meshC);
+     
       this.arrB.push(meshB);
-      this.arrCam.push(cam);
 
-
-      this.scene.add(meshC);
       this.scene.add(meshB);
 
     }
@@ -664,12 +641,7 @@ this.animate();
      this.stats.begin();
      this.time += 0.001;
      for(let i=0;i<7;i++){
-      this.arrC[i].material.refractionRatio = this.settings.refractionRatio;
-      this.arrC[i].material.dispersionSamples = this.settings.dispersionSamples;
-      this.arrC[i].material.dispersion = this.settings.dispersion;
-      this.arrC[i].material.dispersionBlendMultiplier = this.settings.dispersionBlendMultiplier;
-      this.arrC[i].material.uniforms.time.value = this.time;
-      this.arrC[i].rotation.x+=0.001;
+
       this.arrB[i].material.uniforms.time.value = this.time;
       this.arrB[i].material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
       this.arrB[i].material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
@@ -679,39 +651,13 @@ this.animate();
       this.arrB[i].material.uniforms.mFresnelBias.value = this.settings.mFresnelBias;
       this.arrB[i].material.uniforms.mFresnelPower.value = this.settings.mFresnelPower;
       this.arrB[i].material.uniforms.mFresnelScale.value = this.settings.mFresnelScale;
-
+      this.arrB[i].material.uniforms.refractionRatio.value = this.settings.refractionRatio;
+      this.arrB[i].material.uniforms.dispersion.value = this.settings.dispersion;
+      this.arrB[i].material.uniforms.dispersionBlendMultiplier.value = this.settings.dispersionBlendMultiplier;
       this.arrB[i].rotation.x+=0.001;
-      this.arrB[i].visible = false;
-      this.arrCam[i].update( this.renderer, this.scene );
-      this.arrB[i].visible = true;
-     }
-        // this.material.refractionRatio = this.settings.refractionRatio;
-        // this.material.dispersionSamples = this.settings.dispersionSamples;
-        // this.material.dispersion = this.settings.dispersion;
-        // this.material.dispersionBlendMultiplier = this.settings.dispersionBlendMultiplier;
       
-      //  this.bigsphere.rotation.x+=0.001;
-      //  this.core.rotation.x+=0.001;
-      //  this.core.material.uniforms.time.value = this.time;
-      //  this.bigsphere.material.uniforms.time.value = this.time;
-      //  this.bigsphere.material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
-      //  this.bigsphere.material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
-      //  this.bigsphere.material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
-
-       
-
-      //  this.core.material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
-      //  this.core.material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
-      //  this.core.material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
-
-
-      //  this.bigsphere.material.uniforms.progress.value = this.settings.progress;
-      //  this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z)
-      //  this.core.visible = false;
-      //  this.bigsphere.visible = true;
-       //this.refractSphereCamera.update( this.renderer, this.scene );
-      // this.bigsphere.visible = false;
-      //  this.core.visible = true;
+     }
+      
   	  this.controls.update();
       this.renderer.render( this.scene, this.camera );
       this.stats.end();

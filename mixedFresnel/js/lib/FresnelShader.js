@@ -22,8 +22,15 @@ THREE.FresnelShader = {
         "uWiggleScale": { type: 'f', value: 0.001 },
         "uWiggleDisplacement": { type: 'f', value: 0.01 },
         "uWiggleSpeed": { type: 'f', value: 0.03 },
-		"tCube": { type: "t", value: null }
+		"tCube": { type: "t", value: null },
+		"refractionRatio":{ type: 'f', value: 0.8 }, 
+		"dispersion": { type: 'f', value: 0.8 }, 
+		"dispersionBlendMultiplier":{ type: 'f', value: 20.0 },
+		"cameraPosition":{value:null}
 
+	},
+	defines: {
+		DISPERSION_SAMPLES:100
 	},
 
 	vertexShader: [
@@ -38,6 +45,7 @@ THREE.FresnelShader = {
 		"uniform float uRefractionRatio;",
 		"uniform float progress;",
 		"uniform float time;",
+		"uniform float dispersion;",
 		"attribute float offset;",
 		"vec3 mod289(vec3 x) {",
 			"return x - floor(x * (1.0 / 289.0)) * 289.0;",
@@ -118,19 +126,26 @@ THREE.FresnelShader = {
 			"vec3 bezier4(vec3 a, vec3 b, vec3 c, vec3 d, float t) {",    
 				"return mix(mix(mix(a, b, t), mix(b, c, t), t), mix(mix(b, c, t), mix(c, d, t), t), t);",
 			"}",
-
+		
+		"uniform float dispersionBlendMultiplier;",
+		
 		"varying vec3 vReflect;",
 		"varying vec3 vRefract[3];",
 		"varying float vReflectionFactor;",
+		"varying vec3 cameraToVertexs;",
+		"varying vec3 worldNormal;",
+		
 
 		"void main() {",
-
+			
 			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 			"vec4 worldPosition = modelMatrix * vec4( position, 1.0 );",
 
-			"vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );",
+			"worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );",
 
 			"vec3 I = worldPosition.xyz - cameraPosition;",
+
+
 
 			"vReflect = reflect( I, worldNormal );",
 			"vRefract[0] = refract( normalize( I ), worldNormal, mRefractionRatio );",
@@ -139,7 +154,9 @@ THREE.FresnelShader = {
 			"vReflectionFactor = mFresnelBias + mFresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), mFresnelPower );",
 			"float noise = cnoise(normalize(position) * uWiggleScale + ( time * uWiggleSpeed ) );//normalize(position)",
          " vec3 pos = position - vec3(800.0,0.0,0.0) + normal * noise * vec3(uWiggleDisplacement);",
-           
+		 
+		 "cameraToVertexs = normalize(vec3(worldPosition) - vec3(cameraPosition));",
+		 "worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);",
          
 
           
@@ -155,14 +172,45 @@ THREE.FresnelShader = {
 	].join("\n"),
 
 	fragmentShader: [
-
+		"uniform float dispersion;",
+		"uniform float dispersionBlendMultiplier;",
 		"uniform samplerCube tCube;",
-
+		
+		"uniform float refractionRatio ;",
 		"varying vec3 vReflect;",
 		"varying vec3 vRefract[3];",
 		"varying float vReflectionFactor;",
-
+		"varying vec3 cameraToVertexs;",
+		"varying vec3 worldNormal;",
+		"vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d ) {",
+			"return a + b*cos( 6.28318*(c*t+d) );",
+		"}",
+		"vec3 spectrum(float n) {",
+			"return pal( n, vec3(0.5,0.5,0.5),vec3(0.5,0.5,0.5),vec3(1.0,1.0,1.0),vec3(0.0,0.33,0.67) );",
+		"}",
 		"void main() {",
+		"vec4 envColor = vec4(0);",
+            
+            
+            
+		"for (int i = 0; i < DISPERSION_SAMPLES; i++) {",
+		
+		  "float wavelength = float(i) / float(DISPERSION_SAMPLES);",
+		
+		  "float riMax = refractionRatio * (0.8 + dispersion);",
+		  "float ri = mix(refractionRatio, riMax, wavelength);",
+		  "vec3 reflectVec = refract( cameraToVertexs, worldNormal, ri );",
+		
+		  "vec4 envColorSample = textureCube( tCube, vec3( -1. * reflectVec.x, reflectVec.yz ) );",
+		  
+		  "envColorSample = envMapTexelToLinear( envColorSample );",
+		  "envColorSample.rgb *= spectrum(wavelength);",
+		  "envColorSample.rgb /= float(DISPERSION_SAMPLES) / dispersionBlendMultiplier;",
+		 " envColor.rgb += envColorSample.rgb ;",
+		"}",
+		
+		
+		"//outgoingLight += envColor.xyz;",
 
 			"vec4 reflectedColor = textureCube( tCube, vec3( -vReflect.x, vReflect.yz ) );",
 			"vec4 refractedColor = vec4( 1.0 );",
@@ -171,7 +219,7 @@ THREE.FresnelShader = {
 			"refractedColor.g = textureCube( tCube, vec3( -vRefract[1].x, vRefract[1].yz ) ).g;",
 			"refractedColor.b = textureCube( tCube, vec3( -vRefract[2].x, vRefract[2].yz ) ).b;",
 
-			"gl_FragColor = mix( refractedColor, reflectedColor, clamp( vReflectionFactor, 0.0, 1.0 ) );",
+			"gl_FragColor = mix( refractedColor, envColor, clamp( vReflectionFactor, 0.0, 1.0 ) );",
 
 		"}"
 
