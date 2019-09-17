@@ -40,6 +40,10 @@ class Slider{
       mFresnelScale: 1.0,
       bgcolor: "#"+ this.scene.background.getHexString ()
     }
+    this.controlsParams = {
+      OrbitControls: false,
+      Target:this.scene.position
+    }
     this.sceneParams =
     {
       0:{
@@ -128,11 +132,11 @@ class Slider{
 
 	this.fShader = THREE.FresnelShader;
 	
-    //this.controls = new THREE.OrbitControls( this.camera );
+    this.controls = new THREE.OrbitControls( this.camera );
     this.camera.position.z = 1642;
     this.camera.position.set( 4125,  -500,  0);
     this.camera.lookAt(this.scene.position);
-    //this.controls.update();
+    this.controls.update();
     this.bigtestgeometry=new THREE.IcosahedronGeometry(500, 4);
     //this.bigtestgeometry.scale(  -1, 1, 1 );
     let tessellateModifier = new THREE.TessellateModifier( 60 );
@@ -212,7 +216,29 @@ class Slider{
       this.scene.add(meshB);
 
     }
+    this.controls.enabled = false;
     this.gui = new dat.GUI();
+    this.gui.add(this.controlsParams,'OrbitControls').onChange(bind(function(value) {
+      if(value){
+        this.controls.enabled = true;
+      }else{
+        this.controls.enabled = false;
+        this.camera.position.set( 4125,  -500,  0);
+        this.camera.lookAt(this.scene.position);
+        
+      }
+    
+      
+     },this));
+     this.gui.add(this.controlsParams,'Target',['scene','0','1','2','3','4','5','6']).onChange(bind(function(value) {
+      if(value=='scene'){
+        this.controls.target.set(this.scene.position.x,this.scene.position.y,this.scene.position.z);
+      }else{
+        this.controls.target.set(this.sceneParams[value].x,this.sceneParams[value].y,this.sceneParams[value].z);
+      }
+        
+     },this));
+
     this.gui.addColor( this.settings, 'bgcolor').onChange(bind(function(value) {
       this.scene.background = new THREE.Color (value);
      // console.log(this);
