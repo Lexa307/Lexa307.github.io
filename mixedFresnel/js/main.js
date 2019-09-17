@@ -43,56 +43,56 @@ class Slider{
     this.sceneParams =
     {
       0:{
-        x:-2000,
+        x:-17204,
         y:1000,
-        z:10000,
+        z:23876,
         uniformsOut:{},
 
       },
       1:{
-        x:-1200,
-        y:400,
-        z:500,
+        x:-7776,
+        y:4346,
+        z:11754,
         uniformsOut:{},
 
 
       },
       2:{
-        x:-600,
-        y:-400,
-        z:2000,
+        x:305,
+        y:-1715,
+        z:2999,
         uniformsOut:{},
 
 
       },
       3:{
-        x:0,
-        y:0,
+        x:2999,
+        y:-400,
         z:0,
         uniformsOut:{},
 
 
       },
       4:{
-        x:1000,
-        y:-800,
-        z:1600,
+        x:305,
+        y:1652,
+        z:-2600,
         uniformsOut:{},
 
 
       },
       5:{
-        x:2000,
-        y:1200,
-        z:2400,
+        x:-4009,
+        y:-3062,
+        z:-7776,
         uniformsOut:{},
 
 
       },
       6:{
-        x:2400,
+        x:-7776,
         y:1600,
-        z:3000,
+        z:-16531,
         uniformsOut:{},
 
 
@@ -128,10 +128,11 @@ class Slider{
 
 	this.fShader = THREE.FresnelShader;
 	
-    this.controls = new THREE.OrbitControls( this.camera );
+    //this.controls = new THREE.OrbitControls( this.camera );
     this.camera.position.z = 1642;
     this.camera.position.set( 4125,  -500,  0);
-    this.controls.update();
+    this.camera.lookAt(this.scene.position);
+    //this.controls.update();
     this.bigtestgeometry=new THREE.IcosahedronGeometry(500, 4);
     //this.bigtestgeometry.scale(  -1, 1, 1 );
     let tessellateModifier = new THREE.TessellateModifier( 60 );
@@ -253,13 +254,13 @@ class Slider{
         this.arrB[i].material.uniforms.uWiggleSpeed.value = value;
       },this));
       let f0 = f.addFolder('position ' + i);
-      f0.add(this.sceneParams[i],'x',-10000,10000,1).onChange(bind(function(value) {
+      f0.add(this.sceneParams[i],'x',-30000,30000,1).onChange(bind(function(value) {
         this.arrB[i].position.x = value;
         },this));
-      f0.add(this.sceneParams[i],'y',-10000,10000,1).onChange(bind(function(value) {
+      f0.add(this.sceneParams[i],'y',-30000,30000,1).onChange(bind(function(value) {
           this.arrB[i].position.y = value;
           },this));
-      f0.add(this.sceneParams[i],'z',-10000,10000,1).onChange(bind(function(value) {
+      f0.add(this.sceneParams[i],'z',-30000,30000,1).onChange(bind(function(value) {
         this.arrB[i].position.z = value;
         },this));
       let f1 = f.addFolder('bubble ' + i);
@@ -330,7 +331,7 @@ this.animate();
       
      }
       
-  	  this.controls.update();
+  	  //this.controls.update();
       this.renderer.render( this.scene, this.camera );
       this.stats.end();
 
