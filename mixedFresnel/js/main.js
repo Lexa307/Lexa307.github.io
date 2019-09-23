@@ -16,11 +16,12 @@ class Slider{
     this.renderer = new THREE.WebGLRenderer({antialias:true});
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
-    
+    this.focus = new THREE.Vector3(2999,1000,23876);
     this.container;
     this.time = 18.95;
-    this.Count = 5;
+    this.index = 3;
     this.spheres = [];
+    this.moving = false;
     this.settings = {
       reflectivity:0.5,
       metalness:0.5,
@@ -104,7 +105,8 @@ class Slider{
 
     }; 
     this.arrB = [];
-    
+    this.arrCurves = [];
+    this.arrOrbits = [];
      
     
    
@@ -125,11 +127,11 @@ class Slider{
     this.raycaster= new THREE.Raycaster();
     //this.raycaster.far=1700;
     this.mouse = new THREE.Vector2();
-    this.texture1 = new THREE.TextureLoader().load('textures/test7.png');
-    this.texture1.offset=new THREE.Vector2(0,1);
+    // this.texture1 = new THREE.TextureLoader().load('textures/test7.png');
+    // this.texture1.offset=new THREE.Vector2(0,1);
     //this.texture1.repeat = THREE.MirroredRepeatWrapping;
-    window.addEventListener( 'mousemove', bind(this.onMouseMove,this), false );
-
+    this.container.addEventListener( 'mousemove', bind(this.onMouseMove,this), false );
+    this.container.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
 	this.fShader = THREE.FresnelShader;
 	
     this.controls = new THREE.OrbitControls( this.camera );
@@ -317,7 +319,7 @@ window.addEventListener("resize",this.onWindowResize(), false);
 
 
 this.animate();
-    
+this.initCurves();    
     
   }
   onWindowResize () {
@@ -357,11 +359,105 @@ this.animate();
       
      }
       
-  	  //this.controls.update();
+      //this.controls.update();
+
       this.renderer.render( this.scene, this.camera );
       this.stats.end();
 
   }
+  initCurves (){
+    // let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+    // let Omaterial = new THREE.LineBasicMaterial( { color : 0x0000ff } );
+    // let arrCurves = [];
+    // let arrOrbits = [];
+    this.arrCurves.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( -15677,  1166,  25008),
+      new THREE.Vector3(  -12616,  2303,  24456 ),
+      new THREE.Vector3(  -6760,  4780,  13087 )
+    ));
+    this.arrCurves.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( -6760,  4780,  13087),
+      new THREE.Vector3(   -2734,  1830,  11754 ),
+      new THREE.Vector3(  1941,  -1198,  3524 )
+    ));
+    this.arrCurves.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( 1941,  -1198,  3524),
+      new THREE.Vector3(  4139,  1213,  3564 ),
+      new THREE.Vector3(  4125,  -500,  0 )
+    ));
+    this.arrCurves.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( 4125,  -500,  0),
+      new THREE.Vector3(  2693,  1409,  -3144 ),
+      new THREE.Vector3(  1200,  2105,  -3640 )
+    ));
+    this.arrCurves.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( 1200,  2105,  -3640),
+      new THREE.Vector3( 3188,  -1689,  -9259 ),
+      new THREE.Vector3(  -2823,  -4138,  -10452 )
+    ));
+    this.arrCurves.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( -2823,  -4138,  -10452),
+      new THREE.Vector3( -1385,  -1986,  -17302 ),
+      new THREE.Vector3(  -6854,  1826,  -18332 )
+    ));
+
+
+
+    this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( -15808, 1477,  25391),
+      new THREE.Vector3(   -15523,  1281, 24938 ),
+      new THREE.Vector3(  -15523,  1281, 24938 )
+    ));
+    this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( -6871,  4839, 13257),
+      new THREE.Vector3(   -6381, 4839, 12819  ),
+      new THREE.Vector3(   -6381, 4839, 12819 )
+    ));
+    this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3( 1634, -1163,  4071),
+      new THREE.Vector3(  2052,  -1314, 3075 ),
+      new THREE.Vector3(  2052,  -1314, 3075 )
+    ));
+    this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(  4076,  -484,  330),
+      new THREE.Vector3(  4076,  -484,  330 ),
+      new THREE.Vector3( 4027, -462, -465 )
+    ));
+    this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(  1543, 2121, -3278),
+      new THREE.Vector3(  1543, 2121, -3278 ),
+      new THREE.Vector3( 979,  2125,  -3749 )
+    ));
+    this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(  -2992,  -3613,  -9304),
+      new THREE.Vector3( -4341,  -3236,  -9655 ),
+      new THREE.Vector3( -4341,  -3236,  -9655 )
+    ));
+    this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(  -6523,  2174,  -18030),
+      new THREE.Vector3( -7750,  2174,  -18484  ),
+      new THREE.Vector3( -7750,  2174,  -18484 )
+    ));
+    // for(let i = 0; i<arrCurves.length;i++){
+    //   let points = arrCurves[i].getPoints( 50 );
+    //   let geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+    //   let curveObject = new THREE.Line( geometry, material );
+    //   this.arrCurves.push(curveObject)
+    //   this.scene.add(curveObject);
+    // }
+    // for(let i = 0; i<arrOrbits.length;i++){
+    //   let points = arrOrbits[i].getPoints( 50 );
+    //   let geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+    //   let curveObject = new THREE.Line( geometry, Omaterial );
+    //   this.arrOrbits.push(curveObject)
+    //   this.scene.add(curveObject);
+    // }
+    
+
+  }
+  
     onMouseMove ( evvent ) {
       this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
@@ -377,12 +473,50 @@ this.animate();
 	}
 	    
     }
+
+    mouseHandle(event){
+      if(!this.moving){
+        if(event.deltaY==100){
+ 		
+          this.indexControl('next');
+        }else{
+          this.indexControl('back');
+        }
+      }
+      
+    }
+
+    indexControl(direction){
+
+      let floatIndex = {value:0};
+      
+      if(direction == 'next' && this.index<this.arrOrbits.length-1){
+        this.moving = true;
+        let curve = new THREE.QuadraticBezierCurve3(
+          new THREE.Vector3( this.camera.position.x,  this.camera.position.y,  this.camera.position.z),
+          new THREE.Vector3( this.arrCurves[this.index].getPointAt(0.5).x,  this.arrCurves[this.index].getPointAt(0.5).y,  this.arrCurves[this.index].getPointAt(0.5).z ),
+          new THREE.Vector3( this.arrOrbits[this.index+1].getPointAt(0.5).x,  this.arrOrbits[this.index+1].getPointAt(0.5).y,  this.arrOrbits[this.index+1].getPointAt(0.5).z )
+        );
+        TweenMax.to(this.focus,1,{x:this.sceneParams[this.index+1].x,y:this.sceneParams[this.index+1].y,z:this.sceneParams[this.index+1].z,onUpdate:()=>{this.camera.lookAt(this.focus)}})
+        TweenMax.to(floatIndex,1,{ease: Power2.easeOut,value:1,onComplete:()=>{this.index++;this.moving = false;},onUpdate:()=>{this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z)}})
+      }
+      if(direction == 'back' && this.index>0){
+        this.moving = true;
+        let curve = new THREE.QuadraticBezierCurve3(
+          new THREE.Vector3( this.camera.position.x,  this.camera.position.y,  this.camera.position.z),
+          new THREE.Vector3( this.arrCurves[this.index-1].getPointAt(0.5).x,  this.arrCurves[this.index-1].getPointAt(0.5).y,  this.arrCurves[this.index-1].getPointAt(0.5).z ),
+          new THREE.Vector3( this.arrOrbits[this.index-1].getPointAt(0.5).x,  this.arrOrbits[this.index-1].getPointAt(0.5).y,  this.arrOrbits[this.index-1].getPointAt(0.5).z )
+        );
+        TweenMax.to(this.focus,1,{x:this.sceneParams[this.index-1].x,y:this.sceneParams[this.index-1].y,z:this.sceneParams[this.index-1].z,onUpdate:()=>{this.camera.lookAt(this.focus)}})
+        TweenMax.to(floatIndex,1,{ease: Power2.easeOut,value:1,onComplete:()=>{this.index--;this.moving = false;},onUpdate:()=>{this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z)}})
+      }
+    }
   
   
 }
 
 let a = new Slider();
-
+Object.seal(a);
 
 
 //TweenMax.to(material.uniforms.progress,20,{value:5,repeat:-1});
