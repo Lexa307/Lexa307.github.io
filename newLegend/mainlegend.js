@@ -3,7 +3,7 @@ if ( WEBGL.isWebGLAvailable() === false ) {
 }
  let scene,camera,renderer,focPoint,vector,distance,dir,pos,myAnimation,effectFXAA,composer,can,can2,raycaster,timerId,renderScene,GroupArray,GroupArray2,geometry,material,plane,plane2,geometry2,material2,mouse,light,blackgeom,blackmat,blackplane,blackplane2,controls;
 
-let blackplane5,curve,curveFloat;
+let blackplane5,curve,curveFloat,can3;
 
 let mobile_detector=false;
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
@@ -27,8 +27,11 @@ function onMouseMove( event ) {
 		if(pos.x<150&&pos.x>-300){
 			TweenMax.to(light.position,1,{ease: Power2.easeOut,x:pos.x,y:pos.y});
 		}
-		TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(mouse.x*0.1).x,z:curve.getPointAt(mouse.x*0.1).z});
+		if(!can3){
+			TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(curveFloat + mouse.x*0.1).x,z:curve.getPointAt(curveFloat+ mouse.x*0.1).z});
 
+		}
+		
 	
 	}
 
@@ -124,7 +127,7 @@ let stage={
 				TweenMax.to(blackplane.position,3,{ease: Power2.easeOut,x:blackplane.position.x-20,z:blackplane.position.z-20});
 				TweenMax.to(blackplane2.position,3,{ease: Power2.easeOut,x:blackplane2.position.x-20,z:blackplane2.position.z-20});
 				TweenMax.to(material,0.2,{ease: Circ.easeOut,opacity:1 });
-				
+				can3 = false;
 				
 				for(let i=0;i<GroupArray.length;i++){
 					GroupArray[i].visible=true;
@@ -172,6 +175,7 @@ function Init(){
 	renderer.setPixelRatio( window.devicePixelRatio );
 	can=false;
 	can2=false;
+	can3 = true;
 
 	camera.lookAt(focPoint);
 	curveFloat = 0;
