@@ -106,7 +106,7 @@ let stage={
 					console.log(camera.rotation);
 					// setTimeout(function(){TweenMax.to(focPoint,3.5,{ ease: Power2.easeIn,x:-500,z:0,y:-30,onComplete:()=>{alert("done");}
 						can=true;
-						setTimeout(function(){TweenMax.to(camera.position,2,{ ease: Expo.easeIn,x:-500,z:500,onComplete:()=>{alert("done");}
+						setTimeout(function(){TweenMax.to(camera.position,2,{ ease: Expo.easeIn,x:-500,z:500,onComplete:()=>{}
 						
 					})},2000);
 				} });//x-127z-103
