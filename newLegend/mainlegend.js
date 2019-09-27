@@ -3,7 +3,7 @@ if ( WEBGL.isWebGLAvailable() === false ) {
 }
  let scene,camera,renderer,focPoint,vector,distance,dir,pos,myAnimation,effectFXAA,composer,can,can2,raycaster,timerId,renderScene,GroupArray,GroupArray2,geometry,material,plane,plane2,geometry2,material2,mouse,light,blackgeom,blackmat,blackplane,blackplane2,controls;
 
-let blackplane5,curve,curveFloat,can3;
+let blackplane5,curve,curveFloat,can3,scrollingA;
 
 let mobile_detector=false;
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
@@ -27,8 +27,8 @@ function onMouseMove( event ) {
 		if(pos.x<150&&pos.x>-300){
 			TweenMax.to(light.position,1,{ease: Power2.easeOut,x:pos.x,y:pos.y});
 		}
-		if(!can3){
-			TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(curveFloat + mouse.x*0.1).x,z:curve.getPointAt(curveFloat+ mouse.x*0.1).z});
+		if(!can3&&!scrollingA){
+			TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(curveFloat + mouse.x*0.05).x,z:curve.getPointAt(curveFloat+ mouse.x*0.05).z});
 
 		}
 		
@@ -176,6 +176,7 @@ function Init(){
 	can=false;
 	can2=false;
 	can3 = true;
+	scrollingA = false;
 
 	camera.lookAt(focPoint);
 	curveFloat = 0;
@@ -408,15 +409,18 @@ function mouseHandle(event){
   }
   function indexControl(direction){
 
-	  if(direction === 'next' && curveFloat<1){
-		  curveFloat+=0.2;
+	  if(direction === 'next' && curveFloat<=1){
+		  curveFloat+=0.02;
 		  
 	  }
-	  if(direction === 'back' && curveFloat>0){
-		curveFloat-=0.2;
+	  if(direction === 'back' && curveFloat>=0){
+		curveFloat-=0.02;
 		
 	}
-	TweenMax.to(camera.position,2,{x:curve.getPointAt(curveFloat).x,z:curve.getPointAt(curveFloat).z,ease: Power3.easeInOut})
+	scrollingA = true;
+	//camera.position.set(curve.getPointAt(curveFloat).x,curve.getPointAt(curveFloat).y,curve.getPointAt(curveFloat).z);
+	TweenMax.to(camera.position,0.5,{x:curve.getPointAt(curveFloat).x,z:curve.getPointAt(curveFloat).z,ease: Power3.easeInOut})
+	scrollingA = false;
   }
   function rot(){
 	for(let i=0;i<GroupArray.length;i++){
