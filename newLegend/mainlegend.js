@@ -3,7 +3,7 @@ if ( WEBGL.isWebGLAvailable() === false ) {
 }
  let scene,camera,renderer,focPoint,vector,distance,dir,pos,myAnimation,effectFXAA,composer,can,can2,raycaster,timerId,renderScene,GroupArray,GroupArray2,geometry,material,plane,plane2,geometry2,material2,mouse,light,blackgeom,blackmat,blackplane,blackplane2,controls;
 
-let blackplane5,curve,curveFloat,can3,scrollingA;
+let blackplane5,blackplane4,blackplane3,curve,curveFloat,can3,scrollingA;
 
 let mobile_detector=false;
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
@@ -28,7 +28,7 @@ function onMouseMove( event ) {
 			TweenMax.to(light.position,1,{ease: Power2.easeOut,x:pos.x,y:pos.y});
 		}
 		if(!can3&&!scrollingA){
-			TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(curveFloat + mouse.x*0.05).x,z:curve.getPointAt(curveFloat+ mouse.x*0.05).z});
+			TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(curveFloat + mouse.x*0.05).x,z:curve.getPointAt(curveFloat+ mouse.x*0.05).z,y:curve.getPointAt(curveFloat+ mouse.x*0.05).y});
 
 		}
 		
@@ -107,7 +107,7 @@ let stage={
 		focPoint.y = 400;
 		TweenMax.to(camera.position,6,{ease: Power3.easeOut,y:-70,x:-320.414,z:-143})
 
-		TweenMax.to(focPoint,6,{ease: Power3.easeOut,y:70});
+		TweenMax.to(focPoint,6,{ease: Power3.easeOut,y:70,onComplete:()=>{can3 = false;}});
 		
 		
 
@@ -126,8 +126,10 @@ let stage={
 				can2=false;
 				TweenMax.to(blackplane.position,3,{ease: Power2.easeOut,x:blackplane.position.x-20,z:blackplane.position.z-20});
 				TweenMax.to(blackplane2.position,3,{ease: Power2.easeOut,x:blackplane2.position.x-20,z:blackplane2.position.z-20});
+				TweenMax.to(blackplane3.position,3,{ease: Power2.easeOut,x:blackplane3.position.x-20,z:blackplane3.position.z-20});
+				TweenMax.to(blackplane4.position,3,{ease: Power2.easeOut,x:blackplane4.position.x-20,z:blackplane4.position.z-20});
 				TweenMax.to(material,0.2,{ease: Circ.easeOut,opacity:1 });
-				can3 = false;
+				
 				
 				for(let i=0;i<GroupArray.length;i++){
 					GroupArray[i].visible=true;
@@ -209,7 +211,7 @@ var linematerial = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
 // Create the final object to add to the scene
 var curveObject = new THREE.Line( linegeometry, linematerial );
-scene.add(curveObject);
+//scene.add(curveObject);
 	blackgeom = new THREE.PlaneGeometry( 70, 500, 1 );
 	blackmat = new THREE.MeshBasicMaterial( {color: 0x1D1A1B,side: THREE.DoubleSide} );//1D1A1B  231F20
 	blackplane = new THREE.Mesh(  blackgeom, blackmat );
@@ -217,12 +219,12 @@ scene.add(curveObject);
 	blackplane2=blackplane.clone();
 	blackplane2.rotation.y-=Math.PI/2;
 	blackplane2.position.set(56,45,30)//;
-	let blackplane3 = new THREE.Mesh(  blackgeom, blackmat );
-	blackplane3.position.set(10,45,45);
-	let blackplane4 = new THREE.Mesh(  blackgeom, blackmat );
+	blackplane3 = new THREE.Mesh(  blackgeom, blackmat );
+	blackplane3.position.set(30,45,65);
+	blackplane4 = new THREE.Mesh(  blackgeom, blackmat );
 	blackplane4.rotation.y-=Math.PI/2;
 	blackplane4.scale.x = 0.8;
-	blackplane4.position.set(-17,45,14)
+	blackplane4.position.set(3,45,34)
 	blackplane3.scale.x=0.8;
 	scene.add(blackplane2);
 	scene.add(blackplane);
@@ -241,7 +243,7 @@ scene.add(curveObject);
 	document.addEventListener("DOMMouseScroll", mouseHandle2, false);
 	//front
 	for (let i=0;i<70;i+=7){
-		for(let j=-70;j<200;j+=14){
+		for(let j=-100;j<200;j+=14){
 			let tmp = plane.clone();
 			tmp.position.set(i+randomFromTo(-1,2),j,0);
 			tmp.amplitude=0.01+Math.random()*(0.01-0.005);
@@ -251,7 +253,7 @@ scene.add(curveObject);
 		}
 	}
 	for (let i=6;i<70;i+=7){
-		for(let j=-70;j<200;j+=14){
+		for(let j=-100;j<200;j+=14){
 			let tmp = plane.clone();
 			tmp.position.set(0,j,i+randomFromTo(-1,2));
 			tmp.amplitude=0.01+Math.random()*(0.01-0.005);
@@ -262,7 +264,7 @@ scene.add(curveObject);
 	}
 	//back
 	for (let i=0;i<70;i+=7){
-		for(let j=-70;j<200;j+=14){
+		for(let j=-100;j<200;j+=14){
 			let tmp = plane.clone();
 			tmp.position.set(i+randomFromTo(-1,2),j,70);
 			tmp.amplitude=0.01+Math.random()*(0.01-0.005);
@@ -273,7 +275,7 @@ scene.add(curveObject);
 	}
 //---------------------------second_building
 	for (let i=180;i<250;i+=7){
-		for(let j=-70;j<200;j+=14){
+		for(let j=-100;j<200;j+=14){
 			let tmp = plane.clone();
 			tmp.position.set(i+randomFromTo(-1,2),j,0);
 			tmp.amplitude=0.01+Math.random()*(0.01-0.005);
@@ -283,7 +285,7 @@ scene.add(curveObject);
 		}
 	}
 	for (let i=6;i<70;i+=7){
-		for(let j=-70;j<200;j+=14){
+		for(let j=-100;j<200;j+=14){
 			let tmp = plane.clone();
 			tmp.position.set(180,j,i+randomFromTo(-1,2));
 			tmp.amplitude=0.01+Math.random()*(0.01-0.005);
@@ -294,7 +296,7 @@ scene.add(curveObject);
 	}
 	//back
 	for (let i=180;i<250;i+=7){
-		for(let j=-70;j<200;j+=14){
+		for(let j=-100;j<200;j+=14){
 			let tmp = plane.clone();
 			tmp.position.set(i+randomFromTo(-1,2),j,70);
 			tmp.amplitude=0.01+Math.random()*(0.01-0.005);
@@ -409,18 +411,18 @@ function mouseHandle(event){
   }
   function indexControl(direction){
 
-	  if(direction === 'next' && curveFloat<=1){
-		  curveFloat+=0.02;
+	  if(direction === 'next' && curveFloat<1){
+		  curveFloat+=0.2;
 		  
 	  }
-	  if(direction === 'back' && curveFloat>=0){
-		curveFloat-=0.02;
+	  if(direction === 'back' && curveFloat>0){
+		curveFloat-=0.2;
 		
 	}
 	scrollingA = true;
 	//camera.position.set(curve.getPointAt(curveFloat).x,curve.getPointAt(curveFloat).y,curve.getPointAt(curveFloat).z);
-	TweenMax.to(camera.position,0.5,{x:curve.getPointAt(curveFloat).x,z:curve.getPointAt(curveFloat).z,ease: Power3.easeInOut})
-	scrollingA = false;
+	TweenMax.to(camera.position,2,{x:curve.getPointAt(curveFloat).x,y:curve.getPointAt(curveFloat).y,z:curve.getPointAt(curveFloat).z,ease: Power4.easeOut,onComplete:()=>{scrollingA = false;}})
+	
   }
   function rot(){
 	for(let i=0;i<GroupArray.length;i++){
