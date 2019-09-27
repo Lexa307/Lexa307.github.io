@@ -180,7 +180,7 @@ function Init(){
 	camera.lookAt(focPoint);
 	curveFloat = 0;
 	document.body.appendChild( renderer.domElement );//помещение отрендеренного канваса в DOM
-	document.addEventListener( 'mousewheel', mouseHandle, false);
+	//document.addEventListener( 'mousewheel', mouseHandle, false);
 	geometry = new THREE.PlaneGeometry( 1.5, 14, 1 );
 	material = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
 	plane = new THREE.Mesh( geometry, material );
@@ -236,6 +236,8 @@ scene.add(curveObject);
 	scene.add(blackplane5);
 	createPattern(-150,-150,300,300);
 	window.addEventListener( 'mousemove', onMouseMove, false );
+	document.addEventListener("mousewheel", mouseHandle2, false);
+	document.addEventListener("DOMMouseScroll", mouseHandle2, false);
 	//front
 	for (let i=0;i<70;i+=7){
 		for(let j=-70;j<200;j+=14){
@@ -406,12 +408,12 @@ function mouseHandle(event){
   }
   function indexControl(direction){
 
-	  if(direction === 'next'){
+	  if(direction === 'next' && curveFloat<1){
 		  curveFloat+=0.2;
 		  
 	  }
-	  if(direction === 'back'){
-		curveFloat-=0.1;
+	  if(direction === 'back' && curveFloat>0){
+		curveFloat-=0.2;
 		
 	}
 	TweenMax.to(camera.position,2,{x:curve.getPointAt(curveFloat).x,z:curve.getPointAt(curveFloat).z,ease: Power3.easeInOut})
@@ -431,3 +433,117 @@ function mouseHandle(event){
 
 
   }
+  let scrolling = false;
+let oldTime = 0;
+let newTime = 0;
+let isTouchPad;
+let eventCount = 0;
+let eventCountStart;
+
+function  mouseHandle2 (evt) {
+	
+    let isTouchPadDefined = isTouchPad || typeof isTouchPad !== "undefined";
+   // console.log(isTouchPadDefined);
+    if (!isTouchPadDefined) {
+        if (eventCount === 0) {
+            eventCountStart = new Date().getTime();
+        }
+
+        eventCount++;
+
+        if (new Date().getTime() - eventCountStart > 100) {
+                if (eventCount > 10) {
+                    isTouchPad = true;
+                } else {
+                    isTouchPad = false;
+                }
+            isTouchPadDefined = true;
+        }
+    }
+
+    if (isTouchPadDefined) {
+    	
+        // here you can do what you want
+        // i just wanted the direction, for swiping, so i have to prevent
+        // the multiple event calls to trigger multiple unwanted actions (trackpad)
+        if (!evt) evt = event;
+        let direction = (evt.detail<0 || evt.wheelDelta>0) ? 1 : -1;
+
+        if (isTouchPad) {
+            newTime = new Date().getTime();
+
+            if (!scrolling && newTime-oldTime > 550 ) {
+                scrolling = true;
+                if (direction < 0) {
+                    // swipe down
+					indexControl('next');
+                } else {
+                    // swipe up
+					indexControl('back');
+                }
+                setTimeout(function() {oldTime = new Date().getTime();scrolling = false}, 500);
+            }
+        } else {
+            if (direction < 0) {
+            	indexControl('next');
+            	
+                // swipe down
+            } else {
+                // swipe up
+				indexControl('back');
+            }
+        }
+    }
+	
+}
+
+let scrollPos = 0;
+// adding scroll event
+document.addEventListener('scroll', function(){
+
+  // detects new state and compares it with the new one
+  if ((document.body.getBoundingClientRect()).top > scrollPos){
+  	
+		indexControl('next');
+  }
+	
+	else{
+		indexControl('back');
+		
+	}
+	
+	// saves the new position for iteration.
+	scrollPos = (document.body.getBoundingClientRect()).top;
+		
+});
+
+document.addEventListener('touchstart', function(event) {
+	event.preventDefault();
+	event.stopPropagation();
+	initialPoint=event.changedTouches[0];
+	}, false);
+	document.addEventListener('touchend', function(event) {
+	event.preventDefault();
+	event.stopPropagation();
+	finalPoint=event.changedTouches[0];
+	let xAbs = Math.abs(initialPoint.pageX - finalPoint.pageX);
+	let yAbs = Math.abs(initialPoint.pageY - finalPoint.pageY);
+	if (xAbs > 20 || yAbs > 20) {
+	if (xAbs > yAbs) {
+	if (finalPoint.pageX < initialPoint.pageX){
+	/*СВАЙП ВЛЕВО*/
+	indexControl('next');
+	}
+	else{
+	/*СВАЙП ВПРАВО*/
+	indexControl('back');
+	}
+	}
+	else {
+	if (finalPoint.pageY < initialPoint.pageY){
+	/*СВАЙП ВВЕРХ*/}
+	else{
+	/*СВАЙП ВНИЗ*/}
+	}
+	}
+	}, false);
