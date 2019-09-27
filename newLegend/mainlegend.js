@@ -28,7 +28,7 @@ function onMouseMove( event ) {
 			TweenMax.to(light.position,1,{ease: Power2.easeOut,x:pos.x,y:pos.y});
 		}
 		if(!can3&&!scrollingA){
-			TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(curveFloat + mouse.x*0.05).x,z:curve.getPointAt(curveFloat+ mouse.x*0.05).z,y:curve.getPointAt(curveFloat+ mouse.x*0.05).y});
+			TweenMax.to(camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(curveFloat + mouse.x*0.05).x,z:curve.getPointAt(curveFloat+ mouse.x*0.05).z,y:curve.getPointAt(curveFloat+ mouse.x*0.05).y,onUpdate:()=>{camera.lookAt(focPoint);}});
 
 		}
 		
@@ -107,7 +107,7 @@ let stage={
 		focPoint.y = 400;
 		TweenMax.to(camera.position,6,{ease: Power3.easeOut,y:-70,x:-320.414,z:-143})
 
-		TweenMax.to(focPoint,6,{ease: Power3.easeOut,y:70,onComplete:()=>{can3 = false;}});
+		TweenMax.to(focPoint,6,{ease: Power3.easeOut,y:70,onComplete:()=>{can3 = false;},onUpdate:()=>{camera.lookAt(focPoint);}});
 		
 		
 
@@ -232,7 +232,7 @@ var curveObject = new THREE.Line( linegeometry, linematerial );
 	scene.add(blackplane4);
 
 
-
+		
 	blackplane5 = blackplane.clone();
 	blackplane5.scale.x = 0.9;
 	blackplane5.position.set(195,45,-16);
@@ -351,9 +351,9 @@ function animate() {
 	    	
 		}
 	
-	if(!can){
-		camera.lookAt(focPoint);
-	}
+	// if(!can){
+	// 	camera.lookAt(focPoint);
+	// }
 	
 
 	raycaster.setFromCamera( mouse, camera );
@@ -421,7 +421,7 @@ function mouseHandle(event){
 	}
 	scrollingA = true;
 	//camera.position.set(curve.getPointAt(curveFloat).x,curve.getPointAt(curveFloat).y,curve.getPointAt(curveFloat).z);
-	TweenMax.to(camera.position,2,{x:curve.getPointAt(curveFloat).x,y:curve.getPointAt(curveFloat).y,z:curve.getPointAt(curveFloat).z,ease: Power4.easeOut,onComplete:()=>{scrollingA = false;}})
+	TweenMax.to(camera.position,2,{x:curve.getPointAt(curveFloat).x,y:curve.getPointAt(curveFloat).y,z:curve.getPointAt(curveFloat).z,ease: Power4.easeOut,onComplete:()=>{scrollingA = false;},onUpdate:()=>{camera.lookAt(focPoint);}})
 	
   }
   function rot(){
