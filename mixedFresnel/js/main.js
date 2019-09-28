@@ -212,7 +212,7 @@ class Slider{
       let meshB = new THREE.Mesh(this.bigtestgeometry,	meshBMaterial);
       let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
       let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
-      meshB.position.set(x,this.sceneParams[i].y,y);
+      meshB.position.set(x,300,y);
      
       this.arrB.push(meshB);
 
@@ -226,8 +226,8 @@ class Slider{
         this.controls.enabled = true;
       }else{
         this.controls.enabled = false;
-        this.camera.position.set( 4125,  -500,  0);
-        this.camera.lookAt(this.scene.position);
+       // this.camera.position.set( 4125,  -500,  0);
+       // this.camera.lookAt(this.scene.position);
         
       }
     
@@ -283,13 +283,13 @@ class Slider{
         this.arrB[i].material.uniforms.uWiggleSpeed.value = value;
       },this));
       let f0 = f.addFolder('position ' + i);
-      f0.add(this.sceneParams[i],'x',-30000,30000,1).onChange(bind(function(value) {
+      f0.add(this.arrB[i].position,'x',-30000,30000,1).onChange(bind(function(value) {
         this.arrB[i].position.x = value;
         },this));
-      f0.add(this.sceneParams[i],'y',-30000,30000,1).onChange(bind(function(value) {
+      f0.add(this.arrB[i].position,'y',-30000,30000,1).onChange(bind(function(value) {
           this.arrB[i].position.y = value;
           },this));
-      f0.add(this.sceneParams[i],'z',-30000,30000,1).onChange(bind(function(value) {
+      f0.add(this.arrB[i].position,'z',-30000,30000,1).onChange(bind(function(value) {
         this.arrB[i].position.z = value;
         },this));
       let f1 = f.addFolder('bubble ' + i);
