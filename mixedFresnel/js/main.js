@@ -34,7 +34,7 @@ class Slider{
       uWiggleSpeed:  0.064 ,
       refractionRatio: 0.8,
       dispersionSamples: 30,
-      dispersionBlendMultiplier:20,
+      dispersionBlendMultiplier:6,
       dispersion: 0.8,
       mRefractionRatio: 1.0,
       mFresnelBias: 1,
@@ -195,7 +195,7 @@ class Slider{
               "uWiggleSpeed": { type: 'f', value: 0.03 },
               "refractionRatio":{ type: 'f', value: 0.8 }, 
 		          "dispersion": { type: 'f', value: 0.8 }, 
-              "dispersionBlendMultiplier":{ type: 'f', value: 20.0 },
+              "dispersionBlendMultiplier":{ type: 'f', value: 6.0 },
               "cameraPosition":{value:this.camera.position},
               "tCube": 			{ type: "t", value:new THREE.CubeTextureLoader()
               .load( [
@@ -457,9 +457,9 @@ this.initCurves();
   if(intersects.length == 0){
     
     if(this.last!=null){
-      TweenMax.to(this.last.uniforms.dispersion,1,{value:0.8,ease: Power2.easeOut});
+      TweenMax.to(this.last.uniforms.dispersion,2,{value:0.8,ease: Power2.easeOut});
       const tmpConst = this.last.uniforms.uWiggleScale.value-0.150;
-      TweenMax.to(this.last.uniforms.uWiggleScale,1,{value:tmpConst,ease: Power2.easeOut,onComplete:()=>{}});
+      TweenMax.to(this.last.uniforms.uWiggleScale,2,{value:tmpConst,ease: Power2.easeInOut,onComplete:()=>{}});
       this.last = null;
       
     }
@@ -468,19 +468,19 @@ this.initCurves();
     
     if(this.last!=null&&this.last.uuid!=intersects[ 0 ].object.material.uuid){
      // console.log('y2')
-      TweenMax.to(this.last.uniforms.dispersion,1,{value:0.8,ease: Power2.easeOut});
+      TweenMax.to(this.last.uniforms.dispersion,2,{value:0.8,ease: Power2.easeInOut});
       const tmpConstP = this.last.uniforms.uWiggleScale.value-0.150;
-      TweenMax.to(this.last.uniforms.uWiggleScale,1,{value:tmpConstP,ease: Power2.easeOut,onComplete:()=>{ }})
+      TweenMax.to(this.last.uniforms.uWiggleScale,2,{value:tmpConstP,ease: Power2.easeInOut,onComplete:()=>{ }})
       this.last = intersects[ 0 ].object.material
-      TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,1,{value:1,ease: Power2.easeOut});
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,2,{value:1,ease: Power2.easeInOut});
       const tmpConstM = this.last.uniforms.uWiggleScale.value+0.150;
-      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,1,{value:tmpConstM,ease: Power2.easeOut})
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:tmpConstM,ease: Power2.easeInOut})
     }
     if(this.last==null){
      // console.log(intersects[0])
       this.last = intersects[ 0 ].object.material;
-      TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,1,{value:1,ease: Power2.easeOut});
-      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,1,{value:this.last.uniforms.uWiggleScale.value+0.150,ease: Power2.easeOut})
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,2,{value:1,ease: Power2.easeInOut});
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:this.last.uniforms.uWiggleScale.value+0.150,ease: Power2.easeInOut})
     }
 
 
