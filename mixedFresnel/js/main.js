@@ -131,7 +131,7 @@ class Slider{
     // this.texture1.offset=new THREE.Vector2(0,1);
     //this.texture1.repeat = THREE.MirroredRepeatWrapping;
     this.container.addEventListener( 'mousemove', bind(this.onMouseMove,this), false );
-    this.container.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
+    //this.container.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
 	this.fShader = THREE.FresnelShader;
 	
     this.controls = new THREE.OrbitControls( this.camera );
@@ -210,8 +210,9 @@ class Slider{
           fragmentShader: this.fShader.fragmentShader
         }   );
       let meshB = new THREE.Mesh(this.bigtestgeometry,	meshBMaterial);
-
-      meshB.position.set(this.sceneParams[i].x,this.sceneParams[i].y,this.sceneParams[i].z);
+      let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
+      let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
+      meshB.position.set(x,this.sceneParams[i].y,y);
      
       this.arrB.push(meshB);
 
@@ -438,22 +439,7 @@ this.initCurves();
       new THREE.Vector3( -7750,  2174,  -18484  ),
       new THREE.Vector3( -7750,  2174,  -18484 )
     ));
-    // for(let i = 0; i<arrCurves.length;i++){
-    //   let points = arrCurves[i].getPoints( 50 );
-    //   let geometry = new THREE.BufferGeometry().setFromPoints( points );
 
-    //   let curveObject = new THREE.Line( geometry, material );
-    //   this.arrCurves.push(curveObject)
-    //   this.scene.add(curveObject);
-    // }
-    // for(let i = 0; i<arrOrbits.length;i++){
-    //   let points = arrOrbits[i].getPoints( 50 );
-    //   let geometry = new THREE.BufferGeometry().setFromPoints( points );
-
-    //   let curveObject = new THREE.Line( geometry, Omaterial );
-    //   this.arrOrbits.push(curveObject)
-    //   this.scene.add(curveObject);
-    // }
     
 
   }
