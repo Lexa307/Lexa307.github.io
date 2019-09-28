@@ -260,7 +260,7 @@ class Slider{
       this.arrB[i].material.uniforms.refractionRatio.value = this.settings.refractionRatio;
       this.arrB[i].material.uniforms.dispersion.value = this.settings.dispersion;
       this.arrB[i].material.uniforms.dispersionBlendMultiplier.value = this.settings.dispersionBlendMultiplier;
-      let f = this.gui.addFolder('params: '+i);
+      let f = this.gui.addFolder('params: '+(i+1));
       f.add(this.settings, 'refractionRatio', 0, 1, 0.001).onChange(bind(function(value) {
         this.arrB[i].material.uniforms.refractionRatio.value = value;
       },this));
@@ -283,7 +283,7 @@ class Slider{
        f.add(this.settings, 'uWiggleSpeed', 0.001, 1, 0.001).onChange(bind(function(value) {
         this.arrB[i].material.uniforms.uWiggleSpeed.value = value;
       },this));
-      let f0 = f.addFolder('position ' + i);
+      let f0 = f.addFolder('position ' + (i+1));
       f0.add(this.arrB[i].position,'x',-30000,30000,1).onChange(bind(function(value) {
         this.arrB[i].position.x = value;
         },this));
@@ -293,7 +293,7 @@ class Slider{
       f0.add(this.arrB[i].position,'z',-30000,30000,1).onChange(bind(function(value) {
         this.arrB[i].position.z = value;
         },this));
-      let f1 = f.addFolder('bubble ' + i);
+      let f1 = f.addFolder('bubble ' + (i+1));
 
 
       f1.add(this.settings,'mRefractionRatio',0,1,0.001).onChange(bind(function(value) {
