@@ -11,7 +11,7 @@ class Slider{
   constructor(selector){
     
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 60000 );
+    this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );
     this.scene.background= new THREE.Color(0x000000);
     this.renderer = new THREE.WebGLRenderer({antialias:true});
     this.renderer.shadowMap.enabled = true;
