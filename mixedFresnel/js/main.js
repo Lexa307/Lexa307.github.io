@@ -37,7 +37,7 @@ class Slider{
       dispersionBlendMultiplier:20,
       dispersion: 0.8,
       mRefractionRatio: 1.0,
-      mFresnelBias: 0.1,
+      mFresnelBias: 1,
       mFresnelPower: 2.0,
       mFresnelScale: 1.0,
       bgcolor: "#"+ this.scene.background.getHexString ()
@@ -137,7 +137,7 @@ class Slider{
 	
     this.controls = new THREE.OrbitControls( this.camera );
     this.camera.position.z = 1642;
-    this.camera.position.set( 4125,  -500,  0);
+    this.camera.position.set( 7277,  634,  27);
     this.camera.lookAt(this.scene.position);
     this.controls.update();
     this.bigtestgeometry=new THREE.IcosahedronGeometry(500, 4);
