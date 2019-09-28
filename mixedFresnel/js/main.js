@@ -11,7 +11,7 @@ class Slider{
   constructor(selector){
     
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );
+    this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );//75
     this.scene.background= new THREE.Color(0x000000);
     this.renderer = new THREE.WebGLRenderer({antialias:true});
     this.renderer.shadowMap.enabled = true;
@@ -22,6 +22,7 @@ class Slider{
     this.index = 3;
     this.spheres = [];
     this.moving = false;
+    this.last = null ;
     this.settings = {
       reflectivity:0.5,
       metalness:0.5,
@@ -51,14 +52,14 @@ class Slider{
         x:-17204,
         y:1000,
         z:23876,
-        uniformsOut:{},
+        uniformsOut:{cubeMap:"https://sun9-49.userapi.com/c855136/v855136333/10ab3b/LV1Fd7Z8QCo.jpg"},
 
       },
       1:{
         x:-7776,
         y:4346,
         z:11754,
-        uniformsOut:{},
+        uniformsOut:{cubeMap:"https://sun9-24.userapi.com/c855136/v855136333/10ab44/c4--2NCG8VY.jpg"},
 
 
       },
@@ -66,7 +67,7 @@ class Slider{
         x:305,
         y:-1715,
         z:2999,
-        uniformsOut:{},
+        uniformsOut:{cubeMap:"https://sun9-28.userapi.com/c855136/v855136333/10ab56/rVAYB4jDFws.jpg"},
 
 
       },
@@ -74,7 +75,7 @@ class Slider{
         x:2999,
         y:-400,
         z:0,
-        uniformsOut:{},
+        uniformsOut:{cubeMap:"https://sun9-18.userapi.com/c855136/v855136333/10ab5f/GArLZwq83iI.jpg"},
 
 
       },
@@ -82,7 +83,7 @@ class Slider{
         x:305,
         y:1652,
         z:-2600,
-        uniformsOut:{},
+        uniformsOut:{cubeMap:"https://sun9-6.userapi.com/c855136/v855136333/10ab68/APGQGdhWeJE.jpg"},
 
 
       },
@@ -90,7 +91,7 @@ class Slider{
         x:-4009,
         y:-3062,
         z:-7776,
-        uniformsOut:{},
+        uniformsOut:{cubeMap:"https://sun9-37.userapi.com/c855136/v855136333/10ab71/REXJ8JPLjXI.jpg"},
 
 
       },
@@ -98,7 +99,7 @@ class Slider{
         x:-7776,
         y:1600,
         z:-16531,
-        uniformsOut:{},
+        uniformsOut:{cubeMap:"https://sun9-15.userapi.com/c855136/v855136333/10ab83/e2Kai7MhRbA.jpg"},
 
 
       },
@@ -168,8 +169,8 @@ class Slider{
     this.bigtestgeometry.addAttribute( 'displacement', new THREE.BufferAttribute( displacement, 3 ) );
     this.bigtestgeometry.addAttribute( 'position', new THREE.BufferAttribute( this.bigtestgeometry.attributes.position.array, 3 ).setDynamic( true ) );
     this.bigtestgeometry.addAttribute( 'offset', new THREE.BufferAttribute( new Float32Array(offsets), 1 ) );
-
-  
+    this.bigtestgeometry.computeBoundingSphere();
+    this.bigtestgeometry.boundingSphere.radius = 1500;
   
  
      let ambientLight = new THREE.AmbientLight(0x999999); //0x999999
@@ -184,7 +185,7 @@ class Slider{
           },
             uniforms: 			{
               "mRefractionRatio": { type: "f", value: 1.02 },
-              "mFresnelBias": 	{ type: "f", value: 0.1 },
+              "mFresnelBias": 	{ type: "f", value: 1.0 },
               "mFresnelPower": 	{ type: "f", value: 2.0 },
               "mFresnelScale": 	{ type: "f", value: 1.0 },
               "time": { type: 'f', value: 9.95 },
@@ -198,12 +199,12 @@ class Slider{
               "cameraPosition":{value:this.camera.position},
               "tCube": 			{ type: "t", value:new THREE.CubeTextureLoader()
               .load( [
-                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg',
-                      'https://sun9-34.userapi.com/c851328/v851328883/1ab13b/qx3NH6sgxQs.jpg'
+                      this.sceneParams[i].uniformsOut.cubeMap,
+                      this.sceneParams[i].uniformsOut.cubeMap,
+                      this.sceneParams[i].uniformsOut.cubeMap,
+                      this.sceneParams[i].uniformsOut.cubeMap,
+                      this.sceneParams[i].uniformsOut.cubeMap,
+                      this.sceneParams[i].uniformsOut.cubeMap
               ] ), } //  textureCube }
             },
           vertexShader:   this.fShader.vertexShader,
@@ -444,19 +445,50 @@ this.initCurves();
 
   }
   
-    onMouseMove ( evvent ) {
+    onMouseMove ( event ) {
       this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-	    this.raycaster.setFromCamera( this.mouse, this.camera );
-
+      this.raycaster.setFromCamera( this.mouse, this.camera );
+      
+  
 	// calculate objects intersecting the picking ray
-	var intersects = this.raycaster.intersectObjects( this.scene.children );
+  var intersects = this.raycaster.intersectObjects(this.scene.children );
+ 
+  if(intersects.length == 0){
+    
+    if(this.last!=null){
+      TweenMax.to(this.last.uniforms.dispersion,1,{value:0.8,ease: Power2.easeOut});
+      const tmpConst = this.last.uniforms.uWiggleScale.value-0.150;
+      TweenMax.to(this.last.uniforms.uWiggleScale,1,{value:tmpConst,ease: Power2.easeOut,onComplete:()=>{}});
+      this.last = null;
+      
+    }
+  }
+  if(intersects.length>0){
+    
+    if(this.last!=null&&this.last.uuid!=intersects[ 0 ].object.material.uuid){
+     // console.log('y2')
+      TweenMax.to(this.last.uniforms.dispersion,1,{value:0.8,ease: Power2.easeOut});
+      const tmpConstP = this.last.uniforms.uWiggleScale.value-0.150;
+      TweenMax.to(this.last.uniforms.uWiggleScale,1,{value:tmpConstP,ease: Power2.easeOut,onComplete:()=>{ }})
+      this.last = intersects[ 0 ].object.material
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,1,{value:1,ease: Power2.easeOut});
+      const tmpConstM = this.last.uniforms.uWiggleScale.value+0.150;
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,1,{value:tmpConstM,ease: Power2.easeOut})
+    }
+    if(this.last==null){
+     // console.log(intersects[0])
+      this.last = intersects[ 0 ].object.material;
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,1,{value:1,ease: Power2.easeOut});
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,1,{value:this.last.uniforms.uWiggleScale.value+0.150,ease: Power2.easeOut})
+    }
 
-	for ( var i = 0; i < intersects.length; i++ ) {
 
-		//intersects[ i ].object.material.color.set( 0xff0000 );
+    
 
-	}
+    
+  }
+
 	    
     }
 
