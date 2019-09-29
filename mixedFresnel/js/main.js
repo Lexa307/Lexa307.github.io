@@ -53,14 +53,14 @@ class Slider{
         x:-17204,
         y:1000,
         z:23876,
-        uniformsOut:{cubeMap:"https://sun9-49.userapi.com/c855136/v855136333/10ab3b/LV1Fd7Z8QCo.jpg"},
+        uniformsOut:{cubeMap:"https://sun9-42.userapi.com/c855732/v855732160/10984b/aWY4Eky5vwA.jpg"},
 
       },
       1:{
         x:-7776,
         y:4346,
         z:11754,
-        uniformsOut:{cubeMap:"https://sun9-24.userapi.com/c855136/v855136333/10ab44/c4--2NCG8VY.jpg"},
+        uniformsOut:{cubeMap:"https://sun9-70.userapi.com/c855732/v855732160/109854/RVSxzvO9I_o.jpg"},
 
 
       },
@@ -68,7 +68,7 @@ class Slider{
         x:305,
         y:-1715,
         z:2999,
-        uniformsOut:{cubeMap:"https://sun9-28.userapi.com/c855136/v855136333/10ab56/rVAYB4jDFws.jpg"},
+        uniformsOut:{cubeMap:"https://sun9-17.userapi.com/c855732/v855732160/10985d/LBfa_9y2vUk.jpg"},
 
 
       },
@@ -76,7 +76,7 @@ class Slider{
         x:2999,
         y:-400,
         z:0,
-        uniformsOut:{cubeMap:"https://sun9-18.userapi.com/c855136/v855136333/10ab5f/GArLZwq83iI.jpg"},
+        uniformsOut:{cubeMap:"https://sun9-18.userapi.com/c855732/v855732160/109870/V0qpul4MZkk.jpg"},
 
 
       },
@@ -84,7 +84,7 @@ class Slider{
         x:305,
         y:1652,
         z:-2600,
-        uniformsOut:{cubeMap:"https://sun9-6.userapi.com/c855136/v855136333/10ab68/APGQGdhWeJE.jpg"},
+        uniformsOut:{cubeMap:"https://sun9-45.userapi.com/c855732/v855732160/109879/HYxKdu987nk.jpg"},
 
 
       },
@@ -92,7 +92,7 @@ class Slider{
         x:-4009,
         y:-3062,
         z:-7776,
-        uniformsOut:{cubeMap:"https://sun9-37.userapi.com/c855136/v855136333/10ab71/REXJ8JPLjXI.jpg"},
+        uniformsOut:{cubeMap:"https://sun9-6.userapi.com/c855732/v855732160/109882/6aMNvhoNyHU.jpg"},
 
 
       },
@@ -100,7 +100,7 @@ class Slider{
         x:-7776,
         y:1600,
         z:-16531,
-        uniformsOut:{cubeMap:"https://sun9-15.userapi.com/c855136/v855136333/10ab83/e2Kai7MhRbA.jpg"},
+        uniformsOut:{cubeMap:"https://sun9-13.userapi.com/c855732/v855732160/109895/136rHHLvFzw.jpg"},
 
 
       },
@@ -174,7 +174,7 @@ class Slider{
     this.bigtestgeometry.boundingSphere.radius = 1500;
   
  
-     let ambientLight = new THREE.AmbientLight(0x999999); //0x999999
+     //let ambientLight = new THREE.AmbientLight(0x999999); //0x999999
     // ambientLight.visible=true;
      //this.scene.add(ambientLight);
     for(let i =0;i<7;i++){
@@ -216,13 +216,13 @@ class Slider{
       let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
       let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
 
-      let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 8000 +0),300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 8000 +0));
-      let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 8000 + 0),300,(Math.sin(2 * Math.PI * i / 7) * 8000 + 0));
-      let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 8000 +0),300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 8000 +0));
+      let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 7500 +0),300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 7500 +0));
+      let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 7500 + 0),300,(Math.sin(2 * Math.PI * i / 7) * 7500 + 0));
+      let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 7500 +0),300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 7500 +0));
 
       //let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
-      let LCurveControlVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.5) / 7) * 15000 + 0),300,(Math.sin(2 * Math.PI * (i+0.5) / 7) * 15000 + 0));
+      let LCurveControlVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.5) / 7) * 10000 + 0),300,(Math.sin(2 * Math.PI * (i+0.5) / 7) * 10000 + 0));
       this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
         OCurveStartVectot,
         OCurveControlVevtor,
