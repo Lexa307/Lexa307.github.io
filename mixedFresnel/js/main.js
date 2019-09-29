@@ -235,6 +235,7 @@ class Slider{
       this.arrCurves.push(LCurveControlVector);
 
       meshB.position.set(x,300,y);
+      meshB.lookAt(this.scene.position);
      
       this.arrB.push(meshB);
 
@@ -245,9 +246,11 @@ class Slider{
     this.gui = new dat.GUI();
     this.gui.add(this.controlsParams,'OrbitControls').onChange(bind(function(value) {
       if(value){
+        this.moving = true;
         this.controls.enabled = true;
       }else{
         this.controls.enabled = false;
+        this.moving = false;
        // this.camera.position.set( 4125,  -500,  0);
        // this.camera.lookAt(this.scene.position);
         
