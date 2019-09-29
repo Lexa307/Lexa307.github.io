@@ -30,7 +30,7 @@ class Slider{
       progress: 1,
       animtime: 5,
       roughness:0.5,
-      uWiggleScale:  0.254 ,
+      uWiggleScale:  0.08 ,
       uWiggleDisplacement: 10.995,
       uWiggleSpeed:  0.001 ,
       refractionRatio: 0.93,
@@ -191,7 +191,7 @@ class Slider{
               "mFresnelScale": 	{ type: "f", value: 1.0 },
               "time": { type: 'f', value: 9.95 },
               "progress": { type: 'f', value: 1.0 },
-              "uWiggleScale": { type: 'f', value: 0.254 },
+              "uWiggleScale": { type: 'f', value: 0.08 },
               "uWiggleDisplacement": { type: 'f', value: 0.01 },
               "uWiggleSpeed": { type: 'f', value: 0.001 },
               "refractionRatio":{ type: 'f', value: 0.93 }, 
@@ -216,9 +216,9 @@ class Slider{
       let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
       let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
 
-      let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 6900 +0),300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 6900 +0));
-      let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 6900 + 0),300,(Math.sin(2 * Math.PI * i / 7) * 6900 + 0));
-      let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 6900 +0),300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 6900 +0));
+      let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 7100 +0),300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 7100 +0));
+      let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 7100 + 0),300,(Math.sin(2 * Math.PI * i / 7) * 7100 + 0));
+      let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 7100 +0),300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 7100 +0));
 
       //let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
