@@ -30,7 +30,7 @@ class Slider{
       progress: 1,
       animtime: 5,
       roughness:0.5,
-      uWiggleScale:  0.08 ,
+      uWiggleScale:  0.140 ,
       uWiggleDisplacement: 10.995,
       uWiggleSpeed:  0.001 ,
       refractionRatio: 0.93,
@@ -191,7 +191,7 @@ class Slider{
               "mFresnelScale": 	{ type: "f", value: 1.0 },
               "time": { type: 'f', value: 9.95 },
               "progress": { type: 'f', value: 1.0 },
-              "uWiggleScale": { type: 'f', value: 0.08 },
+              "uWiggleScale": { type: 'f', value: 0.140 },
               "uWiggleDisplacement": { type: 'f', value: 0.01 },
               "uWiggleSpeed": { type: 'f', value: 0.001 },
               "refractionRatio":{ type: 'f', value: 0.93 }, 
@@ -212,7 +212,7 @@ class Slider{
           fragmentShader: this.fShader.fragmentShader
         }   );
       let meshB = new THREE.Mesh(this.bigtestgeometry,	meshBMaterial);
-
+      meshBMaterial.maxScaleHover = meshBMaterial.uniforms.uWiggleScale.value+0.075;
       let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
       let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
 
@@ -419,7 +419,7 @@ this.initCurves();
     if(this.last!=null){
       TweenMax.to(this.last.uniforms.dispersion,2,{value:0.8,ease: Power2.easeOut});
       TweenMax.to(this.last.uniforms.refractionRatio,2,{value:0.93,ease: Power2.easeOut});
-      const tmpConst = this.last.uniforms.uWiggleScale.value-0.075;
+      const tmpConst = this.last.maxScaleHover-0.075;
       TweenMax.to(this.last.uniforms.uWiggleScale,2,{value:tmpConst,ease: Power2.easeInOut,onComplete:()=>{}});
 
       this.last = null;
@@ -432,12 +432,12 @@ this.initCurves();
      // console.log('y2')
       TweenMax.to(this.last.uniforms.dispersion,2,{value:0.8,ease: Power2.easeInOut});
             TweenMax.to(this.last.uniforms.refractionRatio,2,{value:0.93,ease: Power2.easeOut});
-      const tmpConstP = this.last.uniforms.uWiggleScale.value-0.075;
+      const tmpConstP = this.last.maxScaleHover-0.075;
       TweenMax.to(this.last.uniforms.uWiggleScale,2,{value:tmpConstP,ease: Power2.easeInOut,onComplete:()=>{ }})
       this.last = intersects[ 0 ].object.material
       TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,2,{value:1,ease: Power2.easeInOut});
       TweenMax.to(intersects[ 0 ].object.material.uniforms.refractionRatio,2,{value:1,ease: Power2.easeOut});
-      const tmpConstM = this.last.uniforms.uWiggleScale.value+0.075;
+      const tmpConstM = intersects[ 0 ].object.material.maxScaleHover;
       TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:tmpConstM,ease: Power2.easeInOut})
     }
     if(this.last==null){
@@ -445,7 +445,7 @@ this.initCurves();
       this.last = intersects[ 0 ].object.material;
       TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,2,{value:1,ease: Power2.easeInOut});
       TweenMax.to(intersects[ 0 ].object.material.uniforms.refractionRatio,2,{value:1,ease: Power2.easeOut});
-      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:this.last.uniforms.uWiggleScale.value+0.075,ease: Power2.easeInOut})
+      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:intersects[ 0 ].object.material.maxScaleHover,ease: Power2.easeInOut})
     }
 
 
