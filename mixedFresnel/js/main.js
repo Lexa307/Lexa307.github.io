@@ -489,7 +489,7 @@ this.initCurves();
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
               if(i!=this.index+1&&i!=this.index+2&&i!=this.index){
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:1});
 
               } 
 
@@ -522,7 +522,7 @@ this.initCurves();
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
               if(i!=this.index-1&&i!=this.index-2&&i!=this.index){
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:1});
               } 
 
             }
@@ -561,7 +561,7 @@ this.initCurves();
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
               if(i!=0&&i!=this.index&&i!=1){
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:1});
               } 
 
             }
@@ -585,7 +585,7 @@ this.initCurves();
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
               if(i!=this.arrB.length-1){
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:1});
               } 
 
             }
