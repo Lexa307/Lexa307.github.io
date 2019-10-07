@@ -216,13 +216,13 @@ class Slider{
       let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
       let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
 
-      let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 7100 +0),300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 7100 +0));
-      let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 7100 + 0),300,(Math.sin(2 * Math.PI * i / 7) * 7100 + 0));
-      let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 7100 +0),300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 7100 +0));
+      let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 7100 +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 7100 +0));
+      let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 7100 + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * i / 7) * 7100 + 0));
+      let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 7100 +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 7100 +0));
 
       //let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
-      let LCurveControlVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.5) / 7) * 10000 + 0),300,(Math.sin(2 * Math.PI * (i+0.5) / 7) * 10000 + 0));
+      let LCurveControlVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.5) / 7) * 10000 + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.5) / 7) * 10000 + 0));
       this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
         OCurveStartVectot,
         OCurveControlVevtor,
@@ -488,13 +488,22 @@ this.initCurves();
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
-              if(i!=this.index+1){
+              if(i!=this.index+1&&i!=this.index+2&&i!=this.index){
                 TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
-              } else{
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
-              }
+
+              } 
 
             }
+            if(this.index==this.arrB.length-2){
+              TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+              TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+            }else{
+              TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              TweenMax.to(this.arrB[this.index+2].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+              TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+            }
+            
             materialChanged = true;
           }
         }
@@ -512,13 +521,21 @@ this.initCurves();
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
-              if(i!=this.index-1){
+              if(i!=this.index-1&&i!=this.index-2&&i!=this.index){
                 TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
-              } else{
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
-              }
+              } 
 
             }
+            if(this.index==1){
+              TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              TweenMax.to(this.arrB[this.arrB.length-1].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+              TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+            }else{
+              TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              TweenMax.to(this.arrB[this.index-2].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+              TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+            }
+            
             materialChanged = true;
           }
           
@@ -543,13 +560,14 @@ this.initCurves();
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
-              if(i!=0){
+              if(i!=0&&i!=this.index&&i!=1){
                 TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
-              } else{
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
-              }
+              } 
 
             }
+            TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+            TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+            TweenMax.to(this.arrB[1].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             materialChanged = true;
           }
         }
@@ -568,11 +586,12 @@ this.initCurves();
             for(let i = 0; i< this.arrB.length; i++){
               if(i!=this.arrB.length-1){
                 TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
-              } else{
-                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
-              }
+              } 
 
             }
+            TweenMax.to(this.arrB[this.arrB.length-1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+            TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+            TweenMax.to(this.arrB[this.arrB.length-2].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             materialChanged = true;
           }
         }
@@ -594,7 +613,9 @@ this.initCurves();
 }
 
 let a = new Slider();
+
 Object.seal(a);
+a.indexControl('next');
 
 
 //TweenMax.to(material.uniforms.progress,20,{value:5,repeat:-1});
