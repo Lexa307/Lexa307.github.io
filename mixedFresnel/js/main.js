@@ -472,7 +472,7 @@ this.initCurves();
     indexControl(direction){
 
       let floatIndex = {value:0};
-      
+      let materialChanged = false;
       if(direction == 'next' && this.index<this.arrOrbits.length-1){
         this.moving = true;
         let curve = new THREE.QuadraticBezierCurve3(
@@ -480,9 +480,24 @@ this.initCurves();
           this.arrCurves[this.index],
           new THREE.Vector3( this.arrOrbits[this.index+1].getPointAt(0.5).x,  this.arrOrbits[this.index+1].getPointAt(0.5).y,  this.arrOrbits[this.index+1].getPointAt(0.5).z )
         );
+
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
-        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index++;this.moving = false;},onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
-      }
+        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index++;this.moving = false;},
+        onUpdate:()=>{
+          this.camera.lookAt(this.scene.position);
+          this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
+          if(!materialChanged){
+            for(let i = 0; i< this.arrB.length; i++){
+              if(i!=this.index+1){
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+              } else{
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              }
+
+            }
+            materialChanged = true;
+          }
+        }
       if(direction == 'back' && this.index>0){
         this.moving = true;
         let curve = new THREE.QuadraticBezierCurve3(
@@ -491,8 +506,23 @@ this.initCurves();
           new THREE.Vector3( this.arrOrbits[this.index-1].getPointAt(0.5).x,  this.arrOrbits[this.index-1].getPointAt(0.5).y,  this.arrOrbits[this.index-1].getPointAt(0.5).z )
         );
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
-        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index--;this.moving = false;},onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
-        // let material = new THREE.LineBasicMaterial( { color : 0x0000ff } );
+        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index--;this.moving = false;},
+        onUpdate:()=>{
+          this.camera.lookAt(this.scene.position);
+          this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
+          if(!materialChanged){
+            for(let i = 0; i< this.arrB.length; i++){
+              if(i!=this.index-1){
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+              } else{
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              }
+
+            }
+            materialChanged = true;
+          }
+          
+          // let material = new THREE.LineBasicMaterial( { color : 0x0000ff } );
         // let points = curve.getPoints(50);
         // let geometry = new THREE.BufferGeometry().setFromPoints( points );
         // let curveObject = new THREE.Line( geometry, material );
@@ -507,8 +537,22 @@ this.initCurves();
           new THREE.Vector3( this.arrOrbits[0].getPointAt(0.5).x,  this.arrOrbits[0].getPointAt(0.5).y,  this.arrOrbits[0].getPointAt(0.5).z )
         );
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
-        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index=0;this.moving = false;},onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
-      }
+        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index=0;this.moving = false;},
+        onUpdate:()=>{
+          this.camera.lookAt(this.scene.position);
+          this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
+          if(!materialChanged){
+            for(let i = 0; i< this.arrB.length; i++){
+              if(i!=0){
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+              } else{
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              }
+
+            }
+            materialChanged = true;
+          }
+        }
       if(direction == 'back' && this.index==0){
         this.moving = true;
         let curve = new THREE.QuadraticBezierCurve3(
@@ -517,8 +561,32 @@ this.initCurves();
           new THREE.Vector3( this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).x,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).y,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).z )
         );
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
-        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index=this.arrOrbits.length-1;this.moving = false;},onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
+        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
+          this.index=this.arrOrbits.length-1;
+          this.moving = false;},onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
+          if(!materialChanged){
+            for(let i = 0; i< this.arrB.length; i++){
+              if(i!=this.arrB.length-1){
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:2});
+              } else{
+                TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:6});
+              }
+
+            }
+            materialChanged = true;
+          }
+        }
+
+    }
+    focusMaterial(){
+      for(let i = 0; i<this.arrB.length;i++){
+        if(i!=this.index){
+
+          //TweenMax.to(this.arrB[i].material.uniforms.dispersionBlendMultiplier,1,{value:4});
+        }
+        
       }
+
 
     }
   
