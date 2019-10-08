@@ -127,8 +127,14 @@ class Slider{
       format: THREE.RGBFormat,
       stencilBuffer: true
     };
+    this.filmParams = {
+      noiseIntensity:0.35,
+      scanlinesIntensity:0.025,
+      scanlinesCount:648,
+      grayscale:false
+    }
     this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
-    this.effectFilm = new THREE.FilmPass( 0.35, 0.025, 648, false );
+    this.effectFilm = new THREE.FilmPass( this.filmParams.noiseIntensity, this.filmParams.scanlinesIntensity, this.filmParams.scanlinesCount, this.filmParams.grayscale );
     this.renderPass = new THREE.RenderPass( this.scene, this.camera );
     this.composerScene.addPass(this.renderPass);
     this.composerScene.addPass(this.effectFilm);
@@ -281,7 +287,19 @@ class Slider{
       this.scene.background = new THREE.Color (value);
      // console.log(this);
      },this));
-
+    let f1 = this.gui.addFolder('Film params');
+    f1.add(this.filmParams,'noiseIntensity',0,1,0.001).onChange(bind(function(value) {
+      this.effectFilm.material.uniforms.nIntensity.value = value;
+    },this));
+    f1.add(this.filmParams,'scanlinesIntensity',0,1,0.001).onChange(bind(function(value) {
+      this.effectFilm.material.uniforms.sIntensity.value = value;
+    },this));
+    f1.add(this.filmParams,'scanlinesCount',0,5000,1).onChange(bind(function(value) {
+      this.effectFilm.material.uniforms.sCount.value = value;
+    },this));
+    f1.add(this.filmParams,'grayscale').onChange(bind(function(value) {
+      this.effectFilm.material.uniforms.grayscale.value = value;
+    },this));
     for(let i = 0; i<7; i++){
       this.arrB[i].material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
       this.arrB[i].material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
