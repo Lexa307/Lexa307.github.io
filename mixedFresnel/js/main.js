@@ -121,7 +121,17 @@ class Slider{
     this.stats = new Stats();
     document.body.appendChild( this.stats.dom );
 
-
+    this.rtParameters = {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBFormat,
+      stencilBuffer: true
+    };
+    this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
+    this.effectFilm = new THREE.FilmPass( 0.35, 0.025, 648, false );
+    this.renderPass = new THREE.RenderPass( this.scene, this.camera );
+    this.composerScene.addPass(this.renderPass);
+    this.composerScene.addPass(this.effectFilm);
     
 
     
@@ -386,8 +396,8 @@ this.initCurves();
      }
       
       //this.controls.update();
-
-      this.renderer.render( this.scene, this.camera );
+      this.composerScene.render(0.01);
+      //this.renderer.render( this.scene, this.camera );
       this.stats.end();
 
   }
