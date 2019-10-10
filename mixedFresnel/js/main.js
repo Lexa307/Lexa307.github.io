@@ -23,6 +23,9 @@ class Slider{
     this.spheres = [];
     this.moving = false;
     this.last = null ;
+    this.fontLoaded = false;
+    this.text = null;
+    this.font = null;
     //this.OrbitFlag = true;
     this.settings = {
       reflectivity:0.5,
@@ -109,6 +112,17 @@ class Slider{
     this.arrB = [];
     this.arrCurves = [];
     this.arrOrbits = [];
+
+    this.fontSettings = {
+    size: 80,
+		height: 5,
+		curveSegments: 12,
+		bevelEnabled: false,
+		bevelThickness: 10,
+		bevelSize: 8,
+		bevelOffset: 0,
+		bevelSegments: 5
+    }
      
     
    
@@ -188,7 +202,7 @@ class Slider{
     this.bigtestgeometry.addAttribute( 'offset', new THREE.BufferAttribute( new Float32Array(offsets), 1 ) );
     this.bigtestgeometry.computeBoundingSphere();
     this.bigtestgeometry.boundingSphere.radius = 1500;
-  
+    
  
      //let ambientLight = new THREE.AmbientLight(0x999999); //0x999999
     // ambientLight.visible=true;
@@ -391,10 +405,10 @@ this.initCurves();
     let cbtx = new THREE.CubeTextureLoader().load([image.src,image.src,image.src,image.src,image.src,image.src]);
    
    
-    let N = prompt("enter index of sphere (0 - 6)");
-     if(parseInt(N,10)<7&&parseInt(N,10)>=0){
-      this.arrB[N].material.uniforms.tCube.value = cbtx;
-     }
+    //let N = prompt("enter index of sphere (0 - 6)");
+     //if(parseInt(N,10)<7&&parseInt(N,10)>=0){
+      this.text.material.uniforms.tCube.value = cbtx;
+     //}
 
     
     
@@ -412,6 +426,9 @@ this.initCurves();
       this.arrB[i].rotation.x+=0.001;
       
      }
+     if(this.fontLoaded){
+        this.text.material.uniforms.time.value = this.time;
+     }
       
       //this.controls.update();
       this.composerScene.render(0.01);
@@ -419,11 +436,148 @@ this.initCurves();
       this.stats.end();
 
   }
+   generateGeometry(){
+     let newGeometry = new THREE.TextBufferGeometry( 'About', {
+      font: this.font,
+      size: this.fontSettings.size,
+      height: this.fontSettings.height,
+      curveSegments: this.fontSettings.curveSegments,
+      bevelEnabled: this.fontSettings.bevelEnabled,
+      bevelThickness: this.fontSettings.bevelThickness,
+      bevelSize: this.fontSettings.bevelSize,
+      bevelOffset: this.fontSettings.bevelOffset,
+      bevelSegments: this.fontSettings.bevelSegments
+    } );
+    
+    let tmpMAterial = this.text.material;
+    this.scene.remove(this.text);
+    this.text = new THREE.Mesh(newGeometry,tmpMAterial);
+    this.scene.add(this.text);
+  }
   initCurves (){
-    // let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
-    // let Omaterial = new THREE.LineBasicMaterial( { color : 0x0000ff } );
-    // let arrCurves = [];
-    // let arrOrbits = [];
+    let loader = new THREE.FontLoader();
+
+    let textmaterial = new THREE.ShaderMaterial( 
+      {
+        defines: {
+          DISPERSION_SAMPLES:50
+        },
+          uniforms: 			{
+            "mRefractionRatio": { type: "f", value: 1.02 },
+            "mFresnelBias": 	{ type: "f", value: 1.0 },
+            "mFresnelPower": 	{ type: "f", value: 2.0 },
+            "mFresnelScale": 	{ type: "f", value: 1.0 },
+            "time": { type: 'f', value: 9.95 },
+            "progress": { type: 'f', value: 1.0 },
+            "uWiggleScale": { type: 'f', value: 0.140 },
+            "uWiggleDisplacement": { type: 'f', value: 0.01 },
+            "uWiggleSpeed": { type: 'f', value: 0.001 },
+            "refractionRatio":{ type: 'f', value: 0.93 }, 
+            "dispersion": { type: 'f', value: 0.8 }, 
+            "dispersionBlendMultiplier":{ type: 'f', value: 6.0 },
+            "cameraPosition":{value:this.camera.position},
+            "tCube": 			{ type: "t", value:new THREE.CubeTextureLoader()
+            .load( [
+                    "textures/cubemaps/Frame1.jpg",
+                    "textures/cubemaps/Frame1.jpg",
+                    "textures/cubemaps/Frame1.jpg",
+                    "textures/cubemaps/Frame1.jpg",
+                    "textures/cubemaps/Frame1.jpg",
+                    "textures/cubemaps/Frame1.jpg"
+            ] ), } //  textureCube }
+          },
+        vertexShader:   this.fShader.vertexShader,
+        fragmentShader: this.fShader.fragmentShader
+      }   );
+
+loader.load( 'fonts/Wooland.json', bind(function ( font ) {
+this.font = font;
+	let geometry = new THREE.TextBufferGeometry( 'About', {
+		font: font,
+		size: 80,
+		height: 5,
+		curveSegments: 12,
+		bevelEnabled: false,
+		bevelThickness: 10,
+		bevelSize: 8,
+		bevelOffset: 0,
+		bevelSegments: 5
+  } );
+
+
+  this.text = new THREE.Mesh(geometry,textmaterial);
+  this.text.name = 'text';
+  //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
+  this.scene.add(this.text);
+  this.fontLoaded = true;
+  let f = this.gui.addFolder('Text params: ');
+      f.add(this.settings, 'refractionRatio', 0, 1, 0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.refractionRatio.value = value;
+      },this));
+      
+       f.add(this.settings, 'dispersionBlendMultiplier', 0, 50, 1).onChange(bind(function(value) {
+        this.text.material.uniforms.dispersionBlendMultiplier.value = value;
+      },this));
+       f.add(this.settings, 'dispersion', 0, 1, 0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.dispersion.value = value;
+      },this));
+       f.add(this.settings, 'progress', -5, 5, 0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.progress.value = value;
+      },this));
+       f.add(this.settings, 'uWiggleScale', 0.001, 1, 0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.uWiggleScale.value = value;
+      },this));
+      //  f.add(this.settings, 'uWiggleDisplacement', 0.001, 30, 0.001).onChange(bind(function(value) {
+      //   this.arrB[i].material.uniforms.uWiggleDisplacement.value = value;
+      // },this));
+       f.add(this.settings, 'uWiggleSpeed', 0.001, 1, 0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.uWiggleSpeed.value = value;
+      },this));
+      
+      let f1 = f.addFolder('bubble ' );
+
+
+      f1.add(this.settings,'mRefractionRatio',0,1,0.001).onChange(bind(function(value) {
+      this.text.material.uniforms.mRefractionRatio.value = value;
+      },this));
+      f1.add(this.settings,'mFresnelBias',0,1,0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.mFresnelBias.value = value;
+      },this));
+      f1.add(this.settings,'mFresnelPower',0,5,0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.mFresnelPower.value = value;
+      },this));
+      f1.add(this.settings,'mFresnelScale',0,1,0.001).onChange(bind(function(value) {
+        this.text.material.uniforms.mFresnelScale.value = value;
+ 
+      },this));
+      let f2 = f.addFolder('Font settings');
+      f2.add(this.fontSettings,'size',1,300,1).onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+      f2.add(this.fontSettings,'height',1,300,1).onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+      f2.add(this.fontSettings,'curveSegments',1,30,1).onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+      f2.add(this.fontSettings,'bevelEnabled').onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+      f2.add(this.fontSettings,'bevelThickness',1,30,1).onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+      f2.add(this.fontSettings,'bevelSize',1,20,1).onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+      f2.add(this.fontSettings,'bevelOffset',1,20,1).onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+      f2.add(this.fontSettings,'bevelSegments',1,20,1).onChange(bind(function(value) {
+        this.generateGeometry();
+        },this));
+
+},this ));
+
    
     
 
@@ -454,7 +608,7 @@ this.initCurves();
       
     }
   }
-  if(intersects.length>0){
+  if(intersects.length>0&&intersects[ 0 ].object.name!='text'){
     
     if(this.last!=null&&this.last.uuid!=intersects[ 0 ].object.material.uuid){
      // console.log('y2')
