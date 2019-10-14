@@ -107,7 +107,7 @@ let stage={
 		focPoint.y = 400;
 		TweenMax.to(camera.position,6,{ease: Power3.easeOut,y:-70,x:-320.414,z:-143})
 
-		TweenMax.to(focPoint,6,{ease: Power3.easeOut,y:70,onComplete:()=>{can3 = false;},onUpdate:()=>{camera.lookAt(focPoint);}});
+		TweenMax.to(focPoint,6,{ease: Power3.easeOut,y:70,onComplete:()=>{can3 = false; controls.enabled = true; controls.target = focPoint },onUpdate:()=>{camera.lookAt(focPoint);}});
 		
 		
 
@@ -169,7 +169,8 @@ function Init(){
 	
 	GroupArray=[];
 	GroupArray2=[];
-	//controls = new THREE.OrbitControls( camera )
+	controls = new THREE.OrbitControls( camera );
+	controls.enabled = false;
 	raycaster = new THREE.Raycaster();
 	mouse = new THREE.Vector2();
 	camera.position.set(0, 70, -150);
@@ -238,9 +239,9 @@ var curveObject = new THREE.Line( linegeometry, linematerial );
 	blackplane5.position.set(195,45,-16);
 	scene.add(blackplane5);
 	createPattern(-150,-150,300,300);
-	window.addEventListener( 'mousemove', onMouseMove, false );
-	document.addEventListener("mousewheel", mouseHandle2, false);
-	document.addEventListener("DOMMouseScroll", mouseHandle2, false);
+	//window.addEventListener( 'mousemove', onMouseMove, false );
+	//document.addEventListener("mousewheel", mouseHandle2, false);
+	//document.addEventListener("DOMMouseScroll", mouseHandle2, false);
 	//front
 	for (let i=0;i<70;i+=7){
 		for(let j=-100;j<200;j+=14){
