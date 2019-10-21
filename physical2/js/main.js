@@ -559,7 +559,7 @@ this.animate();
        this.core.visible = false;
        this.bigsphere.visible = true;
        this.refractSphereCamera.update( this.renderer, this.scene );
-       this.bigsphere.visible = false;
+       //this.bigsphere.visible = false;
        this.core.visible = true;
   	  this.controls.update();
       this.renderer.render( this.scene, this.camera );
