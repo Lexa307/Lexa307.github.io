@@ -292,7 +292,8 @@ init(){
     this.renderer = new THREE.WebGLRenderer({antialias:true});
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
-    
+    this.controls = new THREE.OrbitControls( this.camera );
+    this.controls.target = new THREE.Vector3(350,20,0);
     this.container;
     this.time = 9.95;
     this.Count = 5;
@@ -321,13 +322,13 @@ init(){
       envMap: this.textue,
       refractionRatio: 1,
       dispersionSamples: 50,
-      dispersion: 0.8,
-      dispersionBlendMultiplier:2,
+      dispersion: 1,
+      dispersionBlendMultiplier:13,
       time : 9.95 ,
       progress: 1, 
-      uWiggleScale : 0.425 ,
-      uWiggleDisplacement :  2.327 ,
-      uWiggleSpeed : 0.187 ,
+      uWiggleScale : 0.004 ,
+      uWiggleDisplacement :  18 ,
+      uWiggleSpeed : 0.003 ,
   });
   this.material.envMap.mapping = THREE.CubeReflectionMapping;
   
@@ -385,7 +386,7 @@ init(){
     this.light = new THREE.PointLight(0xff0000, 0.8,500);
     this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z);
     this.scene.add(this.light);
-       this.camera.position.x = 350;
+       this.camera.position.x = 351;
        this.camera.position.y = 20;
        this.camera.rotation.y = 1.53;
     //TweenMax.to(this.material.uniforms.progress,5,{value:5,repeat:-1,yoyo:true});
@@ -407,8 +408,8 @@ this.animate();
 
        
     this.time+=0.001
- 
-
+    //this.camera.rotation.y +=0.01;
+    this.controls.update();
       
        this.bigsphere.material.uniforms.time.value = this.time;
 
