@@ -97,11 +97,12 @@ init(){
   //this.material.envMap.mapping = THREE.CubeReflectionMapping;
   
   this.gui = new dat.GUI();
-  this.gui.add(this.material.uniforms.start,'value',-3.14,3.14,0.001);
-  this.gui.add(this.material.uniforms.end,'value',-3.14,3.14,0.001);
-  this.gui.add(this,'timefoward').onChange(bind(function(value) {
-    this.timescale*=-1;
-  },this));
+  this.gui.add(this,'enter');
+  this.gui.add(this,'back');
+  // this.gui.add(this.material.uniforms.end,'value',-3.14,3.14,0.001);
+  // this.gui.add(this,'timefoward').onChange(bind(function(value) {
+  //   this.timescale*=-1;
+  // },this));
 
 	
 
@@ -141,7 +142,8 @@ this.enter();
  
 
        
-    this.time+=this.timescale;
+    // this.time+=this.timescale;
+    // console.log(this.time);
     //this.camera.rotation.y +=0.01;
     //this.controls.update();
       
@@ -157,8 +159,18 @@ this.enter();
   }
   enter (){
     this.moving = true;
+    TweenMax.to(this,5,{time:10.32})
     this.camera.position.set(-396.2, 20,  0)
     TweenMax.to(this.camera.position,3,{x:4,onComplete:()=>{
+      this.moving = false;     
+    } })
+  }
+  back(){
+   
+    this.moving = true;
+    TweenMax.to(this,5,{time:9.95})//895
+    //this.camera.position.set(-396.2, 20,  0)
+    TweenMax.to(this.camera.position,3,{x:-396.2,onComplete:()=>{
       this.moving = false;     
     } })
   }
