@@ -11,6 +11,8 @@ THREE.DispersionMaterial = {
     progress :  {value:1.},
     time :  {value:9.95},
     reflectivity :  {value:0}, 
+    start:{value:0.5},
+    end:{value:1.0}
   },
   defines:{DISPERSION_SAMPLES :  50},
     
@@ -24,6 +26,8 @@ THREE.DispersionMaterial = {
     varying vec3 cameraToVertexs;
     varying vec3 worldNormals;
     uniform float time;
+    uniform float start;
+    uniform float end;
     //varying vec2 vUv;
     uniform float dispersionBlendMultiplier;
     
@@ -49,7 +53,7 @@ THREE.DispersionMaterial = {
               float ri = mix(refractionRatio, riMax, wavelength);
               vec3 reflectVec = refract( cameraToVertexs, worldNormals, ri );
             
-              vec4 envColorSample = textureCube( envMap, vec3( -1. * reflectVec.x, reflectVec.yz ) );
+              vec4 envColorSample = textureCube( envMap, vec3( -1. * reflectVec.x*mix(start,end,clamp(0.,1.,sin(time*10.))), reflectVec.yz ) );
               vec3 queryReflectVec = vec3( -1. * reflectVec.x, reflectVec.yz );
               vec4 envMapColor = textureCube( envMap, queryReflectVec, 0.5 );
               
@@ -223,7 +227,7 @@ THREE.DispersionMaterial = {
     #include <fog_vertex>  
       
       
-      float noise = cnoise(normalize(position) * uWiggleScale + ( time * uWiggleSpeed ) );//normalize(position)
+      float noise = cnoise(normalize(position) * uWiggleScale + ( 9.4 * uWiggleSpeed ) );//normalize(position)
             vec3 pos = position - vec3(800.0,0.0,0.0) + normal * noise * vec3(uWiggleDisplacement);
              worldPositions = (modelMatrix * vec4(pos, 1.0)).xyz;
              cameraToVertexs = normalize(worldPositions - cameraPosition);

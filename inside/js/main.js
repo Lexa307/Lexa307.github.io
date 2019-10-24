@@ -60,6 +60,8 @@ init(){
     this.target = new THREE.Vector3(350,20,0);
     this.container;
     this.time = 9.95;
+    this.timefoward = true;
+    this.timescale = 0.001;
     this.Count = 5;
     this.spheres = [];
     this.moving = true;
@@ -67,8 +69,7 @@ init(){
     this.container = document.createElement( 'div' );
     document.body.appendChild( this.container );//  размещение контейнера в body
     this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
-    
-    
+   
     
 
     this.raycaster= new THREE.Raycaster();
@@ -95,8 +96,12 @@ init(){
   
   //this.material.envMap.mapping = THREE.CubeReflectionMapping;
   
-
-	
+  this.gui = new dat.GUI();
+  this.gui.add(this.material.uniforms.start,'value',-3.14,3.14,0.001);
+  this.gui.add(this.material.uniforms.end,'value',-3.14,3.14,0.001);
+  this.gui.add(this,'timefoward').onChange(bind(function(value) {
+    this.timescale*=-1;
+  },this));
 
 	
 
@@ -136,7 +141,7 @@ this.enter();
  
 
        
-    this.time+=0.001
+    this.time+=this.timescale;
     //this.camera.rotation.y +=0.01;
     //this.controls.update();
       
