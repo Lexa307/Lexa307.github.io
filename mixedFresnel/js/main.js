@@ -13,43 +13,14 @@ class Slider{
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );//75
     this.scene.background= new THREE.Color(0x000000);
-    this.renderer = new THREE.WebGLRenderer({antialias:true});
+    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
-    this.focus = new THREE.Vector3(2999,1000,23876);
-    this.container;
-    this.time = 18.95;
-    this.index = 3;
-    this.spheres = [];
-    this.moving = false;
-    this.last = null ;
+    this.fShader = THREE.FresnelShader;
+    this.font = null;
     this.fontLoaded = false;
     this.text = null;
-    this.font = null;
-    //this.OrbitFlag = true;
-    this.settings = {
-      reflectivity:0.5,
-      metalness:0.5,
-      progress: 1,
-      animtime: 5,
-      roughness:0.5,
-      uWiggleScale:  0.140 ,
-      uWiggleDisplacement: 10.995,
-      uWiggleSpeed:  0.001 ,
-      refractionRatio: 0.93,
-      dispersionSamples: 30,
-      dispersionBlendMultiplier:6,
-      dispersion: 0.8,
-      mRefractionRatio: 1.0,
-      mFresnelBias: 1,
-      mFresnelPower: 2.0,
-      mFresnelScale: 1.0,
-      bgcolor: "#"+ this.scene.background.getHexString ()
-    }
-    this.controlsParams = {
-      OrbitControls: false,
-      Target:this.scene.position
-    }
+    this.tCubes = [];
     this.sceneParams =
     {
       0:{
@@ -109,6 +80,113 @@ class Slider{
       },
 
     }; 
+  this.LoadResource();
+
+
+  
+    
+  }
+  onWindowResize () {
+    this.renderer.setPixelRatio( window.devicePixelRatio );
+    this.renderer.setSize( window.innerWidth, window.innerHeight );
+    
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+
+  }
+  
+  changeImaage(){
+    let image = document.createElement('img');
+    image.src = window.URL.createObjectURL(this.ImgLoader.files[0]);
+    let cbtx = new THREE.CubeTextureLoader().load([image.src,image.src,image.src,image.src,image.src,image.src]);
+   
+   
+    //let N = prompt("enter index of sphere (0 - 6)");
+     //if(parseInt(N,10)<7&&parseInt(N,10)>=0){
+      this.text.material.uniforms.tCube.value = cbtx;
+     //}
+
+    
+    
+  }
+
+
+  animate () {
+    
+	  requestAnimationFrame( this.animate.bind(this) );
+     this.stats.begin();
+     this.time += 0.001;
+     for(let i=0;i<7;i++){
+
+      this.arrB[i].material.uniforms.time.value = this.time;
+      this.arrB[i].rotation.x+=0.001;
+      
+     }
+     if(this.fontLoaded){
+        this.text.material.uniforms.time.value = this.time;
+     }
+      
+      //this.controls.update();
+      this.composerScene.render(0.01);
+      //this.renderer.render( this.scene, this.camera );
+      this.stats.end();
+
+  }
+   generateGeometry(){
+     let newGeometry = new THREE.TextBufferGeometry( 'About', {
+      font: this.font,
+      size: this.fontSettings.size,
+      height: this.fontSettings.height,
+      curveSegments: this.fontSettings.curveSegments,
+      bevelEnabled: this.fontSettings.bevelEnabled,
+      bevelThickness: this.fontSettings.bevelThickness,
+      bevelSize: this.fontSettings.bevelSize,
+      bevelOffset: this.fontSettings.bevelOffset,
+      bevelSegments: this.fontSettings.bevelSegments
+    } );
+    
+    let tmpMAterial = this.text.material;
+    this.scene.remove(this.text);
+    this.text = new THREE.Mesh(newGeometry,tmpMAterial);
+    this.scene.add(this.text);
+  }
+
+
+  Init(){
+    this.focus = new THREE.Vector3(2999,1000,23876);
+    this.container;
+    this.time = 18.95;
+    this.index = 3;
+    this.spheres = [];
+    this.moving = false;
+    this.last = null ;
+  
+    
+    //this.OrbitFlag = true;
+    this.settings = {
+      reflectivity:0.5,
+      metalness:0.5,
+      progress: 1,
+      animtime: 5,
+      roughness:0.5,
+      uWiggleScale:  0.140 ,
+      uWiggleDisplacement: 10.995,
+      uWiggleSpeed:  0.001 ,
+      refractionRatio: 0.93,
+      dispersionSamples: 30,
+      dispersionBlendMultiplier:6,
+      dispersion: 0.8,
+      mRefractionRatio: 1.0,
+      mFresnelBias: 1,
+      mFresnelPower: 2.0,
+      mFresnelScale: 1.0,
+      bgcolor: "#"+ this.scene.background.getHexString ()
+    }
+    this.controlsParams = {
+      OrbitControls: false,
+      Target:this.scene.position
+    }
+    
     this.arrB = [];
     this.arrCurves = [];
     this.arrOrbits = [];
@@ -159,54 +237,19 @@ class Slider{
     this.raycaster= new THREE.Raycaster();
     //this.raycaster.far=1700;
     this.mouse = new THREE.Vector2();
-    // this.texture1 = new THREE.TextureLoader().load('textures/test7.png');
-    // this.texture1.offset=new THREE.Vector2(0,1);
-    //this.texture1.repeat = THREE.MirroredRepeatWrapping;
     this.container.addEventListener( 'mousemove', bind(this.onMouseMove,this), false );
     this.container.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
-	this.fShader = THREE.FresnelShader;
+	
 	
     this.controls = new THREE.OrbitControls( this.camera );
     this.camera.position.z = 1642;
     this.camera.position.set( 7277,  634,  27);
     this.camera.lookAt(this.scene.position);
     this.controls.update();
+    this.textPositions = [];
+    this.inMenu =false;
     this.bigtestgeometry=new THREE.IcosahedronGeometry(500, 4);
-    //this.bigtestgeometry.scale(  -1, 1, 1 );
-    let tessellateModifier = new THREE.TessellateModifier( 60 );
-    tessellateModifier.modify( this.bigtestgeometry );
-    this.bigtestgeometry = new THREE.BufferGeometry().fromGeometry( this.bigtestgeometry );
-    let numFaces = this.bigtestgeometry.attributes.position.count / 3;
-    //bigtestgeometry.attributes.position.setDynamic( true );
-    let displacement = new Float32Array( numFaces * 9);
-    let anim = new Float32Array( numFaces * 9);
-    for ( let f = 0; f < numFaces; f ++ ) {
-	    let index = 9 * f;
-	    let d = 10 * ( 0.5 - Math.random() );
-	    for ( let i = 0; i < 3; i ++ ) {
-		    displacement[ index + ( 3 * i )     ] = d;
-	    	displacement[ index + ( 3 * i ) + 1 ] = d;
-		    displacement[ index + ( 3 * i ) + 2 ] = d;
 
-	    }
-    }
-    
-    let offsets = [];
-    for (let i = 0; i < (this.bigtestgeometry.attributes.position.count*3); i+=9) {
-      let rand = Math.random();
-       offsets.push(this.bigtestgeometry.attributes.position.array[i],this.bigtestgeometry.attributes.position.array[i],this.bigtestgeometry.attributes.position.array[i]);
-    }
-    
-    this.bigtestgeometry.addAttribute( 'displacement', new THREE.BufferAttribute( displacement, 3 ) );
-    this.bigtestgeometry.addAttribute( 'position', new THREE.BufferAttribute( this.bigtestgeometry.attributes.position.array, 3 ).setDynamic( true ) );
-    this.bigtestgeometry.addAttribute( 'offset', new THREE.BufferAttribute( new Float32Array(offsets), 1 ) );
-    this.bigtestgeometry.computeBoundingSphere();
-    this.bigtestgeometry.boundingSphere.radius = 1500;
-    
- 
-     //let ambientLight = new THREE.AmbientLight(0x999999); //0x999999
-    // ambientLight.visible=true;
-     //this.scene.add(ambientLight);
     for(let i =0;i<7;i++){
 
       let meshBMaterial = new THREE.ShaderMaterial( 
@@ -228,15 +271,7 @@ class Slider{
 		          "dispersion": { type: 'f', value: 0.8 }, 
               "dispersionBlendMultiplier":{ type: 'f', value: 6.0 },
               "cameraPosition":{value:this.camera.position},
-              "tCube": 			{ type: "t", value:new THREE.CubeTextureLoader()
-              .load( [
-                      this.sceneParams[i].uniformsOut.cubeMap,
-                      this.sceneParams[i].uniformsOut.cubeMap,
-                      this.sceneParams[i].uniformsOut.cubeMap,
-                      this.sceneParams[i].uniformsOut.cubeMap,
-                      this.sceneParams[i].uniformsOut.cubeMap,
-                      this.sceneParams[i].uniformsOut.cubeMap
-              ] ), } //  textureCube }
+              "tCube": 			{ type: "t", value:this.sceneParams[i].uniformsOut.tCube, } //  textureCube }
             },
           vertexShader:   this.fShader.vertexShader,
           fragmentShader: this.fShader.fragmentShader
@@ -249,7 +284,8 @@ class Slider{
       let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 7100 +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 7100 +0));
       let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 7100 + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * i / 7) * 7100 + 0));
       let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 7100 +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 7100 +0));
-
+      
+      this.textPositions.push(new THREE.Vector3(Math.cos(2 * Math.PI * i / 7) * 8000,meshB.position.y+300, Math.sin(2 * Math.PI * i / 7) * 8000))
       //let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
 
       let LCurveControlVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.5) / 7) * 10000 + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.5) / 7) * 10000 + 0));
@@ -272,6 +308,19 @@ class Slider{
       this.scene.add(meshB);
 
     }
+   document.addEventListener('keydown', bind(function(event) {
+      if(!this.moving&&event.key==' '){
+        this.moving = true;
+        if(!this.inMenu){
+          this.inMenu = true;
+          TweenMax.to(this.camera.rotation,1,{y:this.camera.rotation.y+Math.PI,onComplete:()=>{this.moving = false;}});
+        }else{
+          TweenMax.to(this.camera.rotation,1,{y:this.camera.rotation.y-Math.PI,onComplete:()=>{this.inMenu = false;this.moving = false;}});
+        }
+        
+        
+      }
+  },this));
     this.controls.enabled = false;
     this.gui = new dat.GUI();
     this.gui.add(this.controlsParams,'OrbitControls').onChange(bind(function(value) {
@@ -383,78 +432,25 @@ class Slider{
     this.scene.add(this.light);
     //TweenMax.to(this.material.uniforms.progress,5,{value:5,repeat:-1,yoyo:true});
 
-window.addEventListener("resize",this.onWindowResize(), false);
-
-
+window.addEventListener("resize",bind(this.onWindowResize,this), false);
 this.animate();
-this.initCurves();    
-    
-  }
-  onWindowResize () {
-	  this.camera.updateProjectionMatrix();
-    this.container.width = window.innerWidth;
-    this.container.height = window.innerHeight;
-    this.renderer.setPixelRatio( window.devicePixelRatio );
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
 
   }
-  
-  changeImaage(){
-    let image = document.createElement('img');
-    image.src = window.URL.createObjectURL(this.ImgLoader.files[0]);
-    let cbtx = new THREE.CubeTextureLoader().load([image.src,image.src,image.src,image.src,image.src,image.src]);
-   
-   
-    //let N = prompt("enter index of sphere (0 - 6)");
-     //if(parseInt(N,10)<7&&parseInt(N,10)>=0){
-      this.text.material.uniforms.tCube.value = cbtx;
-     //}
 
+  LoadResource(){
+    let resCounter = 0;
     
-    
-  }
-
-
-  animate () {
-    
-	  requestAnimationFrame( this.animate.bind(this) );
-     this.stats.begin();
-     this.time += 0.001;
-     for(let i=0;i<7;i++){
-
-      this.arrB[i].material.uniforms.time.value = this.time;
-      this.arrB[i].rotation.x+=0.001;
+    for(let i in this.sceneParams){
       
-     }
-     if(this.fontLoaded){
-        this.text.material.uniforms.time.value = this.time;
-     }
-      
-      //this.controls.update();
-      this.composerScene.render(0.01);
-      //this.renderer.render( this.scene, this.camera );
-      this.stats.end();
-
-  }
-   generateGeometry(){
-     let newGeometry = new THREE.TextBufferGeometry( 'About', {
-      font: this.font,
-      size: this.fontSettings.size,
-      height: this.fontSettings.height,
-      curveSegments: this.fontSettings.curveSegments,
-      bevelEnabled: this.fontSettings.bevelEnabled,
-      bevelThickness: this.fontSettings.bevelThickness,
-      bevelSize: this.fontSettings.bevelSize,
-      bevelOffset: this.fontSettings.bevelOffset,
-      bevelSegments: this.fontSettings.bevelSegments
-    } );
-    
-    let tmpMAterial = this.text.material;
-    this.scene.remove(this.text);
-    this.text = new THREE.Mesh(newGeometry,tmpMAterial);
-    this.scene.add(this.text);
-  }
-  initCurves (){
+      let url =  this.sceneParams[i].uniformsOut.cubeMap;
+      this.sceneParams[i].uniformsOut.tCube = new THREE.CubeTextureLoader().load(
+        [url,url,url,url,url,url],
+         ()=>{
+          
+          resCounter++;
+        }
+      )
+    }
     let loader = new THREE.FontLoader();
 
     let textmaterial = new THREE.ShaderMaterial( 
@@ -484,103 +480,49 @@ this.initCurves();
                     "textures/cubemaps/Frame1.jpg",
                     "textures/cubemaps/Frame1.jpg",
                     "textures/cubemaps/Frame1.jpg"
-            ] ), } //  textureCube }
+            ],()=>{
+              resCounter++;
+            } ), } //  textureCube }
           },
         vertexShader:   this.fShader.vertexShader,
         fragmentShader: this.fShader.fragmentShader
       }   );
-
-loader.load( 'fonts/Wooland.json', bind(function ( font ) {
-this.font = font;
-	let geometry = new THREE.TextBufferGeometry( 'About', {
-		font: font,
-		size: 80,
-		height: 5,
-		curveSegments: 12,
-		bevelEnabled: false,
-		bevelThickness: 10,
-		bevelSize: 8,
-		bevelOffset: 0,
-		bevelSegments: 5
-  } );
-
-
-  this.text = new THREE.Mesh(geometry,textmaterial);
-  this.text.name = 'text';
-  //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
-  this.scene.add(this.text);
-  this.fontLoaded = true;
-  let f = this.gui.addFolder('Text params: ');
-      f.add(this.settings, 'refractionRatio', 0, 1, 0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.refractionRatio.value = value;
-      },this));
+    loader.load( 'fonts/Wooland.json', bind(function ( font ) {
+      this.font = font;
+        let geometry = new THREE.TextBufferGeometry( 'About', {
+          font: font,
+          size: 80,
+          height: 5,
+          curveSegments: 12,
+          bevelEnabled: false,
+          bevelThickness: 10,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5
+        } );
       
-       f.add(this.settings, 'dispersionBlendMultiplier', 0, 50, 1).onChange(bind(function(value) {
-        this.text.material.uniforms.dispersionBlendMultiplier.value = value;
-      },this));
-       f.add(this.settings, 'dispersion', 0, 1, 0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.dispersion.value = value;
-      },this));
-       f.add(this.settings, 'progress', -5, 5, 0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.progress.value = value;
-      },this));
-       f.add(this.settings, 'uWiggleScale', 0.001, 1, 0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.uWiggleScale.value = value;
-      },this));
-      //  f.add(this.settings, 'uWiggleDisplacement', 0.001, 30, 0.001).onChange(bind(function(value) {
-      //   this.arrB[i].material.uniforms.uWiggleDisplacement.value = value;
-      // },this));
-       f.add(this.settings, 'uWiggleSpeed', 0.001, 1, 0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.uWiggleSpeed.value = value;
-      },this));
+        
+        this.text = new THREE.Mesh(geometry,textmaterial);
+        this.text.name = 'text';
+        //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
+        this.scene.add(this.text);
+        this.fontLoaded = true;
+        resCounter++;
       
-      let f1 = f.addFolder('bubble ' );
+      },this ));
 
-
-      f1.add(this.settings,'mRefractionRatio',0,1,0.001).onChange(bind(function(value) {
-      this.text.material.uniforms.mRefractionRatio.value = value;
-      },this));
-      f1.add(this.settings,'mFresnelBias',0,1,0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.mFresnelBias.value = value;
-      },this));
-      f1.add(this.settings,'mFresnelPower',0,5,0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.mFresnelPower.value = value;
-      },this));
-      f1.add(this.settings,'mFresnelScale',0,1,0.001).onChange(bind(function(value) {
-        this.text.material.uniforms.mFresnelScale.value = value;
- 
-      },this));
-      let f2 = f.addFolder('Font settings');
-      f2.add(this.fontSettings,'size',1,300,1).onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-      f2.add(this.fontSettings,'height',1,300,1).onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-      f2.add(this.fontSettings,'curveSegments',1,30,1).onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-      f2.add(this.fontSettings,'bevelEnabled').onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-      f2.add(this.fontSettings,'bevelThickness',1,30,1).onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-      f2.add(this.fontSettings,'bevelSize',1,20,1).onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-      f2.add(this.fontSettings,'bevelOffset',1,20,1).onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-      f2.add(this.fontSettings,'bevelSegments',1,20,1).onChange(bind(function(value) {
-        this.generateGeometry();
-        },this));
-
-},this ));
-
-   
+let s;
+s = setInterval(()=>{
+  if(resCounter==9){
+    clearInterval(s);
+    this.Init();
     
-
+  }else{
+    console.log(resCounter)
+  }
+},100)
+    
+  
   }
   
     onMouseMove ( event ) {
@@ -588,7 +530,7 @@ this.font = font;
 	    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
       this.raycaster.setFromCamera( this.mouse, this.camera );
 
-      if(!this.moving){
+      if(!this.moving&&!this.inMenu){
         TweenMax.to(this.camera.position,1,{ease: Power2.easeOut,x:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).x,z:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).z,y:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).y,onUpdate:()=>{this.camera.lookAt(this.scene.position);}});
       }
       
@@ -652,8 +594,8 @@ this.font = font;
     }
 
     indexControl(direction){
-
-      let floatIndex = {value:0};
+      if(!this.inMenu){
+        let floatIndex = {value:0};
       let materialChanged = false;
       if(direction == 'next' && this.index<this.arrOrbits.length-1){
         this.moving = true;
@@ -664,9 +606,15 @@ this.font = font;
         );
 
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
-        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index++;this.moving = false;},
+        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
+          this.index++;
+          this.moving = false;
+          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
+          this.text.lookAt(this.scene.position)},
+          
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
+          
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
@@ -697,7 +645,11 @@ this.font = font;
           new THREE.Vector3( this.arrOrbits[this.index-1].getPointAt(0.5).x,  this.arrOrbits[this.index-1].getPointAt(0.5).y,  this.arrOrbits[this.index-1].getPointAt(0.5).z )
         );
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
-        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index--;this.moving = false;},
+        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
+          this.index--;
+          this.moving = false;
+          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
+          this.text.lookAt(this.scene.position)},
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
@@ -736,7 +688,11 @@ this.font = font;
           new THREE.Vector3( this.arrOrbits[0].getPointAt(0.5).x,  this.arrOrbits[0].getPointAt(0.5).y,  this.arrOrbits[0].getPointAt(0.5).z )
         );
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
-        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{this.index=0;this.moving = false;},
+        TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
+          this.index=0;
+          this.moving = false;
+          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
+          this.text.lookAt(this.scene.position)},
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
@@ -756,14 +712,17 @@ this.font = font;
       if(direction == 'back' && this.index==0){
         this.moving = true;
         let curve = new THREE.QuadraticBezierCurve3(
-          new THREE.Vector3( this.camera.position.x,  this.camera.position.y,  this.camera.position.z),
+          new THREE.Vector3( this.cameraGroup.position.x,  this.cameraGroup.position.y,  this.cameraGroup.position.z),
           this.arrCurves[this.arrOrbits.length-1],
           new THREE.Vector3( this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).x,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).y,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).z )
         );
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=this.arrOrbits.length-1;
-          this.moving = false;},onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
+          this.moving = false;
+          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
+          this.text.lookAt(this.scene.position)
+        },onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
               if(i!=this.arrB.length-1){
@@ -777,6 +736,8 @@ this.font = font;
             materialChanged = true;
           }
         }
+      }
+      
 
     }
     focusMaterial(){
@@ -793,11 +754,14 @@ this.font = font;
   
   
 }
+if ( THREE.WEBGL.isWebGLAvailable() ) {
+  //var canvas = document.createElement( 'canvas' );
+	// Initiate function or other initializations here
+	let a = new Slider(/*canvas*/);
 
-let a = new Slider();
+} else {
 
-Object.seal(a);
-a.indexControl('next');
+	var warning = THREE.WEBGL.getWebGLErrorMessage();
+	document.getElementById( 'container' ).appendChild( warning );
 
-
-//TweenMax.to(material.uniforms.progress,20,{value:5,repeat:-1});
+}
