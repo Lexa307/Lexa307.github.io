@@ -27,14 +27,14 @@ class Slider{
         x:-17204,
         y:1000,
         z:23876,
-        uniformsOut:{cubeMap:"https://sun9-42.userapi.com/c855732/v855732160/10984b/aWY4Eky5vwA.jpg"},
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/7667.jpg"},
 
       },
       1:{
         x:-7776,
         y:4346,
         z:11754,
-        uniformsOut:{cubeMap:"https://sun9-70.userapi.com/c855732/v855732160/109854/RVSxzvO9I_o.jpg"},
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.7.jpg"},
 
 
       },
@@ -42,7 +42,7 @@ class Slider{
         x:305,
         y:-1715,
         z:2999,
-        uniformsOut:{cubeMap:"https://sun9-17.userapi.com/c855732/v855732160/10985d/LBfa_9y2vUk.jpg"},
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.8.jpg"},
 
 
       },
@@ -50,7 +50,7 @@ class Slider{
         x:2999,
         y:-400,
         z:0,
-        uniformsOut:{cubeMap:"https://sun9-18.userapi.com/c855732/v855732160/109870/V0qpul4MZkk.jpg"},
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.9.jpg"},
 
 
       },
@@ -58,7 +58,7 @@ class Slider{
         x:305,
         y:1652,
         z:-2600,
-        uniformsOut:{cubeMap:"https://sun9-45.userapi.com/c855732/v855732160/109879/HYxKdu987nk.jpg"},
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.10.jpg"},
 
 
       },
@@ -66,7 +66,7 @@ class Slider{
         x:-4009,
         y:-3062,
         z:-7776,
-        uniformsOut:{cubeMap:"https://sun9-6.userapi.com/c855732/v855732160/109882/6aMNvhoNyHU.jpg"},
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.11.jpg"},
 
 
       },
@@ -74,7 +74,7 @@ class Slider{
         x:-7776,
         y:1600,
         z:-16531,
-        uniformsOut:{cubeMap:"https://sun9-13.userapi.com/c855732/v855732160/109895/136rHHLvFzw.jpg"},
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.12.jpg"},
 
 
       },
@@ -474,12 +474,12 @@ this.animate();
             "cameraPosition":{value:this.camera.position},
             "tCube": 			{ type: "t", value:new THREE.CubeTextureLoader()
             .load( [
-                    "textures/cubemaps/Frame1.jpg",
-                    "textures/cubemaps/Frame1.jpg",
-                    "textures/cubemaps/Frame1.jpg",
-                    "textures/cubemaps/Frame1.jpg",
-                    "textures/cubemaps/Frame1.jpg",
-                    "textures/cubemaps/Frame1.jpg"
+                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
+                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
+                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
+                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
+                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
+                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg"
             ],()=>{
               resCounter++;
             } ), } //  textureCube }
@@ -487,7 +487,7 @@ this.animate();
         vertexShader:   this.fShader.vertexShader,
         fragmentShader: this.fShader.fragmentShader
       }   );
-    loader.load( 'fonts/Wooland.json', bind(function ( font ) {
+    loader.load( 'https://lexa307.github.io/mixedFresnel/fonts/Wooland.json', bind(function ( font ) {
       this.font = font;
         let geometry = new THREE.TextBufferGeometry( 'About', {
           font: font,
