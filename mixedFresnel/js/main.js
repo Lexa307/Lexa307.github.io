@@ -16,6 +16,7 @@ class Slider{
     this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:false})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
+    alert(this.renderer.capabilities.maxTextures)
     this.fShader = THREE.FresnelShader;
     this.font = null;
     this.fontLoaded = false;
