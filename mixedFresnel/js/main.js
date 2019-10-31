@@ -11,12 +11,19 @@ class Slider{
   constructor(selector){
     
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );//75
+    this.mobile = false;
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+      this.mobile = true;
+      this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 750 );//75
+    }else{
+      this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );//75
+    }
+    
     this.scene.background= new THREE.Color(0x000000);
     this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:false})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
-    alert(this.renderer.capabilities.maxTextures)
+    
     this.fShader = THREE.FresnelShader;
     this.font = null;
     this.fontLoaded = false;
@@ -161,6 +168,11 @@ class Slider{
     this.spheres = [];
     this.moving = false;
     this.last = null ;
+    this.oldTime = 0;
+    this.newTime = 0;
+    this.isTouchPad;
+    this.eventCount = 0;
+    this.eventCountStart;
   
     
     //this.OrbitFlag = true;
@@ -434,6 +446,42 @@ class Slider{
     //TweenMax.to(this.material.uniforms.progress,5,{value:5,repeat:-1,yoyo:true});
     this.camera.position.set( this.arrOrbits[this.index].getPointAt(0.5).x,this.arrOrbits[this.index].getPointAt(0.5).y,this.arrOrbits[this.index].getPointAt(0.5).z);
     this.camera.lookAt(this.scene.position);
+
+    //this.container.addEventListener("DOMMouseScroll", bind(this.mouseHandle, this),false);
+    //this.container.addEventListener('scroll',bind(this.onScroll,this),false);
+    this.container.addEventListener('touchstart', bind(function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.initialPoint=event.changedTouches[0];
+      },this), false);
+      this.container.addEventListener('touchend', bind(function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.finalPoint=event.changedTouches[0];
+      let xAbs = Math.abs(this.initialPoint.pageX - this.finalPoint.pageX);
+      let yAbs = Math.abs(this.initialPoint.pageY - this.finalPoint.pageY);
+      if (xAbs > 20 || yAbs > 20) {
+      if (xAbs > yAbs) {
+      if (this.finalPoint.pageX < this.initialPoint.pageX){
+      /*СВАЙП ВЛЕВО*/
+      this.indexControl('back');
+      
+      }
+      else{
+      /*СВАЙП ВПРАВО*/
+      this.indexControl('next');
+      }
+      }
+      else {
+      if (this.finalPoint.pageY < this.initialPoint.pageY){
+        //this.indexControl('next');
+      /*СВАЙП ВВЕРХ*/}
+      else{
+        //this.indexControl('back');
+      /*СВАЙП ВНИЗ*/}
+      }
+      }
+      },this), false);
 window.addEventListener("resize",bind(this.onWindowResize,this), false);
 this.animate();
 
@@ -489,7 +537,7 @@ this.animate();
         vertexShader:   this.fShader.vertexShader,
         fragmentShader: this.fShader.fragmentShader
       }   );
-    loader.load( 'https://lexa307.github.io/mixedFresnel/fonts/Wooland.json', bind(function ( font ) {
+    loader.load( 'fonts/Wooland.json', bind(function ( font ) {
       this.font = font;
         let geometry = new THREE.TextBufferGeometry( 'About', {
           font: font,
@@ -583,20 +631,95 @@ s = setInterval(()=>{
 	    
     }
 
-    mouseHandle(event){
-      if(!this.moving){
-        if(event.deltaY==100){
- 		
-          this.indexControl('next');
-        }else{
-          this.indexControl('back');
-        }
-      }
-      
-    }
+    onScroll(event){
+      // if(!moving){
+         // detects new state and compares it with the new one
+         if ((document.body.getBoundingClientRect()).top > this.scrollPos){
+       console.log("scroll_next")
+           this.indexControl('next');
+         }
+     
+         else{
+           this.indexControl('back');
+           console.log("scroll_back")
+         }
+     
+     // saves the new position for iteration.
+       this.scrollPos = (document.body.getBoundingClientRect()).top;
+      // }
+     
+     }
+     mouseHandle(event){
+       //if(!this.moving){
+       //   if(event.deltaY==100){
+        
+       //     this.indexControl(1);
+       //   }else{
+       //     this.indexControl(0);
+       //   }
+       // }
+       let isTouchPadDefined = this.isTouchPad || typeof this.isTouchPad !== "undefined";
+      // console.log(isTouchPadDefined);
+       if (!isTouchPadDefined) {
+           if (this.eventCount === 0) {
+             this.eventCountStart = new Date().getTime();
+           }
+   
+           this.eventCount++;
+   
+           if (new Date().getTime() - this.eventCountStart > 100) {
+                   if (this.eventCount > 10) {
+                     this.isTouchPad = true;
+                   } else {
+                     this.isTouchPad = false;
+                   }
+               isTouchPadDefined = true;
+           }
+       }
+   
+       if (isTouchPadDefined) {
+         
+           // here you can do what you want
+           // i just wanted the direction, for swiping, so i have to prevent
+           // the multiple event calls to trigger multiple unwanted actions (trackpad)
+           if (!event) event = event;
+           let direction = (event.detail<0 || event.wheelDelta>0) ? 1 : -1;
+   
+           if (this.isTouchPad) {
+             this.newTime = new Date().getTime();
+   
+               if (!this.moving && this.newTime-this.oldTime > 550 ) {
+                  
+                   if (direction < 0) {
+                       // swipe down
+                       console.log("touchpad_next")
+                       this.indexControl('next');
+                   } else {
+                       // swipe up
+                       console.log("touchpad_back")
+                       this.indexControl('back');
+                   }
+                   setTimeout(function() {this.oldTime = new Date().getTime();}, 500);
+               }
+           } else {
+               if (direction < 0) {
+                console.log("Ntouchpad_next")
+                 this.indexControl('next');
+                 
+                   // swipe down
+               } else {
+                   // swipe up
+                   console.log("Ntouchpad_back")
+                   this.indexControl('back');
+               }
+           }
+         }
+       //}
+     }
 
     indexControl(direction){
-      if(!this.inMenu){
+      if(!this.inMenu&&!this.moving){
+
         let floatIndex = {value:0};
       let materialChanged = false;
       if(direction == 'next' && this.index<this.arrOrbits.length-1){
