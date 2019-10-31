@@ -13,7 +13,7 @@ class Slider{
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );//75
     this.scene.background= new THREE.Color(0x000000);
-    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
+    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:false})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     this.fShader = THREE.FresnelShader;
@@ -242,8 +242,8 @@ class Slider{
 	
 	
     this.controls = new THREE.OrbitControls( this.camera );
-    this.camera.position.z = 1642;
-    this.camera.position.set( 7277,  634,  27);
+    
+    
     this.camera.lookAt(this.scene.position);
     this.controls.update();
     this.textPositions = [];
@@ -255,7 +255,7 @@ class Slider{
       let meshBMaterial = new THREE.ShaderMaterial( 
         {
           defines: {
-            DISPERSION_SAMPLES:50
+            DISPERSION_SAMPLES:20
           },
             uniforms: 			{
               "mRefractionRatio": { type: "f", value: 1.02 },
@@ -431,7 +431,8 @@ class Slider{
     this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z);
     this.scene.add(this.light);
     //TweenMax.to(this.material.uniforms.progress,5,{value:5,repeat:-1,yoyo:true});
-
+    this.camera.position.set( this.arrOrbits[this.index].getPointAt(0.5).x,this.arrOrbits[this.index].getPointAt(0.5).y,this.arrOrbits[this.index].getPointAt(0.5).z);
+    this.camera.lookAt(this.scene.position);
 window.addEventListener("resize",bind(this.onWindowResize,this), false);
 this.animate();
 
@@ -465,7 +466,7 @@ this.animate();
             "mFresnelScale": 	{ type: "f", value: 1.0 },
             "time": { type: 'f', value: 9.95 },
             "progress": { type: 'f', value: 1.0 },
-            "uWiggleScale": { type: 'f', value: 0.140 },
+            "uWiggleScale": { type: 'f', value: 0.0 },
             "uWiggleDisplacement": { type: 'f', value: 0.01 },
             "uWiggleSpeed": { type: 'f', value: 0.001 },
             "refractionRatio":{ type: 'f', value: 0.93 }, 
@@ -712,7 +713,7 @@ s = setInterval(()=>{
       if(direction == 'back' && this.index==0){
         this.moving = true;
         let curve = new THREE.QuadraticBezierCurve3(
-          new THREE.Vector3( this.cameraGroup.position.x,  this.cameraGroup.position.y,  this.cameraGroup.position.z),
+          new THREE.Vector3( this.camera.position.x,  this.camera.position.y,  this.camera.position.z),
           this.arrCurves[this.arrOrbits.length-1],
           new THREE.Vector3( this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).x,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).y,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).z )
         );
