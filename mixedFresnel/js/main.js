@@ -755,10 +755,11 @@ s = setInterval(()=>{
   
   
 }
+let a
 if ( THREE.WEBGL.isWebGLAvailable() ) {
   //var canvas = document.createElement( 'canvas' );
 	// Initiate function or other initializations here
-	let a = new Slider(/*canvas*/);
+	 a = new Slider(/*canvas*/);
 
 } else {
 
