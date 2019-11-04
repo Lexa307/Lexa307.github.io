@@ -11,7 +11,7 @@ class Slider{
   constructor(selector){
     
     this.scene = new THREE.Scene();
-    this.mobile = false;
+    this.mobile = true;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
       this.mobile = true;
       this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
@@ -331,8 +331,8 @@ class Slider{
 
     }
     this.recompileShader(this.arrB[this.index],50);
-    this.recompileShader(this.arrB[this.index+1],50);
-    this.recompileShader(this.arrB[this.index-1],50);
+    this.recompileShader(this.arrB[this.index+1],20);
+    this.recompileShader(this.arrB[this.index-1],20);
     
    document.addEventListener('keydown', bind(function(event) {
       if(!this.moving&&event.key==' '){
@@ -875,15 +875,15 @@ s = setInterval(()=>{
             }
             if(this.index==this.arrB.length-2){
               this.recompileShader(this.arrB[this.index+1],50);
-              this.recompileShader(this.arrB[0],50);
-              this.recompileShader(this.arrB[this.index],50);
+              this.recompileShader(this.arrB[0],30);
+              this.recompileShader(this.arrB[this.index],30);
               TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:6});//face sphere
               TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:4});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             }else{
               this.recompileShader(this.arrB[this.index+1],50);
-              this.recompileShader(this.arrB[this.index+2],50);
-              this.recompileShader(this.arrB[this.index],50);
+              this.recompileShader(this.arrB[this.index+2],30);
+              this.recompileShader(this.arrB[this.index],30);
               TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:6});//face sphere
               TweenMax.to(this.arrB[this.index+2].material.uniforms.dispersionBlendMultiplier,1,{value:4});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
@@ -917,15 +917,15 @@ s = setInterval(()=>{
             }
             if(this.index==1){
               this.recompileShader(this.arrB[this.index-1],50);
-              this.recompileShader(this.arrB[this.arrB.length-1],50);
-              this.recompileShader(this.arrB[this.index],50);
+              this.recompileShader(this.arrB[this.arrB.length-1],30);
+              this.recompileShader(this.arrB[this.index],30);
               TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
               TweenMax.to(this.arrB[this.arrB.length-1].material.uniforms.dispersionBlendMultiplier,1,{value:4});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             }else{
               this.recompileShader(this.arrB[this.index-1],50);
-              this.recompileShader(this.arrB[this.index-2],50);
-              this.recompileShader(this.arrB[this.index],50);
+              this.recompileShader(this.arrB[this.index-2],30);
+              this.recompileShader(this.arrB[this.index],30);
               TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
               TweenMax.to(this.arrB[this.index-2].material.uniforms.dispersionBlendMultiplier,1,{value:4});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
@@ -965,8 +965,8 @@ s = setInterval(()=>{
 
             }
             this.recompileShader(this.arrB[0],50);
-            this.recompileShader(this.arrB[this.index],50);
-            this.recompileShader(this.arrB[1],50);
+            this.recompileShader(this.arrB[this.index],30);
+            this.recompileShader(this.arrB[1],30);
             TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:6});
             TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             TweenMax.to(this.arrB[1].material.uniforms.dispersionBlendMultiplier,1,{value:4});
@@ -995,8 +995,8 @@ s = setInterval(()=>{
 
             }
             this.recompileShader(this.arrB[this.arrB.length-1],50);
-            this.recompileShader(this.arrB[0],50);
-            this.recompileShader(this.arrB[this.arrB.length-2],50);
+            this.recompileShader(this.arrB[0],30);
+            this.recompileShader(this.arrB[this.arrB.length-2],30);
             TweenMax.to(this.arrB[this.arrB.length-1].material.uniforms.dispersionBlendMultiplier,1,{value:6});
             TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             TweenMax.to(this.arrB[this.arrB.length-2].material.uniforms.dispersionBlendMultiplier,1,{value:4});
