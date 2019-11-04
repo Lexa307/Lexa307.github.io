@@ -20,14 +20,16 @@ class Slider{
     }
     
     this.scene.background= new THREE.Color(0x000000);
-    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:false})
+    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     
     this.fShader = THREE.FresnelShader;
     this.font = null;
     this.fontLoaded = false;
-    this.text = null;
+    this.about = null;
+    this.works = null;
+    this.contact = null;
     this.tCubes = [];
     this.sceneParams =
     {
@@ -111,7 +113,7 @@ class Slider{
    
     //let N = prompt("enter index of sphere (0 - 6)");
      //if(parseInt(N,10)<7&&parseInt(N,10)>=0){
-      this.text.material.uniforms.tCube.value = cbtx;
+      this.about.material.uniforms.tCube.value = cbtx;
      //}
 
     
@@ -131,7 +133,9 @@ class Slider{
       
      }
      if(this.fontLoaded){
-        this.text.material.uniforms.time.value = this.time;
+        this.about.material.uniforms.time.value = this.time;
+        this.TGroup.lookAt(this.camera.position);
+        this.camera.lookAt(this.focus);
      }
       
       //this.controls.update();
@@ -153,15 +157,15 @@ class Slider{
       bevelSegments: this.fontSettings.bevelSegments
     } );
     
-    let tmpMAterial = this.text.material;
-    this.scene.remove(this.text);
-    this.text = new THREE.Mesh(newGeometry,tmpMAterial);
-    this.scene.add(this.text);
+    let tmpMAterial = this.about.material;
+    this.scene.remove(this.about);
+    this.about = new THREE.Mesh(newGeometry,tmpMAterial);
+    
   }
 
 
   Init(){
-    this.focus = new THREE.Vector3(2999,1000,23876);
+    this.focus = new THREE.Vector3(0,0,0);
     this.container;
     this.time = 18.95;
     this.index = 3;
@@ -173,7 +177,10 @@ class Slider{
     this.isTouchPad;
     this.eventCount = 0;
     this.eventCountStart;
-  
+    this.TGroup = new THREE.Group();
+    
+
+
     
     //this.OrbitFlag = true;
     this.settings = {
@@ -268,7 +275,7 @@ class Slider{
       let meshBMaterial = new THREE.ShaderMaterial( 
         {
           defines: {
-            DISPERSION_SAMPLES:20
+            DISPERSION_SAMPLES:50
           },
             uniforms: 			{
               "mRefractionRatio": { type: "f", value: 1.02 },
@@ -307,6 +314,7 @@ class Slider{
         OCurveControlVevtor,
         OCurveEndVector
       ));
+      
       // let points = this.arrOrbits[i].getPoints(50);
       // let geometry = new THREE.BufferGeometry().setFromPoints( points );
       // let curveObject = new THREE.Line( geometry, material );
@@ -320,15 +328,64 @@ class Slider{
 
       this.scene.add(meshB);
 
+
     }
+    
    document.addEventListener('keydown', bind(function(event) {
       if(!this.moving&&event.key==' '){
         this.moving = true;
         if(!this.inMenu){
-          this.inMenu = true;
-          TweenMax.to(this.camera.rotation,1,{y:this.camera.rotation.y+Math.PI,onComplete:()=>{this.moving = false;}});
+          
+          let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
+          newPos.x*=1.1;
+          newPos.z*=1.1;
+          this.TGroup.position.set(newPos.x,500,newPos.z);
+          let tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
+          let tmpfloat = {value:0};
+          let focusBezier =  new THREE.QuadraticBezierCurve3(
+            new THREE.Vector3(),
+            tmpControlBezier,
+            this.TGroup.position
+          );
+          this.TGroup.visible = true;  
+          
+ 
+          
+          TweenMax.to(tmpfloat,2,{value:1,ease: Power2.easeOut,
+            onUpdate:()=>{
+              this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
+              
+            },
+            onComplete:()=>{
+              this.inMenu = true;
+              this.moving = false;
+              
+            }});
         }else{
-          TweenMax.to(this.camera.rotation,1,{y:this.camera.rotation.y-Math.PI,onComplete:()=>{this.inMenu = false;this.moving = false;}});
+
+          let tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
+          let tmpfloat = {value:0};
+          let focusBezier =  new THREE.QuadraticBezierCurve3(
+            this.TGroup.position,
+            tmpControlBezier,
+            new THREE.Vector3(),
+          );
+            
+          
+ 
+          
+          TweenMax.to(tmpfloat,2,{value:1,ease: Power2.easeInOut,
+            onUpdate:()=>{
+              this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
+              
+            },
+            onComplete:()=>{
+              this.TGroup.visible = false;
+              this.inMenu = false;
+              this.moving = false;
+              
+            }});
+
         }
         
         
@@ -446,7 +503,21 @@ class Slider{
     //TweenMax.to(this.material.uniforms.progress,5,{value:5,repeat:-1,yoyo:true});
     this.camera.position.set( this.arrOrbits[this.index].getPointAt(0.5).x,this.arrOrbits[this.index].getPointAt(0.5).y,this.arrOrbits[this.index].getPointAt(0.5).z);
     this.camera.lookAt(this.scene.position);
-
+    this.TGroup.add(this.about);
+    this.about.position.x=-200;
+    this.about.position.y = 0;
+    this.TGroup.add(this.works);
+    this.works.position.x=-200;
+    this.works.position.y = -100;
+    this.TGroup.add(this.contact);
+    this.contact.position.x=-200;
+    this.contact.position.y = -200;
+    //this.TGroup.add(new THREE.Mesh(new THREE.BoxGeometry(10,10,10),new THREE.MeshBasicMaterial({color:0xFF0000})));
+    this.scene.add(this.TGroup);
+    let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
+    newPos.x*=1.01;
+    newPos.z*=1.01;
+    this.TGroup.position.set(newPos.x,500,newPos.z);
     //this.container.addEventListener("DOMMouseScroll", bind(this.mouseHandle, this),false);
     //this.container.addEventListener('scroll',bind(this.onScroll,this),false);
     this.container.addEventListener('touchstart', bind(function(event) {
@@ -506,7 +577,7 @@ this.animate();
     let textmaterial = new THREE.ShaderMaterial( 
       {
         defines: {
-          DISPERSION_SAMPLES:50
+          DISPERSION_SAMPLES:20
         },
           uniforms: 			{
             "mRefractionRatio": { type: "f", value: 1.02 },
@@ -550,12 +621,41 @@ this.animate();
           bevelOffset: 0,
           bevelSegments: 5
         } );
+
+        let geometry1 = new THREE.TextBufferGeometry( 'Works', {
+          font: font,
+          size: 80,
+          height: 5,
+          curveSegments: 12,
+          bevelEnabled: false,
+          bevelThickness: 10,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5
+        } );
+
+        let geometry2 = new THREE.TextBufferGeometry( 'Contact', {
+          font: font,
+          size: 80,
+          height: 5,
+          curveSegments: 12,
+          bevelEnabled: false,
+          bevelThickness: 10,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5
+        } );
       
         
-        this.text = new THREE.Mesh(geometry,textmaterial);
-        this.text.name = 'text';
+        this.about = new THREE.Mesh(geometry,textmaterial);
+        this.about.name = 'about';
+        this.works = new THREE.Mesh(geometry1,textmaterial);
+        this.works.name = 'works';
+        this.contact = new THREE.Mesh(geometry2,textmaterial);
+        this.contact.name = 'contact';
+
         //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
-        this.scene.add(this.text);
+        
         this.fontLoaded = true;
         resCounter++;
       
@@ -600,7 +700,7 @@ s = setInterval(()=>{
       
     }
   }
-  if(intersects.length>0&&intersects[ 0 ].object.name!='text'){
+  if(intersects.length>0&&intersects[ 0 ].object.name!='about'|'works'|'contact'){
     
     if(this.last!=null&&this.last.uuid!=intersects[ 0 ].object.material.uuid){
      // console.log('y2')
@@ -627,6 +727,17 @@ s = setInterval(()=>{
 
     
   }
+  intersects = this.raycaster.intersectObjects(this.TGroup.children );
+  if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
+    console.log('onAbout')
+  }
+  if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
+    console.log('onWorks')
+  }
+  if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
+    console.log('onContact')
+  }
+  
 
 	    
     }
@@ -734,8 +845,7 @@ s = setInterval(()=>{
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index++;
           this.moving = false;
-          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
-          this.text.lookAt(this.scene.position)},
+          },
           
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
@@ -773,8 +883,7 @@ s = setInterval(()=>{
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index--;
           this.moving = false;
-          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
-          this.text.lookAt(this.scene.position)},
+         },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
@@ -816,8 +925,7 @@ s = setInterval(()=>{
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=0;
           this.moving = false;
-          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
-          this.text.lookAt(this.scene.position)},
+          },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
           this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
@@ -845,8 +953,7 @@ s = setInterval(()=>{
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=this.arrOrbits.length-1;
           this.moving = false;
-          this.text.position.set(this.textPositions[this.index].x,this.textPositions[this.index].y,this.textPositions[this.index].z);
-          this.text.lookAt(this.scene.position)
+          
         },onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
             for(let i = 0; i< this.arrB.length; i++){
