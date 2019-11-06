@@ -11,7 +11,7 @@ class Slider{
   constructor(selector){
     
     this.scene = new THREE.Scene();
-    this.mobile = true;
+    this.mobile = false;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
       this.mobile = true;
       this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
@@ -31,6 +31,7 @@ class Slider{
     this.works = null;
     this.contact = null;
     this.tCubes = [];
+    this.fovard = 0.001;
     this.sceneParams =
     {
       0:{
@@ -125,7 +126,9 @@ class Slider{
     
 	  requestAnimationFrame( this.animate.bind(this) );
      this.stats.begin();
-     this.time += 0.001;
+     this.time += this.fovard;
+     if(this.time>100||this.time<0){this.fovard*=-1}
+     
      for(let i=0;i<7;i++){
 
       this.arrB[i].material.uniforms.time.value = this.time;
