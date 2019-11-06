@@ -26,12 +26,12 @@ class Slider{
     
     this.fShader = THREE.FresnelShader;
     this.font = null;
-    this.fontLoaded = false;
+    //this.fontLoaded = false;
     this.about = null;
     this.works = null;
     this.contact = null;
     this.tCubes = [];
-    this.fovard = 0.001;
+    
     this.sceneParams =
     {
       0:{
@@ -135,11 +135,11 @@ class Slider{
       this.arrB[i].rotation.x+=0.001;
       
      }
-     if(this.fontLoaded){
-        this.about.material.uniforms.time.value = this.time;
+     //if(this.fontLoaded){
+       // this.about.material.uniforms.time.value = this.time;
         this.TGroup.lookAt(this.camera.position);
         this.camera.lookAt(this.focus);
-     }
+     //}
       
       //this.controls.update();
       //this.composerScene.render(0.01);
@@ -181,7 +181,7 @@ class Slider{
     this.eventCount = 0;
     this.eventCountStart;
     this.TGroup = new THREE.Group();
-    
+    this.fovard = 0.001;
 
 
     
@@ -524,8 +524,27 @@ class Slider{
     this.TGroup.add(this.contact);
     this.contact.position.x=-200;
     this.contact.position.y = -200;
-    this.TGroup.add(new THREE.Mesh(new THREE.PlaneGeometry( 300, 60 ),new THREE.MeshBasicMaterial({color:0xFF0000})));
+    let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 350, 60 ),new THREE.MeshBasicMaterial({color:0x000000}))
+    aboutPlane.name = 'about';
+    aboutPlane.position.y = 20
+    this.TGroup.add(aboutPlane);
+
+    let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 360, 60 ),new THREE.MeshBasicMaterial({color:0x000000}))
+    worksPlane.name = 'works';
+    worksPlane.position.y = -65
+    this.TGroup.add(worksPlane);
+
+    let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 390, 60 ),new THREE.MeshBasicMaterial({color:0x000000}))
+    contactPlane.name = 'contact';
+    contactPlane.position.y = -180
+    this.TGroup.add(contactPlane);
+
+
     this.scene.add(this.TGroup);
+
+
+    
+
     let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
     newPos.x*=1.01;
     newPos.z*=1.01;
@@ -669,7 +688,7 @@ this.animate();
 
         //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
         
-        this.fontLoaded = true;
+        //this.fontLoaded = true;
         resCounter++;
       
       },this ));
