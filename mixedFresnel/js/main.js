@@ -740,10 +740,21 @@ s = setInterval(()=>{
     if(intersects.length>0){
       let objName = parseInt(intersects[ 0 ].object.name,10);
       if(objName>this.index){
-        this.indexControl('next');
+        if(this.index == 0  && objName == this.arrB.length-1 ){
+          this.indexControl('back');
+        }else{
+          this.indexControl('next');
+        }
+          
+        
       }
       if(objName<this.index){
-        this.indexControl('back');
+        if(this.index == this.arrB.length-1 && objName == 0 ){
+          this.indexControl('next');
+        }else{
+          this.indexControl('back');
+        }
+        
       }
       if(objName==this.index){
         this.moving = true;
