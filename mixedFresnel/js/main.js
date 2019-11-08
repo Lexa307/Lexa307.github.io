@@ -35,56 +35,42 @@ class Slider{
     this.sceneParams =
     {
       0:{
-        x:-17204,
-        y:1000,
-        z:23876,
+        name:"VKontakte",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/7667.jpg"},
 
       },
       1:{
-        x:-7776,
-        y:4346,
-        z:11754,
+        name:"Air Energy",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.7.jpg"},
 
 
       },
       2:{
-        x:305,
-        y:-1715,
-        z:2999,
+        name:"Legenda",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.8.jpg"},
 
 
       },
       3:{
-        x:2999,
-        y:-400,
-        z:0,
+        name:"Prisma",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.9.jpg"},
 
 
       },
       4:{
-        x:305,
-        y:1652,
-        z:-2600,
+        name:"Energoteck",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.10.jpg"},
 
 
       },
       5:{
-        x:-4009,
-        y:-3062,
-        z:-7776,
+        name:"Che Group",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.11.jpg"},
 
 
       },
       6:{
-        x:-7776,
-        y:1600,
-        z:-16531,
+        name:"Neurohive",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.12.jpg"},
 
 
@@ -149,23 +135,26 @@ class Slider{
       this.stats.end();
 
   }
-   generateGeometry(){
-     let newGeometry = new THREE.TextBufferGeometry( 'About', {
+   generateGeometry(futureIndex){
+     let newGeometry = new THREE.TextBufferGeometry( this.sceneParams[futureIndex].name, {
       font: this.font,
-      size: this.fontSettings.size,
-      height: this.fontSettings.height,
-      curveSegments: this.fontSettings.curveSegments,
-      bevelEnabled: this.fontSettings.bevelEnabled,
-      bevelThickness: this.fontSettings.bevelThickness,
-      bevelSize: this.fontSettings.bevelSize,
-      bevelOffset: this.fontSettings.bevelOffset,
-      bevelSegments: this.fontSettings.bevelSegments
+        size: 30,
+        height: 5,
+        curveSegments: 12,
+        bevelEnabled: false,
+        bevelThickness: 10,
+        bevelSize: 8,
+        bevelOffset: 0,
+        bevelSegments: 5
     } );
     
-    let tmpMAterial = this.about.material;
-    this.scene.remove(this.about);
-    this.about = new THREE.Mesh(newGeometry,tmpMAterial);
-    
+    let tmpMAterial = this.oceanText.material;
+    this.Cgroup.remove(this.oceanText);
+    this.oceanText = new THREE.Mesh(newGeometry,tmpMAterial);
+    this.Cgroup.add(this.oceanText);
+    this.oceanText.position.x=-100;
+    this.oceanText.position.y = 0;
+
   }
 
 
@@ -554,6 +543,8 @@ class Slider{
     this.distanceScale = 0.96;
     this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale)
 
+    this.generateGeometry(this.index);
+
     let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
     newPos.x*=1.01;
     newPos.z*=1.01;
@@ -907,7 +898,7 @@ s = setInterval(()=>{
           this.arrCurves[this.index],
           new THREE.Vector3( this.arrOrbits[this.index+1].getPointAt(0.5).x,  this.arrOrbits[this.index+1].getPointAt(0.5).y,  this.arrOrbits[this.index+1].getPointAt(0.5).z )
         );
-          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
+          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(this.index+1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index++;
@@ -956,7 +947,7 @@ s = setInterval(()=>{
           this.arrCurves[this.index-1],
           new THREE.Vector3( this.arrOrbits[this.index-1].getPointAt(0.5).x,  this.arrOrbits[this.index-1].getPointAt(0.5).y,  this.arrOrbits[this.index-1].getPointAt(0.5).z )
         );
-        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
+        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(this.index-1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index--;
@@ -1008,7 +999,7 @@ s = setInterval(()=>{
           this.arrCurves[this.index],
           new THREE.Vector3( this.arrOrbits[0].getPointAt(0.5).x,  this.arrOrbits[0].getPointAt(0.5).y,  this.arrOrbits[0].getPointAt(0.5).z )
         );
-        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
+        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(0);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=0;
@@ -1043,7 +1034,7 @@ s = setInterval(()=>{
           this.arrCurves[this.arrOrbits.length-1],
           new THREE.Vector3( this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).x,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).y,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).z )
         );
-        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
+        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(this.arrOrbits.length-1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=this.arrOrbits.length-1;
