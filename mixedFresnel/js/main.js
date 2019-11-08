@@ -31,6 +31,7 @@ class Slider{
     this.works = null;
     this.contact = null;
     this.tCubes = [];
+
     
     this.sceneParams =
     {
@@ -130,8 +131,8 @@ class Slider{
      //}
       
       //this.controls.update();
-      //this.composerScene.render(0.01);
-      this.renderer.render( this.scene, this.camera );
+      this.composerScene.render(0.01);
+      //this.renderer.render( this.scene, this.camera );
       this.stats.end();
 
   }
@@ -239,11 +240,11 @@ class Slider{
       frequency2:0.025,
       amplitude2:70.0
     }
-    //this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
-    //this.effectFilm = new THREE.FilmPass( this.filmParams.noiseIntensity, this.filmParams.scanlinesIntensity, this.filmParams.scanlinesCount, this.filmParams.grayscale );
-    //this.renderPass = new THREE.RenderPass( this.scene, this.camera );
-    //this.composerScene.addPass(this.renderPass);
-    //this.composerScene.addPass(this.effectFilm);
+    this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
+    this.effectColorify = new THREE.ShaderPass(THREE.ColorifyShader);
+    this.renderPass = new THREE.RenderPass( this.scene, this.camera );
+    this.composerScene.addPass(this.renderPass);
+    this.composerScene.addPass(this.effectColorify);
     
 
     
@@ -291,6 +292,7 @@ class Slider{
           fragmentShader: this.fShader.fragmentShader
         }   );
       let meshB = new THREE.Mesh(this.bigtestgeometry,	meshBMaterial);
+      
       //meshBMaterial.maxScaleHover = meshBMaterial.uniforms.uWiggleScale.value+0.075;
       let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
       let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
@@ -314,7 +316,7 @@ class Slider{
       // let curveObject = new THREE.Line( geometry, material );
       // this.scene.add(curveObject);
       this.arrCurves.push(LCurveControlVector);
-      meshB.name = i;
+      meshB.name = i+'';
       meshB.position.set(x,300,y);
       meshB.lookAt(this.scene.position);
      
@@ -588,6 +590,7 @@ class Slider{
       }
       },this), false);
 window.addEventListener("resize",bind(this.onWindowResize,this), false);
+this.container.addEventListener('click', bind(this.onClick,this), false);
 this.animate();
 
   }
@@ -729,6 +732,30 @@ s = setInterval(()=>{
 },100)
     
   
+  }
+
+  onClick(event){
+    this.raycaster.setFromCamera( this.mouse, this.camera );
+    let intersects = this.raycaster.intersectObjects(this.scene.children );
+    if(intersects.length>0){
+      let objName = parseInt(intersects[ 0 ].object.name,10);
+      if(objName>this.index){
+        this.indexControl('next');
+      }
+      if(objName<this.index){
+        this.indexControl('back');
+      }
+      if(objName==this.index){
+        this.moving = true;
+        this.effectColorify
+        TweenMax.to(this.effectColorify.uniforms['opacity'],2,{value:0});
+        TweenMax.to(this.camera.position,2,{x:this.arrB[this.index].position.x,y:this.arrB[this.index].position.y,z:this.arrB[this.index].position.z,
+          onComplete:()=>{
+
+          }
+        })
+      }
+    }
   }
   
     onMouseMove ( event ) {
