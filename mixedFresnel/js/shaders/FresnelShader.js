@@ -1,8 +1,4 @@
-/**
- * @author alteredq / http://alteredqualia.com/
- *
- * Based on Nvidia Cg tutorial
- */
+
 /**
  * @author Lexa307 / https://github.com/Lexa307
  *

@@ -20,7 +20,7 @@ class Slider{
     }
     
     this.scene.background= new THREE.Color(0x000000);
-    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:false})
+    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     
@@ -138,7 +138,9 @@ class Slider{
      //if(this.fontLoaded){
        // this.about.material.uniforms.time.value = this.time;
         this.TGroup.lookAt(this.camera.position);
-        this.camera.lookAt(this.focus);
+        this.camera.lookAt(this.focus);//
+        this.oceanText.material.uniforms.time.value = this.time*10;
+        this.Cgroup.lookAt(this.camera.position);
      //}
       
       //this.controls.update();
@@ -242,11 +244,11 @@ class Slider{
       format: THREE.RGBFormat,
       stencilBuffer: true
     };
-    this.filmParams = {
-      noiseIntensity:0.35,
-      scanlinesIntensity:0.025,
-      scanlinesCount:648,
-      grayscale:false
+    this.caseParams = {
+      frequency1:0.035,
+      amplitude1:20.0,
+      frequency2:0.025,
+      amplitude2:70.0
     }
     //this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
     //this.effectFilm = new THREE.FilmPass( this.filmParams.noiseIntensity, this.filmParams.scanlinesIntensity, this.filmParams.scanlinesCount, this.filmParams.grayscale );
@@ -395,7 +397,7 @@ class Slider{
               this.TGroup.visible = false;
               this.inMenu = false;
               this.moving = false;
-              
+              //this.oceanText.position.set(this.camera.position.x*0.98,300,this.camera.position.z*0.98)
             }});
 
         }
@@ -432,18 +434,19 @@ class Slider{
       this.scene.background = new THREE.Color (value);
      // console.log(this);
      },this));
-    let f1 = this.gui.addFolder('Film params');
-    f1.add(this.filmParams,'noiseIntensity',0,1,0.001).onChange(bind(function(value) {
-      this.effectFilm.material.uniforms.nIntensity.value = value;
+    let f1 = this.gui.addFolder('case text');
+    
+    f1.add(this.caseParams,'frequency1',0,1,0.001).onChange(bind(function(value) {
+      this.oceanText.material.uniforms.frequency1.value = value;
     },this));
-    f1.add(this.filmParams,'scanlinesIntensity',0,1,0.001).onChange(bind(function(value) {
-      this.effectFilm.material.uniforms.sIntensity.value = value;
+    f1.add(this.caseParams,'amplitude1',0,100,1).onChange(bind(function(value) {
+      this.oceanText.material.uniforms.amplitude1.value = value;
     },this));
-    f1.add(this.filmParams,'scanlinesCount',0,5000,1).onChange(bind(function(value) {
-      this.effectFilm.material.uniforms.sCount.value = value;
+    f1.add(this.caseParams,'frequency2',0,1,0.001).onChange(bind(function(value) {
+      this.oceanText.material.uniforms.frequency2.value = value;
     },this));
-    f1.add(this.filmParams,'grayscale').onChange(bind(function(value) {
-      this.effectFilm.material.uniforms.grayscale.value = value;
+    f1.add(this.caseParams,'amplitude2',0,100,1).onChange(bind(function(value) {
+      this.oceanText.material.uniforms.amplitude2.value = value;
     },this));
     for(let i = 0; i<7; i++){
       this.arrB[i].material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
@@ -542,8 +545,14 @@ class Slider{
 
     this.scene.add(this.TGroup);
 
+    this.Cgroup = new THREE.Group();
 
-    
+    this.Cgroup.add(this.oceanText);
+    this.oceanText.position.x=-100;
+    this.oceanText.position.y = 0;
+    this.scene.add(this.Cgroup);
+    this.distanceScale = 0.96;
+    this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale)
 
     let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
     newPos.x*=1.01;
@@ -552,6 +561,8 @@ class Slider{
     this.TGroup.visible = false;
     //this.container.addEventListener("DOMMouseScroll", bind(this.mouseHandle, this),false);
     //this.container.addEventListener('scroll',bind(this.onScroll,this),false);
+
+
     this.container.addEventListener('touchstart', bind(function(event) {
       event.preventDefault();
       event.stopPropagation();
@@ -640,8 +651,27 @@ this.animate();
         vertexShader:   this.fShader.vertexShader,
         fragmentShader: this.fShader.fragmentShader
       }   );
+    let oceanMaterial = new THREE.ShaderMaterial({
+      uniforms:THREE.OceanShader.uniforms,
+      vertexShader: THREE.OceanShader.vertexShader,
+      fragmentShader:THREE.OceanShader.fragmentShader,
+      side: THREE.DoubleSide,
+      transparent: true,
+    });
+    
     loader.load( 'fonts/Wooland.json', bind(function ( font ) {
       this.font = font;
+      let oceanGeometry = new THREE.TextBufferGeometry( 'Neurohive', {
+        font: font,
+        size: 30,
+        height: 5,
+        curveSegments: 12,
+        bevelEnabled: false,
+        bevelThickness: 10,
+        bevelSize: 8,
+        bevelOffset: 0,
+        bevelSegments: 5
+      } );
         let geometry = new THREE.TextBufferGeometry( 'About', {
           font: font,
           size: 80,
@@ -685,6 +715,9 @@ this.animate();
         this.works.name = 'works';
         this.contact = new THREE.Mesh(geometry2,textmaterial);
         this.contact.name = 'contact';
+
+        this.oceanText = new THREE.Mesh(oceanGeometry,oceanMaterial);
+        
 
         //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
         
@@ -874,11 +907,13 @@ s = setInterval(()=>{
           this.arrCurves[this.index],
           new THREE.Vector3( this.arrOrbits[this.index+1].getPointAt(0.5).x,  this.arrOrbits[this.index+1].getPointAt(0.5).y,  this.arrOrbits[this.index+1].getPointAt(0.5).z )
         );
-
+          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index++;
           this.moving = false;
+          this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
+          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
           },
           
         onUpdate:()=>{
@@ -921,10 +956,13 @@ s = setInterval(()=>{
           this.arrCurves[this.index-1],
           new THREE.Vector3( this.arrOrbits[this.index-1].getPointAt(0.5).x,  this.arrOrbits[this.index-1].getPointAt(0.5).y,  this.arrOrbits[this.index-1].getPointAt(0.5).z )
         );
+        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index--;
           this.moving = false;
+          this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
+          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
          },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
@@ -970,10 +1008,13 @@ s = setInterval(()=>{
           this.arrCurves[this.index],
           new THREE.Vector3( this.arrOrbits[0].getPointAt(0.5).x,  this.arrOrbits[0].getPointAt(0.5).y,  this.arrOrbits[0].getPointAt(0.5).z )
         );
+        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=0;
           this.moving = false;
+          this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
+          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
           },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
@@ -1002,10 +1043,13 @@ s = setInterval(()=>{
           this.arrCurves[this.arrOrbits.length-1],
           new THREE.Vector3( this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).x,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).y,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).z )
         );
+        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=this.arrOrbits.length-1;
           this.moving = false;
+          this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
+          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
           
         },onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
