@@ -20,7 +20,7 @@ class Slider{
     }
     
     this.scene.background= new THREE.Color(0x000000);
-    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
+    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:false})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     
@@ -131,7 +131,7 @@ class Slider{
      //}
       
       //this.controls.update();
-      this.composerScene.render(0.01);
+      this.composerScene.render();
       //this.renderer.render( this.scene, this.camera );
       this.stats.end();
 
@@ -242,6 +242,7 @@ class Slider{
     }
     this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
     this.effectColorify = new THREE.ShaderPass(THREE.ColorifyShader);
+  
     this.renderPass = new THREE.RenderPass( this.scene, this.camera );
     this.composerScene.addPass(this.renderPass);
     this.composerScene.addPass(this.effectColorify);

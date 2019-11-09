@@ -161,7 +161,7 @@ THREE.FresnelShader = {
                  "float tProgress = clamp(-1.,1., (progress - offset*0.001)/0.2 );",
                  "newpos = mix(position, newpos, tProgress);",
                 " newpos = bezier4(position, vec3(-400.,0.,1.) , vec3(-800.,0.,1.) ,newpos, tProgress);  ",
-			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position+newpos*noise, 1.0 );",
+			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position*noise, 1.0 );",
 
 		"}"
 
