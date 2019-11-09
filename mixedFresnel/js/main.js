@@ -31,6 +31,7 @@ class Slider{
     this.works = null;
     this.contact = null;
     this.tCubes = [];
+    
 
     
     this.sceneParams =
@@ -113,8 +114,15 @@ class Slider{
     
 	  requestAnimationFrame( this.animate.bind(this) );
      this.stats.begin();
-     this.time += this.fovard;
-     if(this.time>100||this.time<0){this.fovard*=-1}
+     if(!this.insideSphere.visible){
+      this.time += this.fovard;
+      if(this.time>100||this.time<0){this.fovard*=-1}
+      this.camera.lookAt(this.focus);
+     }else{
+      this.camera.lookAt(this.target);
+      this.insideSphere.material.uniforms.time.value = this.time;
+     }
+     
      
      for(let i=0;i<7;i++){
 
@@ -125,7 +133,7 @@ class Slider{
      //if(this.fontLoaded){
        // this.about.material.uniforms.time.value = this.time;
         this.TGroup.lookAt(this.camera.position);
-        this.camera.lookAt(this.focus);//
+        //
         this.oceanText.material.uniforms.time.value = this.time*10;
         this.Cgroup.lookAt(this.camera.position);
      //}
@@ -174,7 +182,8 @@ class Slider{
     this.eventCountStart;
     this.TGroup = new THREE.Group();
     this.fovard = 0.001;
-
+    this.insideSphere = null;
+    this.target = new THREE.Vector3(350,20,0);
 
     
     //this.OrbitFlag = true;
@@ -341,6 +350,23 @@ class Slider{
       
 
     }
+    this.material = new THREE.ShaderMaterial( {
+      extensions: {
+        derivatives: '#extension GL_OES_standard_derivatives : enable'
+      },
+      defines: THREE.DispersionMaterial.defines,
+      uniforms: THREE.DispersionMaterial.uniforms,
+      side: THREE.DoubleSide,
+      vertexShader: THREE.DispersionMaterial.vertex_Shader,
+    
+      fragmentShader: THREE.DispersionMaterial.fragmentShader
+    
+    } );
+    this.insideSphere = new THREE.Mesh(this.bigtestgeometry,this.material);
+    this.insideSphere.visible = false;
+    this.insideSphere.name = 'inside';
+    this.scene.add(this.insideSphere);
+    
     this.recompileShader(this.arrB[this.index],50);
     this.recompileShader(this.arrB[this.index+1],20);
     this.recompileShader(this.arrB[this.index-1],20);
@@ -774,24 +800,70 @@ s = setInterval(()=>{
       }
       if(objName==this.index){
         this.moving = true;
-        
-        TweenMax.to(this.d.style,1.5,{opacity:1,onComplete:()=>{}});
-        TweenMax.to(this.camera.position,2,{x:this.arrB[this.index].position.x,y:this.arrB[this.index].position.y,z:this.arrB[this.index].position.z,
+        TweenMax.killAll(false, true, false);
+        TweenMax.to(this.d.style,1.5,{opacity:1,
           onComplete:()=>{
-
+            
+        }});
+        TweenMax.to(this.camera.position,1.5,{x:this.arrB[this.index].position.x*1.1,y:this.arrB[this.index].position.y,z:this.arrB[this.index].position.z*1.1,
+          onComplete:()=>{
+            this.enter();
           }
         })
       }
     }
   }
+    sceneVisibleControl(statement){
+      for(let i = 0; i<this.scene.children.length;i++){
+        this.scene.children[i].visible = statement;
+      }
+    }
+    enter (){
+      
+      this.moving = true;
+      
+      this.insideSphere.material.uniforms.envMap.value = this.arrB[this.index].material.uniforms.tCube.value;
+      this.sceneVisibleControl(false);
+      this.camera.position.set(-396.2, 20, 0);
+      this.camera.position.z = 0;
+      this.insideSphere.visible = true;
+      this.time = 9.95;
+      this.camera.position.set(-396.2, 20, 0);
+      TweenMax.to(this.d.style,1.5,{opacity:0,
+        onComplete:()=>{
+       
+      }});
+
+      
+      TweenMax.to(this,5,{time:10.32})
+      this.camera.position.set(-396.2, 20, 0);
+      TweenMax.to(this.camera.position,3,{x:4,onComplete:()=>{
+        this.moving = false;     
+      } })
+    }
+    back(){
+     
+      this.moving = true;
+      TweenMax.to(this,5,{time:9.95})//895
+      //this.camera.position.set(-396.2, 20,  0)
+      TweenMax.to(this.camera.position,3,{x:-396.2,onComplete:()=>{
+        this.moving = false;     
+      } })
+    }
   
     onMouseMove ( event ) {
       this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
       this.raycaster.setFromCamera( this.mouse, this.camera );
 
-      if(!this.moving&&!this.inMenu){
+      if(!this.moving&&!this.inMenu&&!this.insideSphere.visible){
         TweenMax.to(this.camera.position,1,{ease: Power2.easeOut,x:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).x,z:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).z,y:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).y,onUpdate:()=>{this.camera.lookAt(this.scene.position);}});
+      }
+
+      if(!this.moving&&this.insideSphere.visible){
+        this.camera.position.z += ( this.mouse.x*4 - this.camera.position.z  ) * 1.1;
+        this.camera.position.y += ( - this.mouse.y+20 - this.camera.position.y ) * 1.1;
+        this.camera.lookAt( this.target );
       }
       
   
@@ -812,7 +884,7 @@ s = setInterval(()=>{
   }
   if(intersects.length>0){
     
-    if(this.last!=null&&this.last.material.uuid!=intersects[ 0 ].object.material.uuid){
+    if(this.last!=null&&this.last.material.uuid!=intersects[ 0 ].object.material.uuid&&intersects[ 0 ].object.name!='inside'){
       console.log('y2')
       TweenMax.to(this.last.material.uniforms.dispersion,2,{value:0.8,ease: Power2.easeInOut});
             TweenMax.to(this.last.material.uniforms.refractionRatio,2,{value:0.93,ease: Power2.easeOut});
@@ -824,7 +896,7 @@ s = setInterval(()=>{
       const tmpConstM = 0.215;
       TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:tmpConstM,ease: Power2.easeInOut})
     }
-    if(this.last==null){
+    if(this.last==null&&intersects[ 0 ].object.name!='inside'){
      
       this.last = intersects[ 0 ].object;
       console.log(this.last.material.defines)
@@ -941,7 +1013,7 @@ s = setInterval(()=>{
      }
 
     indexControl(direction){
-      if(!this.inMenu&&!this.moving){
+      if(!this.inMenu&&!this.moving&&!this.insideSphere.visible){
 
         let floatIndex = {value:0};
       let materialChanged = false;
