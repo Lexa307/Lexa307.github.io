@@ -131,8 +131,8 @@ class Slider{
      //}
       
       //this.controls.update();
-      this.composerScene.render();
-      //this.renderer.render( this.scene, this.camera );
+      //this.composerScene.render();
+      this.renderer.render( this.scene, this.camera );
       this.stats.end();
 
   }
@@ -240,21 +240,35 @@ class Slider{
       frequency2:0.025,
       amplitude2:70.0
     }
-    this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
-    this.effectColorify = new THREE.ShaderPass(THREE.ColorifyShader);
+    // this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
+    // this.effectColorify = new THREE.ShaderPass(THREE.ColorifyShader);
   
-    this.renderPass = new THREE.RenderPass( this.scene, this.camera );
-    this.composerScene.addPass(this.renderPass);
-    this.composerScene.addPass(this.effectColorify);
-    
+    // this.renderPass = new THREE.RenderPass( this.scene, this.camera );
+    // this.composerScene.addPass(this.renderPass);
+    // this.composerScene.addPass(this.effectColorify);
+    this.d=document.createElement('div');
+
+    this.d.style.width='100%';
+
+    this.d.style.height="100%";
+    this.d.style.margin="0 0 0 0";
+    this.d.style.padding="0 0 0 0";
+    this.d.style.top="0";
+    this.d.style.left="0";
+    this.d.style.position="absolute";
+    this.d.style.opacity="0.0";
+
+    this.d.style.background='#000000';
+
+
 
     
 
     this.raycaster= new THREE.Raycaster();
     //this.raycaster.far=1700;
     this.mouse = new THREE.Vector2();
-    this.container.addEventListener( 'mousemove', bind(this.onMouseMove,this), false );
-    this.container.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
+    this.d.addEventListener( 'mousemove', bind(this.onMouseMove,this), false );
+    this.d.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
 	
 	
     this.controls = new THREE.OrbitControls( this.camera );
@@ -557,12 +571,12 @@ class Slider{
     //this.container.addEventListener('scroll',bind(this.onScroll,this),false);
 
 
-    this.container.addEventListener('touchstart', bind(function(event) {
+    this.d.addEventListener('touchstart', bind(function(event) {
       event.preventDefault();
       event.stopPropagation();
       this.initialPoint=event.changedTouches[0];
       },this), false);
-      this.container.addEventListener('touchend', bind(function(event) {
+      this.d.addEventListener('touchend', bind(function(event) {
       event.preventDefault();
       event.stopPropagation();
       this.finalPoint=event.changedTouches[0];
@@ -591,7 +605,8 @@ class Slider{
       }
       },this), false);
 window.addEventListener("resize",bind(this.onWindowResize,this), false);
-this.container.addEventListener('click', bind(this.onClick,this), false);
+this.d.addEventListener('click', bind(this.onClick,this), false);
+document.body.appendChild( this.d);
 this.animate();
 
   }
@@ -759,8 +774,8 @@ s = setInterval(()=>{
       }
       if(objName==this.index){
         this.moving = true;
-        this.effectColorify
-        TweenMax.to(this.effectColorify.uniforms['opacity'],2,{value:0});
+        
+        TweenMax.to(this.d.style,1.5,{opacity:1,onComplete:()=>{}});
         TweenMax.to(this.camera.position,2,{x:this.arrB[this.index].position.x,y:this.arrB[this.index].position.y,z:this.arrB[this.index].position.z,
           onComplete:()=>{
 
