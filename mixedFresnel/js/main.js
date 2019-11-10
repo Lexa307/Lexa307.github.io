@@ -22,7 +22,7 @@ class Slider{
     }
     
     
-    this.scene.background= new THREE.Color(0x000000);
+    this.scene.background= new THREE.Color(0x020202);
     this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -103,10 +103,10 @@ class Slider{
     let cbtx = new THREE.CubeTextureLoader().load([image.src,image.src,image.src,image.src,image.src,image.src]);
    
    
-    //let N = prompt("enter index of sphere (0 - 6)");
-     //if(parseInt(N,10)<7&&parseInt(N,10)>=0){
-      this.about.material.uniforms.tCube.value = cbtx;
-     //}
+    let N = prompt("enter index of sphere (0 - 6)");
+     if(parseInt(N,10)<7&&parseInt(N,10)>=0){
+      this.arrB[N].material.uniforms.tCube.value = cbtx;
+     }
 
     
     
@@ -232,8 +232,16 @@ class Slider{
     }
      
     
-   
-    this.ImgLoader = document.getElementById( 'imgLoader' );
+    let file_container = document.createElement('div');
+    file_container.className = 'file_upload';
+    file_container.style.position = 'absolute';
+    file_container.style.top = 0;
+    file_container.style.left = 0;
+    this.ImgLoader = document.createElement('input');
+    this.ImgLoader.type = 'file';
+    file_container.appendChild(this.ImgLoader);
+    
+    
     this.ImgLoader.addEventListener('change',bind(this.changeImaage,this), false);
     let statment = 0;
     this.container = document.createElement( 'div' );
@@ -639,6 +647,7 @@ class Slider{
         event.preventDefault();
       }
       },this), false);
+      document.body.appendChild(file_container);
 window.addEventListener("resize",bind(this.onWindowResize,this), false);
 window.addEventListener('click', bind(this.onClick,this), false);
 
@@ -903,7 +912,7 @@ s = setInterval(()=>{
       this.raycaster.setFromCamera( this.mouse, this.camera );
 
       if(!this.moving&&!this.inMenu&&!this.insideSphere.visible){
-        TweenMax.to(this.camera.position,1,{ease: Power2.easeOut,x:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).x,z:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).z,y:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).y,onUpdate:()=>{this.camera.lookAt(this.scene.position);}});
+        TweenMax.to(this.camera.position,1,{ease: Power2.easeOut,x:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.01).x,z:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.01).z,y:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.01).y,onUpdate:()=>{this.camera.lookAt(this.scene.position);}});
       }
 
       if(!this.moving&&this.insideSphere.visible){
