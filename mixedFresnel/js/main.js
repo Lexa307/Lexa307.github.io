@@ -653,7 +653,7 @@ window.addEventListener('click', bind(this.onClick,this), false);
 for(let i = 0; i< this.arrB.length; i++){
   this.arrB[i].material.uniforms.dispersionBlendMultiplier.value = 1;
 }
-this.arrB[3].material.uniforms.dispersionBlendMultiplier.value = 3;//face sphere
+this.arrB[3].material.uniforms.dispersionBlendMultiplier.value = 4;//face sphere
 this.arrB[2].material.uniforms.dispersionBlendMultiplier.value = 1.5;
 this.arrB[4].material.uniforms.dispersionBlendMultiplier.value = 1.5;
 
@@ -1112,14 +1112,14 @@ s = setInterval(()=>{
               this.recompileShader(this.arrB[this.index+1],50);
               this.recompileShader(this.arrB[0],30);
               this.recompileShader(this.arrB[this.index],30);
-              TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:3});//face sphere
+              TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:4});//face sphere
               TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             }else{
               this.recompileShader(this.arrB[this.index+1],50);
               this.recompileShader(this.arrB[this.index+2],30);
               this.recompileShader(this.arrB[this.index],30);
-              TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:3});//face sphere
+              TweenMax.to(this.arrB[this.index+1].material.uniforms.dispersionBlendMultiplier,1,{value:4});//face sphere
               TweenMax.to(this.arrB[this.index+2].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             }
@@ -1157,14 +1157,14 @@ s = setInterval(()=>{
               this.recompileShader(this.arrB[this.index-1],50);
               this.recompileShader(this.arrB[this.arrB.length-1],30);
               this.recompileShader(this.arrB[this.index],30);
-              TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:3});
+              TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:4});
               TweenMax.to(this.arrB[this.arrB.length-1].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             }else{
               this.recompileShader(this.arrB[this.index-1],50);
               this.recompileShader(this.arrB[this.index-2],30);
               this.recompileShader(this.arrB[this.index],30);
-              TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:3});
+              TweenMax.to(this.arrB[this.index-1].material.uniforms.dispersionBlendMultiplier,1,{value:4});
               TweenMax.to(this.arrB[this.index-2].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
               TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             }
@@ -1208,7 +1208,7 @@ s = setInterval(()=>{
             this.recompileShader(this.arrB[0],50);
             this.recompileShader(this.arrB[this.index],30);
             this.recompileShader(this.arrB[1],30);
-            TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:3});
+            TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             TweenMax.to(this.arrB[this.index].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             TweenMax.to(this.arrB[1].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             materialChanged = true;
@@ -1241,7 +1241,7 @@ s = setInterval(()=>{
             this.recompileShader(this.arrB[this.arrB.length-1],50);
             this.recompileShader(this.arrB[0],30);
             this.recompileShader(this.arrB[this.arrB.length-2],30);
-            TweenMax.to(this.arrB[this.arrB.length-1].material.uniforms.dispersionBlendMultiplier,1,{value:3});
+            TweenMax.to(this.arrB[this.arrB.length-1].material.uniforms.dispersionBlendMultiplier,1,{value:4});
             TweenMax.to(this.arrB[0].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             TweenMax.to(this.arrB[this.arrB.length-2].material.uniforms.dispersionBlendMultiplier,1,{value:1.5});
             materialChanged = true;
