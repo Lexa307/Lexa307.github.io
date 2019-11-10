@@ -14,10 +14,11 @@ class Slider{
     this.mobile = false;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
       this.mobile = true;
-      this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
+      this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
     }else{
       this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );//75
     }
+    this.insideCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
     
     this.scene.background= new THREE.Color(0x000000);
     this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
@@ -118,9 +119,11 @@ class Slider{
       this.time += this.fovard;
       if(this.time>100||this.time<0){this.fovard*=-1}
       this.camera.lookAt(this.focus);
+      this.renderer.render( this.scene, this.camera );
      }else{
-      this.camera.lookAt(this.target);
+      this.insideCamera.lookAt(this.target);
       this.insideSphere.material.uniforms.time.value = this.time;
+      this.renderer.render( this.scene, this.insideCamera );
      }
      
      
@@ -140,14 +143,14 @@ class Slider{
       
       //this.controls.update();
       //this.composerScene.render();
-      this.renderer.render( this.scene, this.camera );
+      
       this.stats.end();
 
   }
    generateGeometry(futureIndex){
      let newGeometry = new THREE.TextBufferGeometry( this.sceneParams[futureIndex].name, {
       font: this.font,
-        size: 30,
+        size: 40,
         height: 0,
         curveSegments: 12,
         bevelEnabled: false,
@@ -701,7 +704,7 @@ this.animate();
       let oceanGeometry = new THREE.TextBufferGeometry( 'Neurohive', {
         font: font,
         size: 30,
-        height: 5,
+        height: 1,
         curveSegments: 12,
         bevelEnabled: false,
         bevelThickness: 10,
@@ -830,7 +833,7 @@ s = setInterval(()=>{
       this.time = 9.95;
       TweenMax.to(this.d.style,1.5,{opacity:0,
         onComplete:()=>{
-       
+          this.camera.fov = 75
       }
     });
     let btn = document.createElement('img');
@@ -841,7 +844,7 @@ s = setInterval(()=>{
       TweenMax.to(this,1.5,{time:9.95});
      
      
-      TweenMax.to(this.camera.position,1.5,{x:-396.2,
+      TweenMax.to(this.insideCamera.position,1.5,{x:-396.2,
         onComplete:()=>{
          
   
@@ -859,8 +862,8 @@ s = setInterval(()=>{
     btn_container.appendChild(btn);
     TweenMax.to(btn.style,1.5,{opacity:1});
       TweenMax.to(this,5,{time:10.32})
-      this.camera.position.set(-396.2, 20, 0);
-      TweenMax.to(this.camera.position,3,{x:4,onComplete:()=>{
+      this.insideCamera.position.set(-396.2, 20, 0);
+      TweenMax.to(this.insideCamera.position,3,{x:4,onComplete:()=>{
         this.moving = false;     
       } })
     }
@@ -868,7 +871,7 @@ s = setInterval(()=>{
 
       let btn_container = document.getElementsByClassName('btn_start')[0];
       btn_container.remove();
-      
+      this.camera.fov = 95;
       this.moving = true;
       this.sceneVisibleControl(true);
       this.TGroup.visible = false;
@@ -899,9 +902,9 @@ s = setInterval(()=>{
       }
 
       if(!this.moving&&this.insideSphere.visible){
-        this.camera.position.z += ( this.mouse.x*4 - this.camera.position.z  ) * 1.1;
-        this.camera.position.y += ( - this.mouse.y+20 - this.camera.position.y ) * 1.1;
-        this.camera.lookAt( this.target );
+        this.insideCamera.position.z += ( this.mouse.x*4 - this.insideCamera.position.z  ) * 1.1;
+        this.insideCamera.position.y += ( - this.mouse.y+20 - this.insideCamera.position.y ) * 1.1;
+        this.insideCamera.lookAt( this.target );
       }
       
   
@@ -914,7 +917,7 @@ s = setInterval(()=>{
       TweenMax.to(this.last.material.uniforms.dispersion,2,{value:0.8,ease: Power2.easeOut});
       TweenMax.to(this.last.material.uniforms.refractionRatio,2,{value:0.93,ease: Power2.easeOut});
       const tmpConst = 0.215-0.075;
-      TweenMax.to(this.last.material.uniforms.uWiggleScale,2,{value:tmpConst,ease: Power2.easeInOut,onComplete:()=>{}});
+     // TweenMax.to(this.last.material.uniforms.uWiggleScale,2,{value:tmpConst,ease: Power2.easeInOut,onComplete:()=>{}});
 
       this.last = null;
       
@@ -927,12 +930,12 @@ s = setInterval(()=>{
       TweenMax.to(this.last.material.uniforms.dispersion,2,{value:0.8,ease: Power2.easeInOut});
             TweenMax.to(this.last.material.uniforms.refractionRatio,2,{value:0.93,ease: Power2.easeOut});
       const tmpConstP = 0.215-0.075;
-      TweenMax.to(this.last.material.uniforms.uWiggleScale,2,{value:tmpConstP,ease: Power2.easeInOut,onComplete:()=>{ }})
+     // TweenMax.to(this.last.material.uniforms.uWiggleScale,2,{value:tmpConstP,ease: Power2.easeInOut,onComplete:()=>{ }})
       this.last = intersects[ 0 ].object;
       TweenMax.to(intersects[ 0 ].object.material.uniforms.dispersion,2,{value:1,ease: Power2.easeInOut});
       TweenMax.to(intersects[ 0 ].object.material.uniforms.refractionRatio,2,{value:1,ease: Power2.easeOut});
       const tmpConstM = 0.215;
-      TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:tmpConstM,ease: Power2.easeInOut})
+      //TweenMax.to(intersects[ 0 ].object.material.uniforms.uWiggleScale,2,{value:tmpConstM,ease: Power2.easeInOut})
     }
     if(this.last==null&&intersects[ 0 ].object.name!='inside'){
      
@@ -940,7 +943,7 @@ s = setInterval(()=>{
       console.log(this.last.material.defines)
        TweenMax.to(this.last.material.uniforms.dispersion,2,{value:1,ease: Power2.easeInOut});
        TweenMax.to(this.last.material.uniforms.refractionRatio,2,{value:1,ease: Power2.easeOut});
-      TweenMax.to(this.last.material.uniforms.uWiggleScale,2,{value:0.215,ease: Power2.easeInOut})
+     // TweenMax.to(this.last.material.uniforms.uWiggleScale,2,{value:0.215,ease: Power2.easeInOut})
      
     }
 
@@ -1062,13 +1065,13 @@ s = setInterval(()=>{
           this.arrCurves[this.index],
           new THREE.Vector3( this.arrOrbits[this.index+1].getPointAt(0.5).x,  this.arrOrbits[this.index+1].getPointAt(0.5).y,  this.arrOrbits[this.index+1].getPointAt(0.5).z )
         );
-          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(this.index+1);}});
+          TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(this.index+1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index++;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
-          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
+          TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
           },
           
         onUpdate:()=>{
@@ -1111,13 +1114,13 @@ s = setInterval(()=>{
           this.arrCurves[this.index-1],
           new THREE.Vector3( this.arrOrbits[this.index-1].getPointAt(0.5).x,  this.arrOrbits[this.index-1].getPointAt(0.5).y,  this.arrOrbits[this.index-1].getPointAt(0.5).z )
         );
-        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(this.index-1);}});
+        TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(this.index-1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index--;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
-          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
+          TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
          },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
@@ -1163,13 +1166,13 @@ s = setInterval(()=>{
           this.arrCurves[this.index],
           new THREE.Vector3( this.arrOrbits[0].getPointAt(0.5).x,  this.arrOrbits[0].getPointAt(0.5).y,  this.arrOrbits[0].getPointAt(0.5).z )
         );
-        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(0);}});
+        TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(0);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=0;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
-          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
+          TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
           },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
@@ -1198,13 +1201,13 @@ s = setInterval(()=>{
           this.arrCurves[this.arrOrbits.length-1],
           new THREE.Vector3( this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).x,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).y,  this.arrOrbits[this.arrOrbits.length-1].getPointAt(0.5).z )
         );
-        TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:0,onComplete:()=>{this.generateGeometry(this.arrOrbits.length-1);}});
+        TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(this.arrOrbits.length-1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=this.arrOrbits.length-1;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
-          TweenMax.to(this.oceanText.material.uniforms.opacity,1,{value:1});
+          TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
           
         },onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){

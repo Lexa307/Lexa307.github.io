@@ -12,10 +12,10 @@ THREE.OceanShader = {
 		"color": { value: new THREE.Color(0xFFFFFF) },
 		"time": { type: 'f', value: 0 },
         "opacity": { type: 'f', value: 1 },
-        "frequency1": { type: 'f', value: 0.035 },
-        "amplitude1": { type: 'f', value: 20.0 },
+        "frequency1": { type: 'f', value: 0.03 },
+        "amplitude1": { type: 'f', value: 10.0 },
         "frequency2": { type: 'f', value: 0.025 },
-        "amplitude2": { type: 'f', value: 70.0 },
+        "amplitude2": { type: 'f', value: 0.0 },
 	},
 
     vertexShader:`// Variable qualifiers that come with the shader
