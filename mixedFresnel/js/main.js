@@ -40,8 +40,8 @@ class Slider{
     this.sceneParams =
     {
       0:{
-        name:"VKontakte",
-        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/78.jpg"},
+        name:"TWP",
+        uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/7667.jpg"},
 
       },
       1:{
