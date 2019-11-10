@@ -824,17 +824,39 @@ s = setInterval(()=>{
       
       this.insideSphere.material.uniforms.envMap.value = this.arrB[this.index].material.uniforms.tCube.value;
       this.sceneVisibleControl(false);
-      this.camera.position.set(-396.2, 20, 0);
       this.camera.position.z = 0;
       this.insideSphere.visible = true;
       this.time = 9.95;
-      this.camera.position.set(-396.2, 20, 0);
       TweenMax.to(this.d.style,1.5,{opacity:0,
         onComplete:()=>{
        
-      }});
-
-      
+      }
+    });
+    let btn = document.createElement('img');
+    btn.id="btn";
+    btn.src ="textures/back_gray.svg";
+    btn.addEventListener('click',bind(()=>{ 
+      this.moving = true;
+      TweenMax.to(this,1.5,{time:9.95});
+     
+     
+      TweenMax.to(this.camera.position,1.5,{x:-396.2,
+        onComplete:()=>{
+         
+  
+      } })
+      TweenMax.to(this.d.style,1.5,{opacity:1,
+      onComplete:()=>{
+        this.back();
+      }
+  });
+},this));
+    let btn_container = document.createElement('div');
+    btn_container.className = 'btn_start';
+    document.body.appendChild(btn_container);
+    //console.log(btn_container);
+    btn_container.appendChild(btn);
+    TweenMax.to(btn.style,1.5,{opacity:1});
       TweenMax.to(this,5,{time:10.32})
       this.camera.position.set(-396.2, 20, 0);
       TweenMax.to(this.camera.position,3,{x:4,onComplete:()=>{
@@ -842,14 +864,29 @@ s = setInterval(()=>{
       } })
     }
     back(){
-     
+
+      let btn_container = document.getElementsByClassName('btn_start')[0];
+      btn_container.remove();
+      
       this.moving = true;
-      TweenMax.to(this,5,{time:9.95})//895
+      this.sceneVisibleControl(true);
+      this.TGroup.visible = false;
+      this.insideSphere.visible = false;
+      this.camera.position.set(this.arrB[this.index].position.x*1.1,this.arrB[this.index].position.y,this.arrB[this.index].position.z*1.1);
+      TweenMax.to(this.camera.position,1.5,{ease: Power2.easeOut,x:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).x,z:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).z,y:this.arrOrbits[this.index].getPointAt(0.5 + this.mouse.x*0.1).y,onUpdate:()=>{this.camera.lookAt(this.scene.position);},
+      onComplete:()=>{
+        this.moving = false;
+      }});
+      TweenMax.to(this.d.style,1.5,{opacity:0,
+        onComplete:()=>{
+          
+        }
+   
+     
       //this.camera.position.set(-396.2, 20,  0)
-      TweenMax.to(this.camera.position,3,{x:-396.2,onComplete:()=>{
-        this.moving = false;     
-      } })
-    }
+     
+    })
+  }
   
     onMouseMove ( event ) {
       this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
