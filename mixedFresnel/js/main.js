@@ -40,7 +40,7 @@ class Slider{
     this.sceneParams =
     {
       0:{
-        name:"TWP",
+        name:"VK",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/7667.jpg"},
 
       },
@@ -57,7 +57,7 @@ class Slider{
 
       },
       3:{
-        name:"Prisma",
+        name:"TWP",
         uniformsOut:{cubeMap:"https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame 9.9.jpg"},
 
 
