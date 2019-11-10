@@ -15,10 +15,12 @@ class Slider{
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
       this.mobile = true;
       this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
+      this.insideCamera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
     }else{
       this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 60000 );//75
+      this.insideCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
     }
-    this.insideCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
+    
     
     this.scene.background= new THREE.Color(0x000000);
     this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
@@ -635,7 +637,7 @@ class Slider{
       }
       },this), false);
 window.addEventListener("resize",bind(this.onWindowResize,this), false);
-this.d.addEventListener('click', bind(this.onClick,this), false);
+window.addEventListener('click', bind(this.onClick,this), false);
 
 this.animate();
 
