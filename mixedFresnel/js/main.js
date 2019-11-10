@@ -634,6 +634,9 @@ class Slider{
         //this.indexControl('back');
       /*СВАЙП ВНИЗ*/}
       }
+      }else{
+        event.target.click();
+        event.preventDefault();
       }
       },this), false);
 window.addEventListener("resize",bind(this.onWindowResize,this), false);
