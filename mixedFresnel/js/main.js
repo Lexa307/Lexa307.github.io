@@ -144,7 +144,7 @@ class Slider{
      for(let i=0;i<7;i++){
 
       this.arrB[i].material.uniforms.time.value = this.time;
-      this.arrB[i].rotation.x+=0.001;
+      //this.arrB[i].rotation.x+=0.001;
       
      }
 
@@ -174,12 +174,12 @@ class Slider{
         bevelOffset: 0,
         bevelSegments: 5
     } );
-    
+    newGeometry.word = this.sceneParams[futureIndex].name;
     let tmpMAterial = this.oceanText.material;
     this.Cgroup.remove(this.oceanText);
     this.oceanText = new THREE.Mesh(newGeometry,tmpMAterial);
     this.Cgroup.add(this.oceanText);
-    this.oceanText.position.x=-100;
+    this.oceanText.position.x=((newGeometry.word.length*30)/2)*-1;
     this.oceanText.position.y = 0;
 
   }
