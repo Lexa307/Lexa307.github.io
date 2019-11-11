@@ -131,7 +131,7 @@ class Slider{
         this.contact.material.uniforms.time.value+=0.025;
       }
       
-      if(this.time>100||this.time<0){this.fovard*=-1}
+      if(this.time>24.5||this.time<17){this.fovard*=-1}
       this.camera.lookAt(this.focus);
       this.renderer.render( this.scene, this.camera );
      }else{
@@ -191,7 +191,7 @@ class Slider{
   Init(){
     this.focus = new THREE.Vector3(0,0,0);
     this.container;
-    this.time = 18.95;
+    this.time = 17;
     this.index = 3;
     this.spheres = [];
     this.moving = false;
@@ -878,7 +878,7 @@ s = setInterval(()=>{
       } })
     }
     back(){
-
+      this.time = 17;
       let btn_container = document.getElementsByClassName('btn_start')[0];
       btn_container.remove();
       this.camera.fov = 95;
