@@ -22,7 +22,8 @@ THREE.FresnelShader = {
 		"refractionRatio":{ type: 'f', value: 0.8 }, 
 		"dispersion": { type: 'f', value: 0.8 }, 
 		"dispersionBlendMultiplier":{ type: 'f', value: 20.0 },
-		"cameraPosition":{value:null}
+		"cameraPosition":{value:null},
+		
 
 	},
 	defines: {

@@ -119,6 +119,18 @@ class Slider{
      this.stats.begin();
      if(!this.insideSphere.visible){
       this.time += this.fovard;
+      if(!this.menuTime.about){
+        this.about.material.uniforms.time.value+=0.05;
+      }
+      
+      if(!this.menuTime.works){
+        this.works.material.uniforms.time.value+=0.05;
+      }
+      
+      if(!this.menuTime.contact){
+        this.contact.material.uniforms.time.value+=0.05;
+      }
+      
       if(this.time>100||this.time<0){this.fovard*=-1}
       this.camera.lookAt(this.focus);
       this.renderer.render( this.scene, this.camera );
@@ -135,6 +147,7 @@ class Slider{
       this.arrB[i].rotation.x+=0.001;
       
      }
+
      //if(this.fontLoaded){
        // this.about.material.uniforms.time.value = this.time;
         this.TGroup.lookAt(this.camera.position);
@@ -323,7 +336,8 @@ class Slider{
 		          "dispersion": { type: 'f', value: 0.8 }, 
               "dispersionBlendMultiplier":{ type: 'f', value: 3.0 },
               "cameraPosition":{value:this.camera.position},
-              "tCube": 			{ type: "t", value:this.sceneParams[i].uniformsOut.tCube, } //  textureCube }
+              "tCube": 			{ type: "t", value:this.sceneParams[i].uniformsOut.tCube, }, //  textureCube }
+              
             },
           vertexShader:   this.fShader.vertexShader,
           fragmentShader: this.fShader.fragmentShader
@@ -677,40 +691,7 @@ this.animate();
     }
     let loader = new THREE.FontLoader();
 
-    let textmaterial = new THREE.ShaderMaterial( 
-      {
-        defines: {
-          DISPERSION_SAMPLES:20
-        },
-          uniforms: 			{
-            "mRefractionRatio": { type: "f", value: 1.02 },
-            "mFresnelBias": 	{ type: "f", value: 1.0 },
-            "mFresnelPower": 	{ type: "f", value: 2.0 },
-            "mFresnelScale": 	{ type: "f", value: 1.0 },
-            "time": { type: 'f', value: 9.95 },
-            "progress": { type: 'f', value: 1.0 },
-            "uWiggleScale": { type: 'f', value: 0.0 },
-            "uWiggleDisplacement": { type: 'f', value: 0.01 },
-            "uWiggleSpeed": { type: 'f', value: 0.001 },
-            "refractionRatio":{ type: 'f', value: 0.93 }, 
-            "dispersion": { type: 'f', value: 0.8 }, 
-            "dispersionBlendMultiplier":{ type: 'f', value: 6.0 },
-            "cameraPosition":{value:this.camera.position},
-            "tCube": 			{ type: "t", value:new THREE.CubeTextureLoader()
-            .load( [
-                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
-                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
-                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
-                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
-                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg",
-                    "https://lexa307.github.io/mixedFresnel/textures/cubemaps/Frame1.jpg"
-            ],()=>{
-              resCounter++;
-            } ), } //  textureCube }
-          },
-        vertexShader:   this.fShader.vertexShader,
-        fragmentShader: this.fShader.fragmentShader
-      }   );
+    
     let oceanMaterial = new THREE.ShaderMaterial({
       uniforms:THREE.OceanShader.uniforms,
       vertexShader: THREE.OceanShader.vertexShader,
@@ -735,7 +716,7 @@ this.animate();
         let geometry = new THREE.TextBufferGeometry( 'About', {
           font: font,
           size: 80,
-          height: 5,
+          height: 1,
           curveSegments: 12,
           bevelEnabled: false,
           bevelThickness: 10,
@@ -747,7 +728,7 @@ this.animate();
         let geometry1 = new THREE.TextBufferGeometry( 'Works', {
           font: font,
           size: 80,
-          height: 5,
+          height: 1,
           curveSegments: 12,
           bevelEnabled: false,
           bevelThickness: 10,
@@ -759,7 +740,7 @@ this.animate();
         let geometry2 = new THREE.TextBufferGeometry( 'Contact', {
           font: font,
           size: 80,
-          height: 5,
+          height: 1,
           curveSegments: 12,
           bevelEnabled: false,
           bevelThickness: 10,
@@ -769,15 +750,15 @@ this.animate();
         } );
       
         
-        this.about = new THREE.Mesh(geometry,textmaterial);
+        this.about = new THREE.Mesh(geometry,oceanMaterial.clone());
         this.about.name = 'about';
-        this.works = new THREE.Mesh(geometry1,textmaterial);
+        this.works = new THREE.Mesh(geometry1,oceanMaterial.clone());
         this.works.name = 'works';
-        this.contact = new THREE.Mesh(geometry2,textmaterial);
+        this.contact = new THREE.Mesh(geometry2,oceanMaterial.clone());
         this.contact.name = 'contact';
 
         this.oceanText = new THREE.Mesh(oceanGeometry,oceanMaterial);
-        
+        this.menuTime = {'about':0,'works':0,'contact':0};
 
         //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
         
@@ -788,7 +769,7 @@ this.animate();
 
 let s;
 s = setInterval(()=>{
-  if(resCounter==9){
+  if(resCounter==8){
     clearInterval(s);
     this.Init();
     
@@ -974,13 +955,19 @@ s = setInterval(()=>{
   }
   intersects = this.raycaster.intersectObjects(this.TGroup.children );
   if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
-    console.log('onAbout')
+    this.menuTime.about = 1;
+    this.fill(new THREE.Color(0x368cd4),1,this.about);
+    TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
   }
   if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
-    console.log('onWorks')
+    this.menuTime.works = 1;
+    this.fill(new THREE.Color(0x368cd4),1,this.works);
+    TweenMax.to(this.works.material.uniforms.time,1,{value:this.works.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.works = 0;}})
   }
   if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
-    console.log('onContact')
+    this.menuTime.contact = 1;
+    this.fill(new THREE.Color(0x368cd4),1,this.contact);
+    TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
   }
   
 
@@ -1267,6 +1254,18 @@ s = setInterval(()=>{
           }   );
           Sobject.material = tmpMaterial;
           
+    }
+    fill(color,time,textobj){
+    
+      let menutexts = ['about','works','contact'];
+      for(let i = 0;i<menutexts.length;i++){
+        if(textobj.name!=menutexts[i]){
+         // TweenMax.to(this[menutexts[i]].material.uniforms.color.value,time,{r:255,g:255,b:255});
+         this[menutexts[i]].material.uniforms.color.value = new THREE.Color();
+        }
+      }
+      TweenMax.to(textobj.material.uniforms.color.value,time,{r:color.r,g:color.g,b:color.b});
+      
     }
 
     
