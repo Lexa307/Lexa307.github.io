@@ -120,15 +120,15 @@ class Slider{
      if(!this.insideSphere.visible){
       this.time += this.fovard;
       if(!this.menuTime.about){
-        this.about.material.uniforms.time.value+=0.05;
+        this.about.material.uniforms.time.value+=0.025;
       }
       
       if(!this.menuTime.works){
-        this.works.material.uniforms.time.value+=0.05;
+        this.works.material.uniforms.time.value+=0.025;
       }
       
       if(!this.menuTime.contact){
-        this.contact.material.uniforms.time.value+=0.05;
+        this.contact.material.uniforms.time.value+=0.025;
       }
       
       if(this.time>100||this.time<0){this.fovard*=-1}
@@ -415,7 +415,9 @@ class Slider{
             this.TGroup.position
           );
           this.TGroup.visible = true;  
-          
+          this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+          this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+          this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
  
           
           TweenMax.to(tmpfloat,2,{value:1,ease: Power2.easeOut,
@@ -579,27 +581,30 @@ class Slider{
     this.camera.position.set( this.arrOrbits[this.index].getPointAt(0.5).x,this.arrOrbits[this.index].getPointAt(0.5).y,this.arrOrbits[this.index].getPointAt(0.5).z);
     this.camera.lookAt(this.scene.position);
     this.TGroup.add(this.about);
-    this.about.position.x=-200;
-    this.about.position.y = 0;
+    this.about.position.x=-1200;
+    this.about.position.y = 100;
     this.TGroup.add(this.works);
-    this.works.position.x=-200;
+    this.works.position.x=-1200;
     this.works.position.y = -100;
     this.TGroup.add(this.contact);
-    this.contact.position.x=-200;
-    this.contact.position.y = -200;
-    let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 350, 60 ),new THREE.MeshBasicMaterial({color:0x000000}))
+    this.contact.position.x=-1200;
+    this.contact.position.y = -300;
+    let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 350, 60 ),new THREE.MeshBasicMaterial({color:0x020202}))
     aboutPlane.name = 'about';
-    aboutPlane.position.y = 20
+    aboutPlane.position.x = -1000;
+    aboutPlane.position.y = 120;
     this.TGroup.add(aboutPlane);
 
-    let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 360, 60 ),new THREE.MeshBasicMaterial({color:0x000000}))
+    let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 360, 60 ),new THREE.MeshBasicMaterial({color:0x020202}))
     worksPlane.name = 'works';
+    worksPlane.position.x = -1000;
     worksPlane.position.y = -65
     this.TGroup.add(worksPlane);
 
-    let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 390, 60 ),new THREE.MeshBasicMaterial({color:0x000000}))
+    let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 390, 60 ),new THREE.MeshBasicMaterial({color:0x020202}))
     contactPlane.name = 'contact';
-    contactPlane.position.y = -180
+    contactPlane.position.x = -1000;
+    contactPlane.position.y = -270
     this.TGroup.add(contactPlane);
 
 
@@ -956,17 +961,17 @@ s = setInterval(()=>{
   intersects = this.raycaster.intersectObjects(this.TGroup.children );
   if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
     this.menuTime.about = 1;
-    this.fill(new THREE.Color(0x368cd4),1,this.about);
+    this.fill(new THREE.Color(0xFFFFFF),1,this.about);
     TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
   }
   if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
     this.menuTime.works = 1;
-    this.fill(new THREE.Color(0x368cd4),1,this.works);
+    this.fill(new THREE.Color(0xFFFFFF),1,this.works);
     TweenMax.to(this.works.material.uniforms.time,1,{value:this.works.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.works = 0;}})
   }
   if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
     this.menuTime.contact = 1;
-    this.fill(new THREE.Color(0x368cd4),1,this.contact);
+    this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
     TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
   }
   
@@ -1261,7 +1266,7 @@ s = setInterval(()=>{
       for(let i = 0;i<menutexts.length;i++){
         if(textobj.name!=menutexts[i]){
          // TweenMax.to(this[menutexts[i]].material.uniforms.color.value,time,{r:255,g:255,b:255});
-         this[menutexts[i]].material.uniforms.color.value = new THREE.Color();
+         this[menutexts[i]].material.uniforms.color.value = new THREE.Color(0xCBCBCB);
         }
       }
       TweenMax.to(textobj.material.uniforms.color.value,time,{r:color.r,g:color.g,b:color.b});
