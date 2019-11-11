@@ -582,29 +582,29 @@ class Slider{
     this.camera.lookAt(this.scene.position);
     this.TGroup.add(this.about);
     this.about.position.x=-1200;
-    this.about.position.y = 100;
+    this.about.position.y = 150;
     this.TGroup.add(this.works);
     this.works.position.x=-1200;
     this.works.position.y = -100;
     this.TGroup.add(this.contact);
     this.contact.position.x=-1200;
-    this.contact.position.y = -300;
-    let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 350, 60 ),new THREE.MeshBasicMaterial({color:0x020202}))
+    this.contact.position.y = -350;
+    let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 650, 120 ),new THREE.MeshBasicMaterial({color:0x020202}))
     aboutPlane.name = 'about';
-    aboutPlane.position.x = -1000;
-    aboutPlane.position.y = 120;
+    aboutPlane.position.x = -870;
+    aboutPlane.position.y = 200;
     this.TGroup.add(aboutPlane);
 
-    let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 360, 60 ),new THREE.MeshBasicMaterial({color:0x020202}))
+    let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202}))
     worksPlane.name = 'works';
-    worksPlane.position.x = -1000;
-    worksPlane.position.y = -65
+    worksPlane.position.x = -800;
+    worksPlane.position.y = -55
     this.TGroup.add(worksPlane);
 
-    let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 390, 60 ),new THREE.MeshBasicMaterial({color:0x020202}))
+    let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 790, 120 ),new THREE.MeshBasicMaterial({color:0x020202}))
     contactPlane.name = 'contact';
-    contactPlane.position.x = -1000;
-    contactPlane.position.y = -270
+    contactPlane.position.x = -800;
+    contactPlane.position.y = -300
     this.TGroup.add(contactPlane);
 
 
@@ -720,7 +720,7 @@ this.animate();
       } );
         let geometry = new THREE.TextBufferGeometry( 'About', {
           font: font,
-          size: 80,
+          size: 150,
           height: 1,
           curveSegments: 12,
           bevelEnabled: false,
@@ -732,7 +732,7 @@ this.animate();
 
         let geometry1 = new THREE.TextBufferGeometry( 'Works', {
           font: font,
-          size: 80,
+          size: 150,
           height: 1,
           curveSegments: 12,
           bevelEnabled: false,
@@ -744,7 +744,7 @@ this.animate();
 
         let geometry2 = new THREE.TextBufferGeometry( 'Contact', {
           font: font,
-          size: 80,
+          size: 150,
           height: 1,
           curveSegments: 12,
           bevelEnabled: false,
