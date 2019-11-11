@@ -152,7 +152,10 @@ class Slider{
        // this.about.material.uniforms.time.value = this.time;
         this.TGroup.lookAt(this.camera.position);
         //
-        this.oceanText.material.uniforms.time.value = this.time*10;
+        if(!this.oceanText.animating){
+          this.oceanText.material.uniforms.time.value += Math.abs(this.fovard*10);
+        }
+        
         this.Cgroup.lookAt(this.camera.position);
      //}
       
@@ -211,9 +214,9 @@ class Slider{
       progress: 1,
       animtime: 5,
       roughness:0.5,
-      uWiggleScale:  0.140 ,
+      uWiggleScale:  0.241 ,
       uWiggleDisplacement: 10.995,
-      uWiggleSpeed:  0.001 ,
+      uWiggleSpeed:  0.125 ,
       refractionRatio: 0.93,
       dispersionSamples: 30,
       dispersionBlendMultiplier:3,
@@ -329,9 +332,9 @@ class Slider{
               "mFresnelScale": 	{ type: "f", value: 1.0 },
               "time": { type: 'f', value: 9.95 },
               "progress": { type: 'f', value: 1.0 },
-              "uWiggleScale": { type: 'f', value: 0.140 },
+              "uWiggleScale": { type: 'f', value: 0.241 },
               "uWiggleDisplacement": { type: 'f', value: 0.01 },
-              "uWiggleSpeed": { type: 'f', value: 0.001 },
+              "uWiggleSpeed": { type: 'f', value: 0.125 },
               "refractionRatio":{ type: 'f', value: 0.93 }, 
 		          "dispersion": { type: 'f', value: 0.8 }, 
               "dispersionBlendMultiplier":{ type: 'f', value: 3.0 },
@@ -763,6 +766,7 @@ this.animate();
         this.contact.name = 'contact';
 
         this.oceanText = new THREE.Mesh(oceanGeometry,oceanMaterial);
+        this.oceanText.animating = false;
         this.menuTime = {'about':0,'works':0,'contact':0};
 
         //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
@@ -953,7 +957,10 @@ s = setInterval(()=>{
      
     }
 
-
+    if(parseInt(intersects[ 0 ].object.name,10)  == this.index){
+      this.oceanText.animating = true;
+      TweenMax.to(this.oceanText.material.uniforms.time,1,{value:this.oceanText.material.uniforms.time.value+Math.PI,onComplete:()=>{this.oceanText.animating = false;}})
+    }
     
 
     
