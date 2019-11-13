@@ -700,6 +700,7 @@ this.animate();
    
 
     }else{
+      this.adaptMode = false;
       this.about.p.position.x = -870;
       this.works.p.position.x = -800;
       this.contact.p.position.x = -800;
@@ -818,7 +819,8 @@ s = setInterval(()=>{
   }
 
   onClick(event){
-    this.raycaster.setFromCamera( this.mouse, this.camera );
+    if(!this.inMenu){
+      this.raycaster.setFromCamera( this.mouse, this.camera );
     let intersects = this.raycaster.intersectObjects(this.scene.children );
     if(intersects.length>0){
       let objName = parseInt(intersects[ 0 ].object.name,10);
@@ -853,6 +855,22 @@ s = setInterval(()=>{
         })
       }
     }
+    }else{
+      this.raycaster.setFromCamera( this.mouse, this.camera );
+      let intersects = this.raycaster.intersectObjects(this.TGroup.children );
+      if(intersects.length>0){
+        if(intersects[0].object.name == 'about'){
+          console.log('clicked about');
+        }
+        if(intersects[0].object.name == 'works'){
+          console.log('clicked works');
+        }
+        if(intersects[0].object.name == 'contact'){
+          console.log('cliked contact');
+        }
+      }
+    }
+    
   }
     sceneVisibleControl(statement){
       for(let i = 0; i<this.scene.children.length;i++){
