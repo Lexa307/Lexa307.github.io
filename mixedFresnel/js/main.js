@@ -1132,11 +1132,19 @@ s = setInterval(()=>{
         );
           TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(this.index+1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
+       this.arrB[this.index+1].visible = true;
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index++;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
           TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
+          if(this.adaptMode){
+            for(let i = 0; i<this.arrB.length; i++){
+              if(i!=this.index){
+                this.arrB[i].visible = false;
+              }
+            }
+          }
           },
           
         onUpdate:()=>{
@@ -1181,11 +1189,19 @@ s = setInterval(()=>{
         );
         TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(this.index-1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
+       this.arrB[this.index-1].visible = true;
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index--;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
           TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
+          if(this.adaptMode){
+            for(let i = 0; i<this.arrB.length; i++){
+              if(i!=this.index){
+                this.arrB[i].visible = false;
+              }
+            }
+          }
          },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
@@ -1233,11 +1249,19 @@ s = setInterval(()=>{
         );
         TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(0);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index+1].position.x,y:this.arrB[this.index+1].position.y,z:this.arrB[this.index+1].position.z,onUpdate:()=>{}})
+       this.arrB[0].visible = true;
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=0;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
           TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
+          if(this.adaptMode){
+            for(let i = 0; i<this.arrB.length; i++){
+              if(i!=this.index){
+                this.arrB[i].visible = false;
+              }
+            }
+          }
           },
         onUpdate:()=>{
           this.camera.lookAt(this.scene.position);
@@ -1268,11 +1292,19 @@ s = setInterval(()=>{
         );
         TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:0,onComplete:()=>{this.generateGeometry(this.arrOrbits.length-1);}});
        // TweenMax.to(this.focus,2,{ease: Power2.easeInOut,x:this.arrB[this.index-1].position.x,y:this.arrB[this.index-1].position.y,z:this.arrB[this.index-1].position.z,onUpdate:()=>{}})
+       this.arrB[this.arrOrbits.length-1].visible = true;
         TweenMax.to(floatIndex,2,{ease: Power2.easeInOut,value:1,onComplete:()=>{
           this.index=this.arrOrbits.length-1;
           this.moving = false;
           this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale);
           TweenMax.to(this.oceanText.material.uniforms.opacity,0.5,{value:1});
+          if(this.adaptMode){
+            for(let i = 0; i<this.arrB.length; i++){
+              if(i!=this.index){
+                this.arrB[i].visible = false;
+              }
+            }
+          }
           
         },onUpdate:()=>{this.camera.lookAt(this.scene.position);this.camera.position.set(curve.getPointAt(floatIndex.value).x,curve.getPointAt(floatIndex.value).y,curve.getPointAt(floatIndex.value).z);this.camera.lookAt(this.scene.position);}})
           if(!materialChanged){
