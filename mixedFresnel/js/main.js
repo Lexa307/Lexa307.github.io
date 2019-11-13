@@ -668,6 +668,76 @@ class Slider{
       }
       else {
       if (this.finalPoint.pageY < this.initialPoint.pageY){
+        if(!this.moving){
+          this.moving = true;
+          if(!this.inMenu){
+            
+            let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
+            newPos.x*=1.1;
+            newPos.z*=1.1;
+            this.TGroup.position.set(newPos.x,500,newPos.z);
+            let tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
+            let tmpfloat = {value:0};
+            let focusBezier =  new THREE.QuadraticBezierCurve3(
+              new THREE.Vector3(),
+              tmpControlBezier,
+              this.TGroup.position
+            );
+            this.TGroup.visible = true;  
+            this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+            this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+            this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+   
+            
+            TweenMax.to(tmpfloat,2,{value:1,ease: Power2.easeOut,
+              onUpdate:()=>{
+                this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
+  
+                
+              },
+              onComplete:()=>{
+                this.inMenu = true;
+                this.moving = false;
+                for(let i = 0; i<this.arrB.length;i++){
+                  this.arrB[i].visible = false;
+                }
+                
+              }});
+          }else{
+  
+            let tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
+            let tmpfloat = {value:0};
+            let focusBezier =  new THREE.QuadraticBezierCurve3(
+              this.TGroup.position,
+              tmpControlBezier,
+              new THREE.Vector3(),
+            );
+            if(this.adaptMode){
+              this.arrB[this.index].visible = true;  
+            }else{
+              for(let i = 0; i<this.arrB.length;i++){
+                this.arrB[i].visible = true;
+              }
+            }
+            
+   
+            
+            TweenMax.to(tmpfloat,2,{value:1,ease: Power2.easeInOut,
+              onUpdate:()=>{
+                this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
+                
+              },
+              onComplete:()=>{
+                this.TGroup.visible = false;
+                this.inMenu = false;
+                this.moving = false;
+                //this.oceanText.position.set(this.camera.position.x*0.98,300,this.camera.position.z*0.98)
+              }});
+  
+          }
+          
+          
+        }
         //this.indexControl('next');
       /*СВАЙП ВВЕРХ*/}
       else{
