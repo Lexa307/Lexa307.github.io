@@ -24,7 +24,7 @@ class Slider{
     
     
     this.scene.background= new THREE.Color(0x020202);
-    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl2', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
+    this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'})
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     
@@ -264,6 +264,7 @@ class Slider{
     let statment = 0;
     this.container = document.createElement( 'div' );
     document.body.appendChild( this.container );//  размещение контейнера в body
+    this.renderer.domElement.id = 'webgl';
     this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
     this.stats = new Stats();
     document.body.appendChild( this.stats.dom );
