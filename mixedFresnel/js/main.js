@@ -12,6 +12,7 @@ class Slider{
     
     this.scene = new THREE.Scene();
     this.mobile = false;
+    this.adaptMode = false;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
       this.mobile = true;
       this.camera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
@@ -94,7 +95,7 @@ class Slider{
     
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
-
+    this.adapt();
   }
   
   changeImaage(){
@@ -186,6 +187,7 @@ class Slider{
     this.oceanText.position.y = 0;
 
   }
+
 
 
   Init(){
@@ -596,18 +598,21 @@ class Slider{
     aboutPlane.name = 'about';
     aboutPlane.position.x = -870;
     aboutPlane.position.y = 200;
+    this.about.p = aboutPlane;
     this.TGroup.add(aboutPlane);
 
     let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202}))
     worksPlane.name = 'works';
     worksPlane.position.x = -800;
-    worksPlane.position.y = -55
+    worksPlane.position.y = -55;
+    this.works.p = worksPlane;
     this.TGroup.add(worksPlane);
 
     let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 790, 120 ),new THREE.MeshBasicMaterial({color:0x020202}))
     contactPlane.name = 'contact';
     contactPlane.position.x = -800;
     contactPlane.position.y = -300
+    this.contact.p = contactPlane;
     this.TGroup.add(contactPlane);
 
 
@@ -678,9 +683,31 @@ for(let i = 0; i< this.arrB.length; i++){
 this.arrB[3].material.uniforms.dispersionBlendMultiplier.value = 4;//face sphere
 this.arrB[2].material.uniforms.dispersionBlendMultiplier.value = 1.5;
 this.arrB[4].material.uniforms.dispersionBlendMultiplier.value = 1.5;
-
+this.adapt();
 this.animate();
 
+  }
+  adapt(){
+
+    if(window.innerWidth<=1024){
+      this.adaptMode = true;
+      this.about.p.position.x = 0;
+      this.works.p.position.x = 0;
+      this.contact.p.position.x = 0;
+      this.about.position.x = -350;
+      this.works.position.x = -370;
+      this.contact.position.x = -380;
+   
+
+    }else{
+      this.about.p.position.x = -870;
+      this.works.p.position.x = -800;
+      this.contact.p.position.x = -800;
+      this.about.position.x=-1200;
+      this.works.position.x=-1200;
+      this.contact.position.x = -1200;
+
+    }
   }
 
   LoadResource(){
