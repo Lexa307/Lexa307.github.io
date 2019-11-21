@@ -23,7 +23,6 @@ function bind(func, context) {
       }
       
       
-<<<<<<< HEAD
       this.scene.background= new THREE.Color(0x020202);
       this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'})
       this.renderer.shadowMap.enabled = true;
@@ -36,42 +35,9 @@ function bind(func, context) {
       this.works = null;
       this.contact = null;
       this.tCubes = [];
-=======
-      if(this.time>24.5||this.time<17){this.fovard*=-1}
-      this.camera.lookAt(this.focus);
-      this.renderer.render( this.scene, this.camera );
-      this.TGroup.lookAt(this.camera.position);
-      
-     }else{
-      this.insideCamera.lookAt(this.target);
-      this.TGroup.lookAt(this.insideCamera.position);
-      this.insideSphere.material.uniforms.time.value = this.time;
-      this.renderer.render( this.scene, this.insideCamera );
-     }
-     
-     
-     for(let i=0;i<7;i++){
-
-      this.arrB[i].material.uniforms.time.value = this.time;
-      //this.arrB[i].rotation.x+=0.001;
-      
-     }
-
-     //if(this.fontLoaded){
-       // this.about.material.uniforms.time.value = this.time;
-        
-        //
-        if(!this.oceanText.animating){
-          this.oceanText.material.uniforms.time.value += Math.abs(this.fovard*10);
-        }
-        
-        this.Cgroup.lookAt(this.camera.position);
-     //}
->>>>>>> master
       
   
       
-<<<<<<< HEAD
       this.sceneParams =
       {
         0:{
@@ -120,52 +86,6 @@ function bind(func, context) {
     this.LoadResource();
   
   
-=======
-      this.stats.end();
-
-  }
-   generateGeometry(futureIndex){
-     let newGeometry = new THREE.TextBufferGeometry( this.sceneParams[futureIndex].name, {
-      font: this.font,
-        size: 40,
-        height: 0,
-        curveSegments: 12,
-        bevelEnabled: false,
-        bevelThickness: 10,
-        bevelSize: 8,
-        bevelOffset: 0,
-        bevelSegments: 5
-    } );
-    newGeometry.word = this.sceneParams[futureIndex].name;
-    let tmpMAterial = this.oceanText.material;
-    this.Cgroup.remove(this.oceanText);
-    this.oceanText = new THREE.Mesh(newGeometry,tmpMAterial);
-    this.Cgroup.add(this.oceanText);
-    this.oceanText.position.x=((newGeometry.word.length*30)/2)*-1;
-    this.oceanText.position.y = 0;
-
-  }
-
-
-  Init(){
-    this.focus = new THREE.Vector3(0,0,0);
-    this.container;
-    this.time = 17;
-    this.index = 3;
-    this.spheres = [];
-    this.moving = false;
-    this.last = null ;
-    this.oldTime = 0;
-    this.newTime = 0;
-    this.isTouchPad;
-    this.eventCount = 0;
-    this.eventCountStart;
-    this.TGroup = new THREE.Group();
-    this.fovard = 0.001;
-    this.insideSphere = null;
-    this.target = new THREE.Vector3(350,20,0);
-
->>>>>>> master
     
       
     }
@@ -506,7 +426,6 @@ function bind(func, context) {
                 this.TGroup.visible = true;
               }
     
-<<<<<<< HEAD
               let tmpControlBezier;
               if(!this.insideSphere.visible){
                 this.TGroup.position.set(newPos.x,500,newPos.z);
@@ -529,59 +448,6 @@ function bind(func, context) {
               this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
               this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
      
-=======
-   document.addEventListener('keydown', bind(function(event) {
-      if(!this.moving&&event.key==' '){
-        this.moving = true;
-        if(!this.inMenu){
-          
-          let newPos ;
-          if(!this.insideSphere.visible){
-            newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
-            newPos.x*=1.1;
-            newPos.z*=1.1;
-            this.TGroup.scale.set(1,1,1);
-          }else{
-            newPos = new THREE.Vector3(this.insideCamera.position.x,100,this.insideCamera.position.z);
-            newPos.x *=-60.1;
-            this.TGroup.scale.set(0.3,0.3,0.3);
-            
-            this.TGroup.visible = true;
-          }
-
-          let tmpControlBezier;
-          if(!this.insideSphere.visible){
-            this.TGroup.position.set(newPos.x,500,newPos.z);
-            tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
-          }else{
-            this.TGroup.position.set(newPos.x,this.insideCamera.position.y,newPos.z);
-            tmpControlBezier = new THREE.Vector3(-100,this.insideCamera.position.y,200);
-            console.log( this.TGroup.position)
-          }
-         // this.TGroup.position.set(newPos.x,500,newPos.z);
-         console.log( this.TGroup.position)
-          let tmpfloat = {value:0};
-          let focusBezier =  new THREE.QuadraticBezierCurve3(
-            (this.insideSphere.visible)?new THREE.Vector3(350,20,0):new THREE.Vector3(),
-            tmpControlBezier,
-            this.TGroup.position
-          );
-          this.TGroup.visible = true;  
-          this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
-          this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-          this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
- 
-          
-          TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
-            onUpdate:()=>{
-              if(this.insideSphere.visible){
-                this.target.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-              }else{
-                this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-              }
-              
-
->>>>>>> master
               
               TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
                 onUpdate:()=>{
@@ -617,13 +483,7 @@ function bind(func, context) {
                   this.arrB[i].visible = true;
                 }
               }
-              if(this.insideSphere.visible){
-                
-               
-                
-              }
               
-<<<<<<< HEAD
               let tmpfloat = {value:0};
               let focusBezier =  new THREE.QuadraticBezierCurve3(
                 this.TGroup.position,
@@ -652,31 +512,6 @@ function bind(func, context) {
                   //this.oceanText.position.set(this.camera.position.x*0.98,300,this.camera.position.z*0.98)
                 }});
     
-=======
-            }});
-        }else{
-          let tmpControlBezier;
-          if(this.insideSphere.visible){
-            tmpControlBezier = new THREE.Vector3(100,this.insideCamera.position.y,200);
-          }else{
-            tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
-            for(let i = 0; i<this.arrB.length;i++){
-              this.arrB[i].visible = true;
-            }
-          }
-          
-          let tmpfloat = {value:0};
-          let focusBezier =  new THREE.QuadraticBezierCurve3(
-            this.TGroup.position,
-            tmpControlBezier,
-            (this.insideSphere.visible)?new THREE.Vector3(350,20,0):new THREE.Vector3(),
-          );
-          if(this.adaptMode){
-            this.arrB[this.index].visible = true;  
-          }else{
-            for(let i = 0; i<this.arrB.length;i++){
-              this.arrB[i].visible = true;
->>>>>>> master
             }
             
             
@@ -695,30 +530,6 @@ function bind(func, context) {
          // this.camera.position.set( 4125,  -500,  0);
          // this.camera.lookAt(this.scene.position);
           
-<<<<<<< HEAD
-=======
- 
-          
-          
-          TweenMax.to(tmpfloat,2,{value:1,ease: Power2.easeInOut,
-            onUpdate:()=>{
-              
-             
-              if(this.insideSphere.visible){
-                this.target.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-              }else{
-                this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-              }
-              
-            },
-            onComplete:()=>{
-              this.TGroup.visible = false;
-              this.inMenu = false;
-              this.moving = false;
-              //this.oceanText.position.set(this.camera.position.x*0.98,300,this.camera.position.z*0.98)
-            }});
-
->>>>>>> master
         }
       
         
@@ -801,7 +612,6 @@ function bind(func, context) {
         f1.add(this.settings,'mRefractionRatio',0,1,0.001).onChange(bind(function(value) {
         this.arrB[i].material.uniforms.mRefractionRatio.value = value;
         },this));
-<<<<<<< HEAD
         f1.add(this.settings,'mFresnelBias',0,1,0.001).onChange(bind(function(value) {
           this.arrB[i].material.uniforms.mFresnelBias.value = value;
         },this));
@@ -810,130 +620,6 @@ function bind(func, context) {
         },this));
         f1.add(this.settings,'mFresnelScale',0,1,0.001).onChange(bind(function(value) {
           this.arrB[i].material.uniforms.mFresnelScale.value = value;
-=======
-      let f1 = f.addFolder('bubble ' + (i+1));
-
-
-      f1.add(this.settings,'mRefractionRatio',0,1,0.001).onChange(bind(function(value) {
-      this.arrB[i].material.uniforms.mRefractionRatio.value = value;
-      },this));
-      f1.add(this.settings,'mFresnelBias',0,1,0.001).onChange(bind(function(value) {
-        this.arrB[i].material.uniforms.mFresnelBias.value = value;
-      },this));
-      f1.add(this.settings,'mFresnelPower',0,5,0.001).onChange(bind(function(value) {
-        this.arrB[i].material.uniforms.mFresnelPower.value = value;
-      },this));
-      f1.add(this.settings,'mFresnelScale',0,1,0.001).onChange(bind(function(value) {
-        this.arrB[i].material.uniforms.mFresnelScale.value = value;
- 
-      },this));
-
-    }
-
-    this.light = new THREE.PointLight(0xff0000, 0.8,500);
-    this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z);
-    this.scene.add(this.light);
-    //TweenMax.to(this.material.uniforms.progress,5,{value:5,repeat:-1,yoyo:true});
-    this.camera.position.set( this.arrOrbits[this.index].getPointAt(0.5).x,this.arrOrbits[this.index].getPointAt(0.5).y,this.arrOrbits[this.index].getPointAt(0.5).z);
-    this.camera.lookAt(this.scene.position);
-    this.TGroup.add(this.about);
-    this.about.position.x=-1200;
-    this.about.position.y = 150;
-    this.TGroup.add(this.works);
-    this.works.position.x=-1200;
-    this.works.position.y = -100;
-    this.TGroup.add(this.contact);
-    this.contact.position.x=-1200;
-    this.contact.position.y = -350;
-    let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 650, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
-    aboutPlane.name = 'about';
-    aboutPlane.position.x = -870;
-    aboutPlane.position.y = 200;
-    this.about.p = aboutPlane;
-    this.TGroup.add(aboutPlane);
-
-    let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
-    worksPlane.name = 'works';
-    worksPlane.position.x = -800;
-    worksPlane.position.y = -55;
-    this.works.p = worksPlane;
-    this.TGroup.add(worksPlane);
-
-    let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 790, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
-    contactPlane.name = 'contact';
-    contactPlane.position.x = -800;
-    contactPlane.position.y = -300
-    this.contact.p = contactPlane;
-    this.TGroup.add(contactPlane);
-
-
-    this.scene.add(this.TGroup);
-
-    this.Cgroup = new THREE.Group();
-
-    this.Cgroup.add(this.oceanText);
-    this.oceanText.position.x=-100;
-    this.oceanText.position.y = 0;
-    this.scene.add(this.Cgroup);
-    this.distanceScale = 0.96;
-    this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale)
-
-    this.generateGeometry(this.index);
-
-    let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
-    newPos.x*=1.01;
-    newPos.z*=1.01;
-    this.TGroup.position.set(newPos.x,500,newPos.z);
-    this.TGroup.visible = false;
-    //this.container.addEventListener("DOMMouseScroll", bind(this.mouseHandle, this),false);
-    //this.container.addEventListener('scroll',bind(this.onScroll,this),false);
-
-
-    this.d.addEventListener('touchstart', bind(function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.initialPoint=event.changedTouches[0];
-      },this), false);
-      this.d.addEventListener('touchend', bind(function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.finalPoint=event.changedTouches[0];
-      let xAbs = Math.abs(this.initialPoint.pageX - this.finalPoint.pageX);
-      let yAbs = Math.abs(this.initialPoint.pageY - this.finalPoint.pageY);
-      if (xAbs > 20 || yAbs > 20) {
-      if (xAbs > yAbs) {
-      if (this.finalPoint.pageX < this.initialPoint.pageX){
-      /*СВАЙП ВЛЕВО*/
-      this.indexControl('back');
-      
-      }
-      else{
-      /*СВАЙП ВПРАВО*/
-      this.indexControl('next');
-      }
-      }
-      else {
-      if (this.finalPoint.pageY < this.initialPoint.pageY){
-        if(!this.moving){
-          this.moving = true;
-          if(!this.inMenu){
-            
-            let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
-            newPos.x*=1.1;
-            newPos.z*=1.1;
-            this.TGroup.position.set(newPos.x,500,newPos.z);
-            let tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
-            let tmpfloat = {value:0};
-            let focusBezier =  new THREE.QuadraticBezierCurve3(
-              new THREE.Vector3(),
-              tmpControlBezier,
-              this.TGroup.position
-            );
-            this.TGroup.visible = true;  
-            this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
-            this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-            this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
->>>>>>> master
    
         },this));
   
@@ -1529,32 +1215,6 @@ function bind(func, context) {
       TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
     }
     
-<<<<<<< HEAD
-=======
-
-    
-  }
-  if(this.insideSphere.visible){
-    this.raycaster.setFromCamera( this.mouse, this.insideCamera );
-  }
-  
-  intersects = this.raycaster.intersectObjects(this.TGroup.children );
-  if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
-    this.menuTime.about = 1;
-    this.fill(new THREE.Color(0xFFFFFF),1,this.about);
-    TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
-  }
-  if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
-    this.menuTime.works = 1;
-    this.fill(new THREE.Color(0xFFFFFF),1,this.works);
-    TweenMax.to(this.works.material.uniforms.time,1,{value:this.works.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.works = 0;}})
-  }
-  if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
-    this.menuTime.contact = 1;
-    this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
-    TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
-  }
->>>>>>> master
   
           
       }
