@@ -120,17 +120,7 @@ function bind(func, context) {
         this.stats.begin();
         if(!this.insideSphere.visible){
          this.time += this.fovard;
-         if(!this.menuTime.about){
-           this.about.material.uniforms.time.value+=0.025;
-         }
          
-         if(!this.menuTime.works){
-           this.works.material.uniforms.time.value+=0.025;
-         }
-         
-         if(!this.menuTime.contact){
-           this.contact.material.uniforms.time.value+=0.025;
-         }
          
          if(this.time>24.5||this.time<17){this.fovard*=-1}
          this.camera.lookAt(this.focus);
@@ -142,6 +132,17 @@ function bind(func, context) {
          this.TGroup.lookAt(this.insideCamera.position);
          this.insideSphere.material.uniforms.time.value = this.time;
          this.renderer.render( this.scene, this.insideCamera );
+        }
+        if(!this.menuTime.about){
+          this.about.material.uniforms.time.value+=0.025;
+        }
+        
+        if(!this.menuTime.works){
+          this.works.material.uniforms.time.value+=0.025;
+        }
+        
+        if(!this.menuTime.contact){
+          this.contact.material.uniforms.time.value+=0.025;
         }
         
         
@@ -1032,7 +1033,12 @@ function bind(func, context) {
         }
       }
       }else{
-        this.raycaster.setFromCamera( this.mouse, this.camera );
+        if(this.insideSphere.visible){
+          this.raycaster.setFromCamera( this.mouse, this.insideCamera );
+        }else{
+          this.raycaster.setFromCamera( this.mouse, this.camera );
+        }
+        
         let intersects = this.raycaster.intersectObjects(this.TGroup.children );
         if(intersects.length>0){
           if(intersects[0].object.name == 'about'){
