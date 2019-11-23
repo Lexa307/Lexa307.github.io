@@ -114,7 +114,7 @@ function bind(func, context) {
 	  this.container = document.createElement( 'div' );
 	  document.body.appendChild( this.container );//  размещение контейнера в body
 	  this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
-	 // this.controls = new THREE.OrbitControls(this.camera);
+	  //this.controls = new THREE.OrbitControls(this.camera);
 	  this.focPoint=new THREE.Vector3(0,70,0);
 	  
 	  
@@ -160,10 +160,12 @@ function bind(func, context) {
   
 		this.scene.add(this.GroupArray2);
 	  
-	  this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
-	  this.createPattern(0,-150,300,700,false,0,0,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,300,700,false,0,0,this.GroupArray2,this.plane2);
 	 // this.createPattern(0,-150,450,1200,true,450,0,this.GroupArray2,this.plane2);
 		  //front
+	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,300,700,false,0,600,this.GroupArray2,this.plane2);
 		 
 	// this.createPattern(0,70,-100,400,true,0,0,this.GroupArray2,this.plane2);
 	// this.createPattern(-4,70,-100,400,false,0,0,this.GroupArray2,this.plane2);
@@ -199,7 +201,7 @@ function bind(func, context) {
 	  this.cube1.position.set(152,300,152)
 	  this.cube2.position.set(-50,200,150)
 	  this.scene.add( this.cube1 );
-	  //this.controls.target = this.cube1.position;
+	 // this.controls.target = this.cube1.position;
 	  //this.scene.add( this.cube2 );
 
 
@@ -234,7 +236,7 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	createPattern(startx,starty,scalex,scaley,ZXdir,z,x,group,pl){
 		let Isign = (scalex<startx)?'>':'<';
 		let Jsign = (scaley<starty)?'>':'<';
-		let ICounterValue = (scalex<startx)?-7:7;
+		let ICounterValue = (scalex<startx)?-14:14;
 		let JCounterValue = (scaley<starty)?-14:14;
 		let variativescript =
 `		
@@ -243,9 +245,9 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 			for(let j=starty;j${Jsign}scaley;j+=${JCounterValue}){
 				let tmp = pl.clone();
 				if(ZXdir){
-					tmp.position.set(i+randomFromTo(-1,2),j,${z});
+					tmp.position.set(i+randomFromTo(-4,4),j,${z});
 				}else{
-					tmp.position.set(${x},j,i+randomFromTo(-1,2));
+					tmp.position.set(${x},j,i+randomFromTo(-4,4));
 				}
 				tmp.amplitude=0.01+Math.random()*(0.01-0.005);
 				group.add(tmp);
