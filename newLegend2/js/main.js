@@ -18,7 +18,7 @@ function bind(func, context) {
 	  this.scene = new THREE.Scene();
 	  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
 		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
-		this.camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 60000 );
+		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 60000 );
 		this.mobile = true;
 	  }else{
 		this.mobile = false;
@@ -83,6 +83,7 @@ function bind(func, context) {
 						}
 						
 					}
+					this.camera.lookAt(this.cube1.position);
 				
 				// if(!can){
 				// 	camera.lookAt(focPoint);
@@ -113,8 +114,9 @@ function bind(func, context) {
 	  this.container = document.createElement( 'div' );
 	  document.body.appendChild( this.container );//  размещение контейнера в body
 	  this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
-	  this.controls = new THREE.OrbitControls(this.camera);
+	 // this.controls = new THREE.OrbitControls(this.camera);
 	  this.focPoint=new THREE.Vector3(0,70,0);
+	  
 	  
 	  this.GroupArray = new THREE.Group();
 	  this.GroupArray2 = new THREE.Group();
@@ -126,6 +128,8 @@ function bind(func, context) {
 	  this.can2=false;
 	  this.can3 = true;
 	  this.scrollingA = false;
+	  this.stage = false;
+	  this.moving = false;
   
 	  //this.camera.lookAt(this.focPoint);
 	  this.curveFloat = 0;
@@ -134,8 +138,9 @@ function bind(func, context) {
 	  this.geometry = new THREE.PlaneGeometry( 1.5, 14, 1 );
 	  this.material = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
 	  this.material2 = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
-	  this.plane = new THREE.Mesh( this.geometry, this.material );
-	  this.plane2 = new THREE.Mesh( this.geometry, this.material2 );
+	  
+	this.plane = new THREE.Mesh( this.geometry, this.material );
+	  this.plane2 = new THREE.Mesh( this.geometry, this.material );
 	  //this.camera.lookAt(this.plane.position);
 
 	  this.scene.background=new THREE.Color(0x1D1A1B/*231F20*/);
@@ -155,9 +160,9 @@ function bind(func, context) {
   
 		this.scene.add(this.GroupArray2);
 	  
-	  this.createPattern(0,-150,450,1200,true,0,0,this.GroupArray2,this.plane2);
-	  this.createPattern(0,-150,450,1200,false,0,0,this.GroupArray2,this.plane2);
-	  this.createPattern(0,-150,450,1200,true,450,0,this.GroupArray2,this.plane2);
+	  this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
+	  this.createPattern(0,-150,300,700,false,0,0,this.GroupArray2,this.plane2);
+	 // this.createPattern(0,-150,450,1200,true,450,0,this.GroupArray2,this.plane2);
 		  //front
 		 
 	// this.createPattern(0,70,-100,400,true,0,0,this.GroupArray2,this.plane2);
@@ -182,22 +187,35 @@ function bind(func, context) {
 	  // this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
 	  // this.controls.target = new THREE.Vector3(0.3563309574910036, 26.199806330960396, 10.148635574650198);
 	  
-	//   this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 100, 360, 90 ), new THREE.MeshBasicMaterial( {color: 0xFF1A1B} ) );
+	//   this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 100, 360, 90 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
 	//   this.cube2 = this.cube1.clone();
 	//   this.cube1.position.set(-50,200,-45)
 	//   this.cube2.position.set(-50,200,150)
 	//   this.scene.add( this.cube1 );
-	  //this.scene.add( this.cube2 );
-	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 450, 1400, 420 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
+	//   this.scene.add( this.cube2 );
+	  this.camera.position.set(152,300,-100);
+	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 300, 900, 300 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
 	  this.cube2 = this.cube1.clone();
-	  this.cube1.position.set(240,510,240)
+	  this.cube1.position.set(152,300,152)
 	  this.cube2.position.set(-50,200,150)
 	  this.scene.add( this.cube1 );
+	  //this.controls.target = this.cube1.position;
 	  //this.scene.add( this.cube2 );
 
 
 	  
 	  window.addEventListener("resize",bind(this.onWindowResize,this), false);
+	  document.addEventListener('keydown', bind(function(event) {
+		if(!this.moving&&event.key==' '){
+			this.moving = true;
+			let moveVector = (this.stage)?new THREE.Vector3(152,300,-100):new THREE.Vector3(-343,  67.6,  -459);
+TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveVector.z,
+				onComplete:()=>{
+					this.moving = false;
+					this.stage = !this.stage;
+				}});
+		}},this));
+		
 	  this.stats = new Stats();
       document.body.appendChild( this.stats.dom );
 	  this.container.addEventListener('mousemove',bind(this.onMouseMove,this),false);
@@ -246,7 +264,7 @@ function bind(func, context) {
 		dir.normalize();
 	let	distance = -this.camera.position.z / dir.z;
 	let	pos = this.camera.position.clone().add( dir.multiplyScalar( distance ) );
-		if(pos.x<150&&pos.x>-300){
+		if(pos.x<400&&pos.x>-300){
 			TweenMax.to(this.light.position,1,{ease: Power2.easeOut,x:pos.x,y:pos.y});
 		}
 		if(!this.can3&&!this.scrollingA){
