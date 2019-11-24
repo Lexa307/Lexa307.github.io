@@ -56,38 +56,11 @@ function bind(func, context) {
 	  
 		requestAnimationFrame( this.animate.bind(this) );
 	   this.stats.begin();
-	   
-	  
-	  // this.controls.target.set(this.focusPoint.x,this.focusPoint.y,this.focusPoint.z)
-		
-		//this.light2.position.set( this.camera.position.x,this.camera.position.y,this.camera.position.z);
+	
 		this.renderer.render( this.scene, this.camera );
-		for(let i=0; i<this.GroupArray.children.length;i++){
-		
-				    	if(this.GroupArray.children[i].moving){
-							this.GroupArray.children[i].rotation.y+=this.GroupArray.children[i].amplitude;
-				    		if(this.GroupArray.children[i].rotation.y>Math.PI){
-				    			this.GroupArray.children[i].rotation.y=0;
-				    		}
-						}
-					}
+		this.updatePlanes();
+		this.camera.lookAt(this.focPoint);
 				
-				
-					for(let i=0; i<this.GroupArray2.children.length;i++){
-						if(this.GroupArray2.children[i].moving){
-							this.GroupArray2.children[i].rotation.y+=this.GroupArray2.children[i].amplitude;
-							if(this.GroupArray2.children[i].rotation.y>Math.PI){
-				    			this.GroupArray2.children[i].rotation.y=0;
-				    		}
-						
-						}
-						
-					}
-					this.camera.lookAt(this.cube1.position);
-				
-				// if(!can){
-				// 	camera.lookAt(focPoint);
-				// }
 	   this.stats.end();
   
 	}
@@ -101,9 +74,7 @@ function bind(func, context) {
   
 	  
 	  
-	  this.camera.position.set( 0,  20, 20);
 	  
-	  //this.scene.add(this.plane);
 	  this.mouse = new THREE.Vector2(0,0);
 	  this.renderer.setSize( window.innerWidth, window.innerHeight );
 	  this.raycaster = new THREE.Raycaster();
@@ -115,11 +86,13 @@ function bind(func, context) {
 	  document.body.appendChild( this.container );//  размещение контейнера в body
 	  this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
 	  //this.controls = new THREE.OrbitControls(this.camera);
-	  this.focPoint=new THREE.Vector3(0,70,0);
+	  this.focPoint=new THREE.Vector3(152,300,152);
 	  
 	  
 	  this.GroupArray = new THREE.Group();
 	  this.GroupArray2 = new THREE.Group();
+	  this.GroupArray3 = new THREE.Group();
+	  
 	  this.blackplanes = new THREE.Group();
 	  this.GroupArray.name = "gr1"
 	  this.GroupArray2.name = "gr2"
@@ -138,9 +111,11 @@ function bind(func, context) {
 	  this.geometry = new THREE.PlaneGeometry( 1.5, 14, 1 );
 	  this.material = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
 	  this.material2 = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
-	  
+	  this.material3 = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true,opacity:0} );//ad8b19
+
 	this.plane = new THREE.Mesh( this.geometry, this.material );
-	  this.plane2 = new THREE.Mesh( this.geometry, this.material2 );
+	this.plane2 = new THREE.Mesh( this.geometry, this.material2 );
+	this.plane3 = new THREE.Mesh( this.geometry, this.material3 );
 	  //this.camera.lookAt(this.plane.position);
 
 	  this.scene.background=new THREE.Color(0x1D1A1B/*231F20*/);
@@ -159,9 +134,10 @@ function bind(func, context) {
 
 		//this.createPattern(0,-150,300,700,true,0,0,this.GroupArray,this.plane);
 		this.scene.add(this.GroupArray2);
+		this.scene.add(this.GroupArray3);
 		this.scene.add(this.GroupArray);
-		
-	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
+		this.GroupArray3.visible = false;
+	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray3,this.plane2);
 	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray,this.plane);
 	this.createPattern(0,-150,300,700,false,0,0,this.GroupArray2,this.plane2);
 	
@@ -169,35 +145,9 @@ function bind(func, context) {
 		  //front
 	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
 	this.createPattern(0,-150,300,700,false,0,600,this.GroupArray2,this.plane2);
+
 		 
-	// this.createPattern(0,70,-100,400,true,0,0,this.GroupArray2,this.plane2);
-	// this.createPattern(-4,70,-100,400,false,0,0,this.GroupArray2,this.plane2);
-	// // //back
-	// this.createPattern(0,70,-100,400,true,-91,0,this.GroupArray2,this.plane2);
-
-	// // //---------------------------second_building
-	// this.createPattern(0,70,-100,400,true,200,0,this.GroupArray2,this.plane2);
-	// this.createPattern(204,70,100,400,false,0,0,this.GroupArray2,this.plane2);
-	// // //back
-	// this.createPattern(0,70,-100,400,true,100,0,this.GroupArray2,this.plane2);
-
-
 	
-	
-	
-	  
-	 // document.addEventListener("mousewheel", mouseHandle2, false);
-	 
-	  
-	  // this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
-	  // this.controls.target = new THREE.Vector3(0.3563309574910036, 26.199806330960396, 10.148635574650198);
-	  
-	//   this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 100, 360, 90 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
-	//   this.cube2 = this.cube1.clone();
-	//   this.cube1.position.set(-50,200,-45)
-	//   this.cube2.position.set(-50,200,150)
-	//   this.scene.add( this.cube1 );
-	//   this.scene.add( this.cube2 );
 	  this.camera.position.set(152,300,-100);
 	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 300, 900, 300 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
 	  this.cube2 = this.cube1.clone();
@@ -214,15 +164,23 @@ function bind(func, context) {
 		if(!this.moving&&event.key==' '){
 			this.moving = true;
 			let moveVector = (this.stage)?new THREE.Vector3(152,300,-100):new THREE.Vector3(-343,  67.6,  -459);
-			if(this.stage){
-				this.GroupArray.visible = true;
-			}
-TweenMax.to(this.material,2,{opacity:(!this.stage)?0:1,
+			this.GroupArray.visible = true;
+			this.GroupArray3.visible = true;
+			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y:350});})():(()=>{TweenMax.to(this.focPoint,2,{y:300});})();
+			TweenMax.to(this.material3,2,{opacity:(!this.stage)?0:1});
+			TweenMax.to(this.material,2,{opacity:(!this.stage)?0:1,
 	onComplete:()=>{
 		if(!this.stage){
 			this.GroupArray.visible = false;
+			this.GroupArray3.visible = true;
+		}else{
+			this.GroupArray.visible = true;
+			this.GroupArray3.visible = false;
 		}
-}})
+}});
+
+
+
 TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveVector.z,
 				onComplete:()=>{
 					this.moving = false;
@@ -238,8 +196,8 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	  
 	  this.animate();
 
-	  this.zero();
-	  let f =setTimeout(this.first(),3000);
+	  //this.zero();
+	  this.first();
 	  
 	  
 	  
@@ -249,6 +207,14 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 		let Isign = (scalex<startx)?'>':'<';
 		let Jsign = (scaley<starty)?'>':'<';
 		let ICounterValue = (scalex<startx)?-14:14;
+		let shiftMin = -5;
+		let shiftMax = 4;
+		if(group.name=="gr1"){
+			ICounterValue = (scalex<startx)?-7:7;
+			shiftMin = -1;
+			shiftMax = 2;
+		}
+		
 		let JCounterValue = (scaley<starty)?-14:14;
 		let variativescript =
 `		
@@ -257,15 +223,51 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 			for(let j=starty;j${Jsign}scaley;j+=${JCounterValue}){
 				let tmp = pl.clone();
 				if(ZXdir){
-					tmp.position.set(i+randomFromTo(-5,4),j,${z});
+					tmp.position.set(i+randomFromTo(shiftMin,shiftMax),j,${z});
 				}else{
-					tmp.position.set(${x},j,i+randomFromTo(-5,4));
+					tmp.position.set(${x},j,i+randomFromTo(shiftMin,shiftMax));
 				}
+
 				tmp.amplitude=0.01+Math.random()*(0.01-0.005);
+				tmp.moving = true;
 				group.add(tmp);
 			}
 		}`;
 		eval(variativescript);
+	}
+
+	updatePlanes(){
+		for(let i=0; i<this.GroupArray.children.length;i++){
+		
+			if(this.GroupArray.children[i].moving){
+				this.GroupArray.children[i].rotation.y+=this.GroupArray.children[i].amplitude;
+				if(this.GroupArray.children[i].rotation.y>Math.PI){
+					this.GroupArray.children[i].rotation.y=0;
+				}
+			}
+		}
+	
+	
+		for(let i=0; i<this.GroupArray2.children.length;i++){
+			if(this.GroupArray2.children[i].moving){
+				this.GroupArray2.children[i].rotation.y+=this.GroupArray2.children[i].amplitude;
+				if(this.GroupArray2.children[i].rotation.y>Math.PI){
+					this.GroupArray2.children[i].rotation.y=0;
+				}
+			
+			}
+			
+		}
+		for(let i=0; i<this.GroupArray3.children.length;i++){
+			if(this.GroupArray3.children[i].moving){
+				this.GroupArray3.children[i].rotation.y+=this.GroupArray3.children[i].amplitude;
+				if(this.GroupArray3.children[i].rotation.y>Math.PI){
+					this.GroupArray3.children[i].rotation.y=0;
+				}
+			
+			}
+			
+		}
 	}
 	
 	onMouseMove(event){
@@ -288,39 +290,39 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	
   	
 	}
-	zero(){
+	// zero(){
 
-		this.camera.lookAt(this.focPoint);
+	// 	this.camera.lookAt(this.focPoint);
 
-		for(let i=0; i<this.GroupArray.children.length;i++){
+	// 	for(let i=0; i<this.GroupArray.children.length;i++){
 		
-	    	this.GroupArray.children[i].lookAt(this.camera.position);
-	    	this.GroupArray.children[i].rotation.z=Math.PI;
-	    	this.GroupArray.children[i].rotation.x=Math.PI;
-	    	this.GroupArray.children[i].rotation.y-=Math.PI/2;
-	    	this.GroupArray.children[i].mustrotate=this.GroupArray.children[i].rotation.y;
-	    	this.GroupArray.children[i].visible=true;
-	    	this.GroupArray.children[i].moving=false;
-	    	this.GroupArray.children[i].name="plane";
+	//     	this.GroupArray.children[i].lookAt(this.camera.position);
+	//     	this.GroupArray.children[i].rotation.z=Math.PI;
+	//     	this.GroupArray.children[i].rotation.x=Math.PI;
+	//     	this.GroupArray.children[i].rotation.y-=Math.PI/2;
+	//     	this.GroupArray.children[i].mustrotate=this.GroupArray.children[i].rotation.y;
+	//     	// this.GroupArray.children[i].visible=true;
+	//     	this.GroupArray.children[i].moving=false;
+	//     	//this.GroupArray.children[i].name="plane";
 	    	
-		}
-		for(let i=0; i<	this.GroupArray2.children.length;i++){
+	// 	}
+	// 	for(let i=0; i<	this.GroupArray2.children.length;i++){
 
-	    	this.GroupArray2.children[i].lookAt(this.camera.position);
-	    	this.GroupArray2.children[i].rotation.z=Math.PI;
-	    	this.GroupArray2.children[i].rotation.x=Math.PI;
-	    	this.GroupArray2.children[i].rotation.y-=Math.PI/2;
-	    	this.GroupArray2.children[i].mustrotate=this.GroupArray2.children[i].rotation.y;
-	    	this.GroupArray2.children[i].moving=true;
-	    	this.GroupArray2.children[i].name="plane";
+	//     	this.GroupArray2.children[i].lookAt(this.camera.position);
+	//     	this.GroupArray2.children[i].rotation.z=Math.PI;
+	//     	this.GroupArray2.children[i].rotation.x=Math.PI;
+	//     	this.GroupArray2.children[i].rotation.y-=Math.PI/2;
+	//     	this.GroupArray2.children[i].mustrotate=this.GroupArray2.children[i].rotation.y;
+	//     	this.GroupArray2.children[i].moving=false;
+	//     	//this.GroupArray2.children[i].name="plane";
 	    	
-		}
+	// 	}
 		
-		this.material2.opacity=1;
-		this.material.opacity=1;
+	// 	this.material2.opacity=1;
+	// 	this.material.opacity=1;
 	
 		
-	}
+	// }
 	first(){
 		for(let i=0;i<this.GroupArray.children.length;i++){
 			this.GroupArray.children[i].moving=true
