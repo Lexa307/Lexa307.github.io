@@ -140,7 +140,7 @@ function bind(func, context) {
 	  this.material2 = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
 	  
 	this.plane = new THREE.Mesh( this.geometry, this.material );
-	  this.plane2 = new THREE.Mesh( this.geometry, this.material );
+	  this.plane2 = new THREE.Mesh( this.geometry, this.material2 );
 	  //this.camera.lookAt(this.plane.position);
 
 	  this.scene.background=new THREE.Color(0x1D1A1B/*231F20*/);
@@ -157,11 +157,14 @@ function bind(func, context) {
 		  new THREE.Vector3(  -241.5,  -31,  237 )
 		)
 
-  
+		//this.createPattern(0,-150,300,700,true,0,0,this.GroupArray,this.plane);
 		this.scene.add(this.GroupArray2);
-	  
+		this.scene.add(this.GroupArray);
+		
 	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray,this.plane);
 	this.createPattern(0,-150,300,700,false,0,0,this.GroupArray2,this.plane2);
+	
 	 // this.createPattern(0,-150,450,1200,true,450,0,this.GroupArray2,this.plane2);
 		  //front
 	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
@@ -201,7 +204,7 @@ function bind(func, context) {
 	  this.cube1.position.set(152,300,152)
 	  this.cube2.position.set(-50,200,150)
 	  this.scene.add( this.cube1 );
-	 // this.controls.target = this.cube1.position;
+	  //this.controls.target = this.cube1.position;
 	  //this.scene.add( this.cube2 );
 
 
@@ -211,6 +214,15 @@ function bind(func, context) {
 		if(!this.moving&&event.key==' '){
 			this.moving = true;
 			let moveVector = (this.stage)?new THREE.Vector3(152,300,-100):new THREE.Vector3(-343,  67.6,  -459);
+			if(this.stage){
+				this.GroupArray.visible = true;
+			}
+TweenMax.to(this.material,2,{opacity:(!this.stage)?0:1,
+	onComplete:()=>{
+		if(!this.stage){
+			this.GroupArray.visible = false;
+		}
+}})
 TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveVector.z,
 				onComplete:()=>{
 					this.moving = false;
@@ -245,9 +257,9 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 			for(let j=starty;j${Jsign}scaley;j+=${JCounterValue}){
 				let tmp = pl.clone();
 				if(ZXdir){
-					tmp.position.set(i+randomFromTo(-4,4),j,${z});
+					tmp.position.set(i+randomFromTo(-5,4),j,${z});
 				}else{
-					tmp.position.set(${x},j,i+randomFromTo(-4,4));
+					tmp.position.set(${x},j,i+randomFromTo(-5,4));
 				}
 				tmp.amplitude=0.01+Math.random()*(0.01-0.005);
 				group.add(tmp);
@@ -287,7 +299,7 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	    	this.GroupArray.children[i].rotation.x=Math.PI;
 	    	this.GroupArray.children[i].rotation.y-=Math.PI/2;
 	    	this.GroupArray.children[i].mustrotate=this.GroupArray.children[i].rotation.y;
-	    	this.GroupArray.children[i].visible=false;
+	    	this.GroupArray.children[i].visible=true;
 	    	this.GroupArray.children[i].moving=false;
 	    	this.GroupArray.children[i].name="plane";
 	    	
@@ -304,7 +316,7 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	    	
 		}
 		
-		this.material2.opacity=0;
+		this.material2.opacity=1;
 		this.material.opacity=1;
 	
 		
