@@ -13,9 +13,10 @@ function bind(func, context) {
   
   
   class Slider{
+	
 	constructor(selector){
 		
-	  this.scene = new THREE.Scene();
+		this.scene = new THREE.Scene();
 	  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
 		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
 		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 60000 );
@@ -58,7 +59,9 @@ function bind(func, context) {
 	   this.stats.begin();
 	
 		this.renderer.render( this.scene, this.camera );
-		this.updatePlanes();
+		this.updatePlanes(this.GroupArray);
+		this.updatePlanes(this.GroupArray2);
+		this.updatePlanes(this.GroupArray3);
 		this.camera.lookAt(this.focPoint);
 				
 	   this.stats.end();
@@ -77,7 +80,7 @@ function bind(func, context) {
 	  
 	  this.mouse = new THREE.Vector2(0,0);
 	  this.renderer.setSize( window.innerWidth, window.innerHeight );
-	  this.raycaster = new THREE.Raycaster();
+	  //this.raycaster = new THREE.Raycaster();
 	  this.container;
 	  
 	  this.stats = new Stats();
@@ -93,14 +96,10 @@ function bind(func, context) {
 	  this.GroupArray2 = new THREE.Group();
 	  this.GroupArray3 = new THREE.Group();
 	  
-	  this.blackplanes = new THREE.Group();
+	  
 	  this.GroupArray.name = "gr1"
 	  this.GroupArray2.name = "gr2"
-	  this.camera.position.set(0, 70, -250);
-	  this.can=false;
-	  this.can2=false;
-	  this.can3 = true;
-	  this.scrollingA = false;
+	  
 	  this.stage = false;
 	  this.moving = false;
   
@@ -126,11 +125,11 @@ function bind(func, context) {
   
 	  this.light.position.set(-87,180,-20);//-40
   
-	  this.curve = new THREE.QuadraticBezierCurve3(
-		  new THREE.Vector3( -320.414,-70,-143),
-		  new THREE.Vector3( -461,  -70,  -21 ),
-		  new THREE.Vector3(  -241.5,  -31,  237 )
-		)
+	//   this.curve = new THREE.QuadraticBezierCurve3(
+	// 	  new THREE.Vector3( -320.414,-70,-143),
+	// 	  new THREE.Vector3( -461,  -70,  -21 ),
+	// 	  new THREE.Vector3(  -241.5,  -31,  237 )
+	// 	)
 
 		//this.createPattern(0,-150,300,700,true,0,0,this.GroupArray,this.plane);
 		this.scene.add(this.GroupArray2);
@@ -162,30 +161,7 @@ function bind(func, context) {
 	  window.addEventListener("resize",bind(this.onWindowResize,this), false);
 	  document.addEventListener('keydown', bind(function(event) {
 		if(!this.moving&&event.key==' '){
-			this.moving = true;
-			let moveVector = (this.stage)?new THREE.Vector3(152,300,-100):new THREE.Vector3(-343,  67.6,  -459);
-			this.GroupArray.visible = true;
-			this.GroupArray3.visible = true;
-			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y:350});})():(()=>{TweenMax.to(this.focPoint,2,{y:300});})();
-			TweenMax.to(this.material3,2,{opacity:(!this.stage)?0:1});
-			TweenMax.to(this.material,2,{opacity:(!this.stage)?0:1,
-	onComplete:()=>{
-		if(!this.stage){
-			this.GroupArray.visible = false;
-			this.GroupArray3.visible = true;
-		}else{
-			this.GroupArray.visible = true;
-			this.GroupArray3.visible = false;
-		}
-}});
-
-
-
-TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveVector.z,
-				onComplete:()=>{
-					this.moving = false;
-					this.stage = !this.stage;
-				}});
+			this.changeDistance();
 		}},this));
 		
 	  this.stats = new Stats();
@@ -196,8 +172,6 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	  
 	  this.animate();
 
-	  //this.zero();
-	  this.first();
 	  
 	  
 	  
@@ -235,39 +209,56 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 		}`;
 		eval(variativescript);
 	}
+	changeDistance(){
+		this.moving = true;
+			let moveVector = (this.stage)?new THREE.Vector3(152,300,-100):new THREE.Vector3(-343,  67.6,  -459);
+			this.GroupArray.visible = true;
+			this.GroupArray3.visible = true;
+			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y:350});})():(()=>{TweenMax.to(this.focPoint,2,{y:300});})();
+			TweenMax.to(this.material3,2,{opacity:(!this.stage)?0:1});
+			TweenMax.to(this.light.position,1,{x: -123.35, y: 623, z: -20,ease: Power2.easeOut,//flare
+				onComplete:()=>{this.doFlare()}});
+			TweenMax.to(this.material,2,{opacity:(!this.stage)?0:1,
+			
+	onComplete:()=>{
+		if(!this.stage){
+			this.GroupArray.visible = false;
+			this.GroupArray3.visible = true;
+			
+		}else{
+			this.GroupArray.visible = true;
+			this.GroupArray3.visible = false;
+		}
+}});
 
-	updatePlanes(){
-		for(let i=0; i<this.GroupArray.children.length;i++){
+
+
+TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveVector.z,
+				onComplete:()=>{
+					this.moving = false;
+					this.stage = !this.stage;
+				},
+				onUpdate:()=>{
+					this.camera.lookAt(this.focPoint);
+				}});
+	}
+
+	updatePlanes(group){
+		for(let i=0; i<group.children.length;i++){
 		
-			if(this.GroupArray.children[i].moving){
-				this.GroupArray.children[i].rotation.y+=this.GroupArray.children[i].amplitude;
-				if(this.GroupArray.children[i].rotation.y>Math.PI){
-					this.GroupArray.children[i].rotation.y=0;
+			if(group.children[i].moving){
+				group.children[i].rotation.y+=group.children[i].amplitude;
+				if(group.children[i].rotation.y>Math.PI){
+					group.children[i].rotation.y=0;
 				}
 			}
 		}
 	
-	
-		for(let i=0; i<this.GroupArray2.children.length;i++){
-			if(this.GroupArray2.children[i].moving){
-				this.GroupArray2.children[i].rotation.y+=this.GroupArray2.children[i].amplitude;
-				if(this.GroupArray2.children[i].rotation.y>Math.PI){
-					this.GroupArray2.children[i].rotation.y=0;
-				}
-			
-			}
-			
-		}
-		for(let i=0; i<this.GroupArray3.children.length;i++){
-			if(this.GroupArray3.children[i].moving){
-				this.GroupArray3.children[i].rotation.y+=this.GroupArray3.children[i].amplitude;
-				if(this.GroupArray3.children[i].rotation.y>Math.PI){
-					this.GroupArray3.children[i].rotation.y=0;
-				}
-			
-			}
-			
-		}
+	}
+	doFlare(){
+		TweenMax.to(this.light.position,2,{x: -277.4, y: 15, z: -20,ease: Power2.easeOut,onComplete:()=>{
+			TweenMax.to(this.light.position,2,{x: -123.35, y: 623, z: -20,ease: Power2.easeOut});
+		}})
 	}
 	
 	onMouseMove(event){
@@ -280,362 +271,33 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 		dir.normalize();
 	let	distance = -this.camera.position.z / dir.z;
 	let	pos = this.camera.position.clone().add( dir.multiplyScalar( distance ) );
-		if(pos.x<400&&pos.x>-300){
+		if(pos.x<400&&pos.x>-300&&!this.stage&&!this.moving){
 			TweenMax.to(this.light.position,1,{ease: Power2.easeOut,x:pos.x,y:pos.y});
 		}
-		if(!this.can3&&!this.scrollingA){
-			TweenMax.to(this.camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(this.curveFloat + this.mouse.x*0.05).x,z:curve.getPointAt(this.curveFloat+ this.mouse.x*0.05).z,y:curve.getPointAt(this.curveFloat+ this.mouse.x*0.05).y,onUpdate:()=>{this.camera.lookAt(this.focPoint);}});
+		// if(!this.can3&&!this.scrollingA){
+		// 	TweenMax.to(this.camera.position,1,{ease: Power2.easeOut,x:curve.getPointAt(this.curveFloat + this.mouse.x*0.05).x,z:curve.getPointAt(this.curveFloat+ this.mouse.x*0.05).z,y:curve.getPointAt(this.curveFloat+ this.mouse.x*0.05).y,onUpdate:()=>{this.camera.lookAt(this.focPoint);}});
 
-		}
+		// }
 	
   	
 	}
-	// zero(){
 
-	// 	this.camera.lookAt(this.focPoint);
 
-	// 	for(let i=0; i<this.GroupArray.children.length;i++){
-		
-	//     	this.GroupArray.children[i].lookAt(this.camera.position);
-	//     	this.GroupArray.children[i].rotation.z=Math.PI;
-	//     	this.GroupArray.children[i].rotation.x=Math.PI;
-	//     	this.GroupArray.children[i].rotation.y-=Math.PI/2;
-	//     	this.GroupArray.children[i].mustrotate=this.GroupArray.children[i].rotation.y;
-	//     	// this.GroupArray.children[i].visible=true;
-	//     	this.GroupArray.children[i].moving=false;
-	//     	//this.GroupArray.children[i].name="plane";
-	    	
-	// 	}
-	// 	for(let i=0; i<	this.GroupArray2.children.length;i++){
-
-	//     	this.GroupArray2.children[i].lookAt(this.camera.position);
-	//     	this.GroupArray2.children[i].rotation.z=Math.PI;
-	//     	this.GroupArray2.children[i].rotation.x=Math.PI;
-	//     	this.GroupArray2.children[i].rotation.y-=Math.PI/2;
-	//     	this.GroupArray2.children[i].mustrotate=this.GroupArray2.children[i].rotation.y;
-	//     	this.GroupArray2.children[i].moving=false;
-	//     	//this.GroupArray2.children[i].name="plane";
-	    	
-	// 	}
-		
-	// 	this.material2.opacity=1;
-	// 	this.material.opacity=1;
-	
-		
-	// }
-	first(){
-		for(let i=0;i<this.GroupArray.children.length;i++){
-			this.GroupArray.children[i].moving=true
-		}
-		for(let i=0;i<this.GroupArray2.length;i++){
-			this.GroupArray2.children[i].moving=true
-		}
-	
-		
-	
-		TweenMax.to(this.material2,1.5,{ease: Circ.easeOut,opacity:1});
-		//TweenLite.to(document.getElementById("btn2"),1,{"opacity":1, onComplete:()=>{}});
-		this.can2=true;
-	
-	}
-	second(){
-	
-		TweenLite.to(document.getElementById("btn"),1,{"opacity":0, onComplete:()=>{document.getElementById("btn").style.display="none";}});
-		TweenMax.to(this.material2,1.5,{ease: Circ.easeOut,opacity:1, 
-			onComplete:()=>{
-				for(let i=0;i<GroupArray2.length;i++){
-					this.GroupArray2[i].visible=false;
-					this.scene.remove(this.GroupArray2[i]);
-					///myAnimation.pause();
-				
-				}
-				this.camera.position.set(0,300,0);
-				this.focPoint.y = 400;
-		TweenMax.to(this.camera.position,6,{ease: Power3.easeOut,y:-70,x:-320.414,z:-143})
-
-		TweenMax.to(this.focPoint,6,{ease: Power3.easeOut,y:70,onComplete:()=>{this.can3 = false;  },onUpdate:()=>{this.camera.lookAt(this.focPoint);}});
-		
-		this.can2=false;
-				TweenMax.to(this.blackplane.position,3,{ease: Power2.easeOut,x:this.blackplane.position.x-20,z:this.blackplane.position.z-20});
-				TweenMax.to(this.blackplane2.position,3,{ease: Power2.easeOut,x:this.blackplane2.position.x-20,z:this.blackplane2.position.z-20});
-				TweenMax.to(this.blackplane3.position,3,{ease: Power2.easeOut,x:this.blackplane3.position.x-20,z:this.blackplane3.position.z-20});
-				TweenMax.to(this.blackplane4.position,3,{ease: Power2.easeOut,x:this.blackplane4.position.x-20,z:this.blackplane4.position.z-20});
-				TweenMax.to(this.material,0.2,{ease: Circ.easeOut,opacity:1 });
-				
-				
-				for(let i=0;i<this.GroupArray.children.length;i++){
-					this.GroupArray.children[i].visible=true;
-					TweenMax.to(this.GroupArray.children[i].position,3,{ease: Power2.easeOut,x:this.GroupArray.children[i].position.x-20,z:this.GroupArray.children[i].position.z-20});	
-				}
-				//
-			}});
-		
-	}
 
   }
+  
+
   let a;
-
-
-  //if ( THREE.WEBGL.isWebGLAvailable() ) {
+  if ( THREE.WEBGL.isWebGLAvailable() ) {
 	  //var canvas = document.createElement( 'canvas' );
 		// Initiate function or other initializations here
-	   a = new Slider(/*canvas*/);
-	
-	
-	//} else {
-	//
-	//	var warning = THREE.WEBGL.getWebGLErrorMessage();
-	//	document.getElementById( 'container' ).appendChild( warning );
-	
-//	}
- 
-//------------------------------------------------------old project	
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-// function animate() {
-// 	requestAnimationFrame( animate );
-// 	renderer.render(scene, camera);
-
-// 		for(let i=0; i<GroupArray.length;i++){
-		
-// 	    	if(GroupArray[i].moving){
-// 				GroupArray[i].rotation.y+=GroupArray[i].amplitude;
-// 	    		if(GroupArray[i].rotation.y>Math.PI){
-// 	    			GroupArray[i].rotation.y=0;
-// 	    		}
-// 			}
-// 		}
-	
-	
-// 		for(let i=0; i<GroupArray2.length;i++){
-// 			if(GroupArray2[i].moving){
-// 				GroupArray2[i].rotation.y+=GroupArray2[i].amplitude;
-// 				if(GroupArray2[i].rotation.y>Math.PI){
-// 	    			GroupArray2[i].rotation.y=0;
-// 	    		}
-	    	
-// 			}
-	    	
-// 		}
-	
-// 	// if(!can){
-// 	// 	camera.lookAt(focPoint);
-// 	// }
-	
-
-// 	raycaster.setFromCamera( mouse, camera );
-// 	let intersects = raycaster.intersectObjects( scene.children );
-// 	if(intersects.length>0){
-// 		let obj = intersects[0].object
-// 		if(obj.name=="plane"){
-// 			obj.moving=false;
-// 			TweenMax.to(obj.rotation,2,{ease: Power2.easeOut, y:obj.rotation.y+Math.PI,onComplete:()=>{obj.moving=true;}});
-// 		}
-			
-			
-// 	}
-	
-// }
-
-
-// function tab(){
-// 	if(can2){
-// 		for(let i=0;i<GroupArray2.length;i++){
-// 				GroupArray2[i].moving=false;
-// 				GroupArray2[i].start_rot=GroupArray2[i].rotation.y
-// 				GroupArray2[i].lookAt(camera.position);
-// 	    		GroupArray2[i].rotation.z=Math.PI;
-// 	    		GroupArray2[i].rotation.x=Math.PI;
-// 	    		GroupArray2[i].rotation.y-=Math.PI/2;
-// 	    		GroupArray2[i].mustrotate=GroupArray2[i].rotation.y;
-// 	    		GroupArray2[i].rotation.y=GroupArray2[i].start_rot;
-// 				GroupArray2[i].rotanim=TweenMax.to(GroupArray2[i].rotation,3,{ease: Power3.easeOut, y:GroupArray2[i].mustrotate,onComplete:()=>{GroupArray2[i].moving=true;}});
-// 			}
-// 			//qt=0;
-// 			stage.second();
-// 	}
-		
-	
-	
-// }
-
-// function onWindowResize() {
-// 				camera.aspect = window.innerWidth / window.innerHeight;
-// 				camera.updateProjectionMatrix();
-// 				renderer.setSize( window.innerWidth, window.innerHeight );
-				
-// 			}
-// function mouseHandle(event){
-	
-// 	  if(event.deltaY==100){
+		a = new Slider(/*canvas*/);
 	   
-// 		indexControl('next');
-// 	  }else{
-// 		indexControl('back');
-// 	  }
 	
 	
-//   }
-//   function indexControl(direction){
-
-// 	  if(direction === 'next' && curveFloat<1){
-// 		  curveFloat+=0.2;
-		  
-// 	  }
-// 	  if(direction === 'back' && curveFloat>0){
-// 		curveFloat-=0.2;
-		
-// 	}
-// 	scrollingA = true;
-// 	//camera.position.set(curve.getPointAt(curveFloat).x,curve.getPointAt(curveFloat).y,curve.getPointAt(curveFloat).z);
-// 	TweenMax.to(camera.position,2,{x:curve.getPointAt(curveFloat).x,y:curve.getPointAt(curveFloat).y,z:curve.getPointAt(curveFloat).z,ease: Power4.easeOut,onComplete:()=>{scrollingA = false;},onUpdate:()=>{camera.lookAt(focPoint);}})
+	} else {
+	let warning = THREE.WEBGL.getWebGLErrorMessage();
+	document.body.appendChild( warning );
 	
-//   }
-//   function rot(){
-// 	for(let i=0;i<GroupArray.length;i++){
-// 		GroupArray[i].moving=false;
-// 		GroupArray[i].start_rot=GroupArray[i].rotation.y
-// 		GroupArray[i].lookAt(camera.position);
-// 		GroupArray[i].rotation.z=Math.PI;
-// 		GroupArray[i].rotation.x=Math.PI;
-// 		GroupArray[i].rotation.y-=Math.PI/2;
-// 		GroupArray[i].mustrotate=GroupArray[i].rotation.y;
-// 		GroupArray[i].rotation.y=GroupArray[i].start_rot;
-// 		GroupArray[i].rotanim=TweenMax.to(GroupArray[i].rotation,3,{ease: Power3.easeOut, y:GroupArray[i].mustrotate,onComplete:()=>{}});
-// 	}
-
-
-//   }
-//   let scrolling = false;
-// let oldTime = 0;
-// let newTime = 0;
-// let isTouchPad;
-// let eventCount = 0;
-// let eventCountStart;
-
-// function  mouseHandle2 (evt) {
-	
-//     let isTouchPadDefined = isTouchPad || typeof isTouchPad !== "undefined";
-//    // console.log(isTouchPadDefined);
-//     if (!isTouchPadDefined) {
-//         if (eventCount === 0) {
-//             eventCountStart = new Date().getTime();
-//         }
-
-//         eventCount++;
-
-//         if (new Date().getTime() - eventCountStart > 100) {
-//                 if (eventCount > 10) {
-//                     isTouchPad = true;
-//                 } else {
-//                     isTouchPad = false;
-//                 }
-//             isTouchPadDefined = true;
-//         }
-//     }
-
-//     if (isTouchPadDefined) {
-    	
-//         // here you can do what you want
-//         // i just wanted the direction, for swiping, so i have to prevent
-//         // the multiple event calls to trigger multiple unwanted actions (trackpad)
-//         if (!evt) evt = event;
-//         let direction = (evt.detail<0 || evt.wheelDelta>0) ? 1 : -1;
-
-//         if (isTouchPad) {
-//             newTime = new Date().getTime();
-
-//             if (!scrolling && newTime-oldTime > 550 ) {
-//                 scrolling = true;
-//                 if (direction < 0) {
-//                     // swipe down
-// 					indexControl('next');
-//                 } else {
-//                     // swipe up
-// 					indexControl('back');
-//                 }
-//                 setTimeout(function() {oldTime = new Date().getTime();scrolling = false}, 500);
-//             }
-//         } else {
-//             if (direction < 0) {
-//             	indexControl('next');
-            	
-//                 // swipe down
-//             } else {
-//                 // swipe up
-// 				indexControl('back');
-//             }
-//         }
-//     }
-	
-// }
-
-// let scrollPos = 0;
-// // adding scroll event
-// document.addEventListener('scroll', function(){
-
-//   // detects new state and compares it with the new one
-//   if ((document.body.getBoundingClientRect()).top > scrollPos){
-  	
-// 		indexControl('next');
-//   }
-	
-// 	else{
-// 		indexControl('back');
-		
-// 	}
-	
-// 	// saves the new position for iteration.
-// 	scrollPos = (document.body.getBoundingClientRect()).top;
-		
-// });
-
-// document.addEventListener('touchstart', function(event) {
-// 	event.preventDefault();
-// 	event.stopPropagation();
-// 	initialPoint=event.changedTouches[0];
-// 	}, false);
-// 	document.addEventListener('touchend', function(event) {
-// 	event.preventDefault();
-// 	event.stopPropagation();
-// 	finalPoint=event.changedTouches[0];
-// 	let xAbs = Math.abs(initialPoint.pageX - finalPoint.pageX);
-// 	let yAbs = Math.abs(initialPoint.pageY - finalPoint.pageY);
-// 	if (xAbs > 20 || yAbs > 20) {
-// 	if (xAbs > yAbs) {
-// 	if (finalPoint.pageX < initialPoint.pageX){
-// 	/*СВАЙП ВЛЕВО*/
-// 	indexControl('next');
-// 	}
-// 	else{
-// 	/*СВАЙП ВПРАВО*/
-// 	indexControl('back');
-// 	}
-// 	}
-// 	else {
-// 	if (finalPoint.pageY < initialPoint.pageY){
-// 	/*СВАЙП ВВЕРХ*/}
-// 	else{
-// 	/*СВАЙП ВНИЗ*/}
-// 	}
-// 	}
-// 	}, false);
+	}
+ 
