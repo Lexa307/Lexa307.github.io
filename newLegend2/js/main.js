@@ -19,7 +19,7 @@ function bind(func, context) {
 		this.scene = new THREE.Scene();
 	  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
 		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
-		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 60000 );
+		this.camera = new THREE.PerspectiveCamera( 60, (window.innerWidth+100) / (window.innerHeight-320), 0.1, 60000 );
 		this.mobile = true;
 	  }else{
 		this.mobile = false;
@@ -163,6 +163,48 @@ function bind(func, context) {
 		if(!this.moving&&event.key==' '){
 			this.changeDistance();
 		}},this));
+
+		this.container.addEventListener('touchstart', bind(function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			this.initialPoint=event.changedTouches[0];
+			},this), false);
+			this.container.addEventListener('touchend', bind(function(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			this.finalPoint=event.changedTouches[0];
+			let xAbs = Math.abs(this.initialPoint.pageX - this.finalPoint.pageX);
+			let yAbs = Math.abs(this.initialPoint.pageY - this.finalPoint.pageY);
+			if (xAbs > 20 || yAbs > 20) {
+			if (xAbs > yAbs) {
+			if (this.finalPoint.pageX < this.initialPoint.pageX){
+			/*СВАЙП ВЛЕВО*/
+			
+			
+			}
+			else{
+			/*СВАЙП ВПРАВО*/
+			
+			}
+			}
+			else {
+			if (this.finalPoint.pageY < this.initialPoint.pageY){
+			  
+				if(!this.moving){
+					this.changeDistance();
+				}
+			  
+			  
+			/*СВАЙП ВВЕРХ*/}
+			else{
+			  //this.indexControl('back');
+			/*СВАЙП ВНИЗ*/}
+			}
+			}else{
+			  event.target.click();
+			  event.preventDefault();
+			}
+			},this), false);
 		
 	  this.stats = new Stats();
       document.body.appendChild( this.stats.dom );
