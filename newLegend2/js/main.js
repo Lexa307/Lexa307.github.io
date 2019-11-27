@@ -123,6 +123,8 @@ function bind(func, context) {
 	  this.scene.background=new THREE.Color(0x1D1A1B/*231F20*/);
 	  this.light = new THREE.PointLight({color:new THREE.Color(0xE8D7AA) });
 	  this.scene.add(this.light);
+	  let pointLightHelper = new THREE.PointLightHelper( this.light, 1 );
+	  this.scene.add( pointLightHelper );
 
 	  // let pointLightHelper = new THREE.PointLightHelper( light );
 	  // scene.add( pointLightHelper );
