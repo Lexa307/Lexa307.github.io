@@ -75,7 +75,9 @@ function bind(func, context) {
   
 	Init(){
   
-	  
+	  this.lockLightControl = {
+		  lightOnMouse:false
+	  }
 	  
 	  
 	  this.mouse = new THREE.Vector2(0,0);
@@ -89,8 +91,9 @@ function bind(func, context) {
 	  document.body.appendChild( this.container );//  размещение контейнера в body
 	  this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
 	  //this.controls = new THREE.OrbitControls(this.camera);
-	  this.focPoint=new THREE.Vector3(152,300,152);
-	  
+	  this.focPoint=new THREE.Vector3(748,300,152);
+	  this.gui = new dat.GUI();
+	  this.gui.add(this.lockLightControl,"lightOnMouse");
 	  
 	  this.GroupArray = new THREE.Group();
 	  this.GroupArray2 = new THREE.Group();
@@ -120,6 +123,7 @@ function bind(func, context) {
 	  this.scene.background=new THREE.Color(0x1D1A1B/*231F20*/);
 	  this.light = new THREE.PointLight({color:new THREE.Color(0xE8D7AA) });
 	  this.scene.add(this.light);
+
 	  // let pointLightHelper = new THREE.PointLightHelper( light );
 	  // scene.add( pointLightHelper );
   
@@ -136,21 +140,25 @@ function bind(func, context) {
 		this.scene.add(this.GroupArray3);
 		this.scene.add(this.GroupArray);
 		this.GroupArray3.visible = false;
-	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray3,this.plane2);
-	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray,this.plane);
-	this.createPattern(0,-150,300,700,false,0,0,this.GroupArray2,this.plane2);
+	//this.createPattern(0,-150,300,700,true,0,0,this.GroupArray3,this.plane2);
+	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,300,700,false,0,300,this.GroupArray2,this.plane2);
 	
 	 // this.createPattern(0,-150,450,1200,true,450,0,this.GroupArray2,this.plane2);
 		  //front
-	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
-	this.createPattern(0,-150,300,700,false,0,600,this.GroupArray2,this.plane2);
+
+	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray3,this.plane2);
+	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray,this.plane);
+	this.createPattern(0,-150,300,700,false,0,900,this.GroupArray2,this.plane2);
+	//this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
+	//this.createPattern(0,-150,300,700,false,0,600,this.GroupArray2,this.plane2);
 
 		 
 	
-	  this.camera.position.set(152,300,-100);
+	  this.camera.position.set(748,300,-100);
 	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 300, 900, 300 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
 	  this.cube2 = this.cube1.clone();
-	  this.cube1.position.set(152,300,152)
+	  this.cube1.position.set(748,300,152)//152
 	  this.cube2.position.set(-50,200,150)
 	  this.scene.add( this.cube1 );
 	  //this.controls.target = this.cube1.position;
@@ -190,17 +198,17 @@ function bind(func, context) {
 			else {
 			if (this.finalPoint.pageY < this.initialPoint.pageY){
 			  
-				if(!this.moving){
+				if(!this.moving) {
 					this.changeDistance();
 				}
 			  
 			  
 			/*СВАЙП ВВЕРХ*/}
-			else{
+			else {
 			  //this.indexControl('back');
 			/*СВАЙП ВНИЗ*/}
 			}
-			}else{
+			}else {
 			  event.target.click();
 			  event.preventDefault();
 			}
@@ -220,18 +228,18 @@ function bind(func, context) {
 	  
 	}
 	createPattern(startx,starty,scalex,scaley,ZXdir,z,x,group,pl){
-		let Isign = (scalex<startx)?'>':'<';
-		let Jsign = (scaley<starty)?'>':'<';
-		let ICounterValue = (scalex<startx)?-14:14;
+		let Isign = (scalex < startx)?'>':'<';
+		let Jsign = (scaley < starty)?'>':'<';
+		let ICounterValue = (scalex < startx)?-14:14;
 		let shiftMin = -5;
 		let shiftMax = 4;
-		if(group.name=="gr1"){
+		if(group.name == "gr1"){
 			ICounterValue = (scalex<startx)?-7:7;
 			shiftMin = -1;
 			shiftMax = 2;
 		}
 		
-		let JCounterValue = (scaley<starty)?-14:14;
+		let JCounterValue = (scaley < starty)?-14:14;
 		let variativescript =
 `		
 		
@@ -251,19 +259,19 @@ function bind(func, context) {
 		}`;
 		eval(variativescript);
 	}
-	changeDistance(){
+	changeDistance() {
 		this.moving = true;
-			let moveVector = (this.stage)?new THREE.Vector3(152,300,-100):new THREE.Vector3(-343,  67.6,  -459);
+			let moveVector = (this.stage)?new THREE.Vector3(748, 300, -100):new THREE.Vector3(1243, 67.6, -459);
 			this.GroupArray.visible = true;
 			this.GroupArray3.visible = true;
-			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y:350});})():(()=>{TweenMax.to(this.focPoint,2,{y:300});})();
+			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y: 350});})():(()=>{TweenMax.to(this.focPoint,2,{y: 300});})();
 			TweenMax.to(this.material3,2,{opacity:(!this.stage)?0:1});
 			TweenMax.to(this.light.position,1,{x: -123.35, y: 623, z: -20,ease: Power2.easeOut,//flare
 				onComplete:()=>{this.doFlare()}});
 			TweenMax.to(this.material,2,{opacity:(!this.stage)?0:1,
 			
 	onComplete:()=>{
-		if(!this.stage){
+		if(!this.stage) {
 			this.GroupArray.visible = false;
 			this.GroupArray3.visible = true;
 			
@@ -297,13 +305,15 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 		}
 	
 	}
-	doFlare(){
-		TweenMax.to(this.light.position,2,{x: -277.4, y: 15, z: -20,ease: Power2.easeOut,onComplete:()=>{
+	doFlare() {
+		TweenMax.to(this.light.position,2,{x: -277.4, y: 15, z: -20,ease: Power2.easeOut,
+			onComplete:()=>{
 			TweenMax.to(this.light.position,2,{x: -123.35, y: 623, z: -20,ease: Power2.easeOut});
-		}})
+			}
+		})
 	}
 	
-	onMouseMove(event){
+	onMouseMove(event) {
 		
 	  this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	  this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
@@ -313,7 +323,7 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 		dir.normalize();
 	let	distance = -this.camera.position.z / dir.z;
 	let	pos = this.camera.position.clone().add( dir.multiplyScalar( distance ) );
-		if(pos.x<400&&pos.x>-300&&!this.stage&&!this.moving){
+		if(pos.x < 900 && pos.x > 600 && !this.stage && !this.moving||this.lockLightControl.lightOnMouse){
 			TweenMax.to(this.light.position,1,{ease: Power2.easeOut,x:pos.x,y:pos.y});
 		}
 		// if(!this.can3&&!this.scrollingA){
@@ -340,6 +350,5 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	} else {
 	let warning = THREE.WEBGL.getWebGLErrorMessage();
 	document.body.appendChild( warning );
-	
 	}
  
