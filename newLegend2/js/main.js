@@ -268,7 +268,7 @@ function bind(func, context) {
 			this.GroupArray3.visible = true;
 			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y: 350});})():(()=>{TweenMax.to(this.focPoint,2,{y: 300});})();
 			TweenMax.to(this.material3,2,{opacity:(!this.stage)?0:1});
-			TweenMax.to(this.light.position,1,{x: 910, y: 680, z: -20,ease: Power2.easeOut,//flare
+			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeOut,//flare
 				onComplete:()=>{this.doFlare()}});
 			TweenMax.to(this.material,2,{opacity:(!this.stage)?0:1,
 			
@@ -309,7 +309,7 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	
 	}
 	doFlare() {
-		TweenMax.to(this.light.position,2,{x: 910, y: 15, z: -20,ease: Power2.easeOut,
+		TweenMax.to(this.light.position,2,{x: 910, y: -10, z: -20,ease: Power2.easeOut,
 			onComplete:()=>{
 			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeOut});
 			}
