@@ -164,6 +164,7 @@ function bind(func, context) {
 	  this.cube1.position.set(748,300,152)//152
 	  this.cube2.position.set(-50,200,150)
 	  this.scene.add( this.cube1 );
+	  this.doFlare();
 	  //this.controls.target = this.cube1.position;
 	  //this.scene.add( this.cube2 );
 
@@ -256,6 +257,7 @@ function bind(func, context) {
 				}
 
 				tmp.amplitude=0.01+Math.random()*(0.01-0.005);
+				tmp.rotation.y=randomFromTo(shiftMin,shiftMax);
 				tmp.moving = true;
 				group.add(tmp);
 			}
