@@ -340,13 +340,13 @@ class Slider{
   }
 
   loadTextures(){
-    this.map = new THREE.TextureLoader().load('/textures/logo2.jpg',bind(function ( texture ) {
-      this.texture = new THREE.TextureLoader().load("/textures/n3_2.jpg",bind(function ( texture ) {
+    this.map = new THREE.TextureLoader().load('https://lexa307.github.io/wind/textures/logo2.jpg',bind(function ( texture ) {
+      this.texture = new THREE.TextureLoader().load("https://lexa307.github.io/wind/textures/n3_2.jpg",bind(function ( texture ) {
        
         //texture.mapping = THREE.UVMapping;
        
         this.scene.background = new THREE.CubemapGenerator( this.renderer ).fromEquirectangular( texture, this.options );
-        this.spriteMap = new THREE.TextureLoader().load('/textures/clouds.png',bind(function(texture){
+        this.spriteMap = new THREE.TextureLoader().load('https://lexa307.github.io/wind/textures/clouds.png',bind(function(texture){
           //this.texture.encoding = THREE.LinearEncoding
           //this.texture.mapping = THREE.UVMapping;
           
