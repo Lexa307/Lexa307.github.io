@@ -846,6 +846,7 @@ function bind(func, context) {
       }
     }
   }
+  this.firstAnim();
   this.animate();
   
     }
@@ -1064,6 +1065,21 @@ function bind(func, context) {
           this.oceanText.visible = statement;
         }
   
+      }
+      firstAnim(){
+        this.renderer.sortObjects = false;
+        this.camera.position.y = 5000;
+        this.focus.set(this.camera.position.x*0.9,5500,this.camera.position.z*0.9)
+        this.moving = true;
+        TweenMax.to(this.camera.position,2,{y:300,ease: Power2.easeInOut,
+          onComplete:()=>{
+            this.moving = false;
+          },
+          onUpdate:()=>{
+            this.camera.lookAt(this.focus);
+          }
+        })
+        TweenMax.to(this.focus,2,{y:300,x:0,z:0,ease: Power2.easeInOut});
       }
       enter (){
         
