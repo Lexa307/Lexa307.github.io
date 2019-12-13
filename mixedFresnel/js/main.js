@@ -357,10 +357,10 @@ function bind(func, context) {
         //meshBMaterial.maxScaleHover = meshBMaterial.uniforms.uWiggleScale.value+0.075;
         let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
         let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
-  
-        let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * 7100 +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * 7100 +0));
-        let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * 7100 + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * i / 7) * 7100 + 0));
-        let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * 7100 +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * 7100 +0));
+          let distanceScale = (this.mobile)?8000:7100;
+        let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * distanceScale +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * distanceScale +0));
+        let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * distanceScale + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * i / 7) * distanceScale + 0));
+        let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * distanceScale +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * distanceScale +0));
         
         this.textPositions.push(new THREE.Vector3(Math.cos(2 * Math.PI * i / 7) * 8000,meshB.position.y+300, Math.sin(2 * Math.PI * i / 7) * 8000))
         //let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
@@ -1071,7 +1071,7 @@ function bind(func, context) {
         this.camera.position.y = 5000;
         this.focus.set(this.camera.position.x*0.9,5500,this.camera.position.z*0.9)
         this.moving = true;
-        TweenMax.to(this.camera.position,2,{y:300,ease: Power2.easeInOut,
+        TweenMax.to(this.camera.position,3,{y:300,ease: Power2.easeInOut,
           onComplete:()=>{
             this.moving = false;
           },
@@ -1079,7 +1079,7 @@ function bind(func, context) {
             this.camera.lookAt(this.focus);
           }
         })
-        TweenMax.to(this.focus,2,{y:300,x:0,z:0,ease: Power2.easeInOut});
+        TweenMax.to(this.focus,3,{y:300,x:0,z:0,ease: Power2.easeInOut});
       }
       enter (){
         
