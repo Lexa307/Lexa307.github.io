@@ -357,7 +357,7 @@ function bind(func, context) {
         //meshBMaterial.maxScaleHover = meshBMaterial.uniforms.uWiggleScale.value+0.075;
         let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
         let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
-          let distanceScale = (this.mobile)?8000:7100;
+          let distanceScale = (this.mobile)?7600:7100;
         let OCurveStartVectot = new THREE.Vector3((Math.cos(2 * Math.PI * (i-0.1) / 7) * distanceScale +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i-0.1) / 7) * distanceScale +0));
         let OCurveControlVevtor = new THREE.Vector3((Math.cos(2 * Math.PI * i / 7) * distanceScale + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * i / 7) * distanceScale + 0));
         let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * distanceScale +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * distanceScale +0));
