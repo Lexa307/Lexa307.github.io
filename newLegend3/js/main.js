@@ -318,7 +318,7 @@ function bind(func, context) {
 	}
 	changeDistance() {
 		this.moving = true;
-			let moveVector = (this.stage)?new THREE.Vector3(748, 300, -100):new THREE.Vector3(1243, 67.6, -459);
+			let moveVector = (this.stage)?new THREE.Vector3(748, 300, -100):new THREE.Vector3(1278.3, -88.6, -547,6);
 			this.GroupArray.visible = true;
 			this.GroupArray3.visible = true;
 			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y: 350});})():(()=>{TweenMax.to(this.focPoint,2,{y: 300});})();
