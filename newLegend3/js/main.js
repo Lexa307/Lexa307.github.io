@@ -69,7 +69,7 @@ function bind(func, context) {
   
 	}
 	loadRes(){
-		this.texture = new THREE.TextureLoader().load('textures/mask3.png',bind(function ( texture ) {
+		this.texture = new THREE.TextureLoader().load('https://lexa307.github.io/newLegend3/textures/mask3.png',bind(function ( texture ) {
 			this.Init();
 		},this) );
 		
