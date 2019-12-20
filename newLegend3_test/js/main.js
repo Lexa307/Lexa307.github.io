@@ -19,7 +19,7 @@ function bind(func, context) {
 		this.scene = new THREE.Scene();
 	  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
 		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
-		this.camera = new THREE.PerspectiveCamera( 60, (window.innerWidth+100) / (window.innerHeight-320), 0.1, 60000 );
+		this.camera = new THREE.PerspectiveCamera( 60, (window.innerWidth) / (window.innerHeight), 0.1, 60000 );
 		this.mobile = true;
 	  }else{
 		this.mobile = false;
@@ -69,7 +69,7 @@ function bind(func, context) {
   
 	}
 	loadRes(){
-		this.texture = new THREE.TextureLoader().load('https://lexa307.github.io/newLegend3/textures/mask3.png',bind(function ( texture ) {
+		this.texture = new THREE.TextureLoader().load('textures/mask3.png',bind(function ( texture ) {
 			this.Init();
 		},this) );
 		
@@ -92,7 +92,10 @@ function bind(func, context) {
 	  this.renderer.setSize( window.innerWidth, window.innerHeight );
 	  //this.raycaster = new THREE.Raycaster();
 	  this.container;
-	  this.camera.position.set(748,300,-100);
+	  this.Ypos = {
+		  ypos:0,
+		  ypos2:0
+	  }
 	  this.composer = new THREE.EffectComposer( this.renderer );
 	  this.renderPass = new THREE.RenderPass(this.scene, this.camera);
 	  this.composer.addPass(this.renderPass);
@@ -103,7 +106,7 @@ function bind(func, context) {
 		uniforms: {
 			"tDiffuse": { value: this.texture },
 			"tDiffuse2": { value: this.texture },
-			"Ypos":{value: 0},
+			"Ypos":{value: this.Ypos.ypos},
 			"color": { value: new THREE.Color( 0x1D1A1B )},
 		},
 	
@@ -141,21 +144,13 @@ function bind(func, context) {
 	  document.body.appendChild( this.container );//  размещение контейнера в body
 	  this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
 	  this.controls = new THREE.OrbitControls(this.camera);
-	  
-	  this.focPoint=new THREE.Vector3(748,300,152);
+	  this.focPoint=new THREE.Vector3(748,350,152);
 	  this.controls.target = this.focPoint;
-	  this.gui = new dat.GUI();
-	  this.gui.add(this.lockLightControl,"lightOnMouse");
-	  
-	  this.gui.add( this.camera.position,"x",-1500,1500,0.1).onChange(bind(function(value) {
-		this.camera.position.x = value;
-	  },this)).listen();
-	  this.gui.add( this.camera.position,"y",-1500,1500,0.1).onChange(bind(function(value) {
-		this.camera.position.y = value;
-	  },this)).listen();
-	  this.gui.add( this.camera.position,"z",-1500,1500,0.1).onChange(bind(function(value) {
-		this.camera.position.z = value;
-	  },this)).listen();
+	//   this.gui = new dat.GUI();
+	//   this.gui.add(this.lockLightControl,"lightOnMouse");
+	//   this.gui.add( this.Ypos,"ypos",0,1,0.01).onChange(bind(function(value) {
+	// 	this.BGshader.uniforms.Ypos.value = value;
+	//   },this));
 	  this.GroupArray = new THREE.Group();
 	  this.GroupArray2 = new THREE.Group();
 	  this.GroupArray3 = new THREE.Group();
@@ -171,7 +166,7 @@ function bind(func, context) {
 	  this.curveFloat = 0;
 	 
 
-	  this.geometry = new THREE.PlaneGeometry( 1.5, 14, 1 );
+	  this.geometry = new THREE.PlaneGeometry( 4.5, 28, 1 );
 	  this.material = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
 	  this.material2 = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true} );//ad8b19
 	  this.material3 = new THREE.MeshStandardMaterial( {color: 0xFCD08E  , side: THREE.DoubleSide, wireframe:false, metalness:1, emissive:0x231F20, transparent:true,opacity:0} );//ad8b19
@@ -190,7 +185,7 @@ function bind(func, context) {
 	  // let pointLightHelper = new THREE.PointLightHelper( light );
 	  // scene.add( pointLightHelper );
   
-	  this.light.position.set(987,180,-20);//-40
+	  this.light.position.set(910, 700, -20);//-40
   
 	//   this.curve = new THREE.QuadraticBezierCurve3(
 	// 	  new THREE.Vector3( -320.414,-70,-143),
@@ -202,7 +197,7 @@ function bind(func, context) {
 		this.scene.add(this.GroupArray2);
 		this.scene.add(this.GroupArray3);
 		this.scene.add(this.GroupArray);
-		this.GroupArray3.visible = false;
+		this.GroupArray3.visible = true;
 	//this.createPattern(0,-150,300,700,true,0,0,this.GroupArray3,this.plane2);
 	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
 	this.createPattern(0,-150,300,700,false,0,300,this.GroupArray2,this.plane2);
@@ -211,14 +206,14 @@ function bind(func, context) {
 		  //front
 
 	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray3,this.plane2);
-	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray,this.plane);
+	//this.createPattern(900,-150,600,700,true,0,0,this.GroupArray,this.plane);
 	this.createPattern(0,-150,300,700,false,0,900,this.GroupArray2,this.plane2);
 	//this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
 	//this.createPattern(0,-150,300,700,false,0,600,this.GroupArray2,this.plane2);
 
 		 
 	
-	  
+	  this.camera.position.set(1278.3, -88.6, -547,6);
 	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 300, 900, 300 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
 	  this.cube2 = this.cube1.clone();
 	  this.cube1.position.set(748,300,152)//152
@@ -229,80 +224,77 @@ function bind(func, context) {
 
 
 	  
-	  window.addEventListener("resize",bind(this.onWindowResize,this), false);
-	  document.addEventListener('keydown', bind(function(event) {
-		if(!this.moving&&event.key==' '){
-			this.changeDistance();
-		}},this));
+	//   window.addEventListener("resize",bind(this.onWindowResize,this), false);
+	//   document.addEventListener('keydown', bind(function(event) {
+	// 	if(!this.moving&&event.key==' '){
+	// 		this.changeDistance();
+	// 	}},this));
 
-		this.container.addEventListener('touchstart', bind(function(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			this.initialPoint=event.changedTouches[0];
-			},this), false);
-			this.container.addEventListener('touchend', bind(function(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			this.finalPoint=event.changedTouches[0];
-			let xAbs = Math.abs(this.initialPoint.pageX - this.finalPoint.pageX);
-			let yAbs = Math.abs(this.initialPoint.pageY - this.finalPoint.pageY);
-			if (xAbs > 20 || yAbs > 20) {
-			if (xAbs > yAbs) {
-			if (this.finalPoint.pageX < this.initialPoint.pageX){
-			/*СВАЙП ВЛЕВО*/
+		// this.container.addEventListener('touchstart', bind(function(event) {
+		// 	event.preventDefault();
+		// 	event.stopPropagation();
+		// 	this.initialPoint=event.changedTouches[0];
+		// 	},this), false);
+		// 	this.container.addEventListener('touchend', bind(function(event) {
+		// 	event.preventDefault();
+		// 	event.stopPropagation();
+		// 	this.finalPoint=event.changedTouches[0];
+		// 	let xAbs = Math.abs(this.initialPoint.pageX - this.finalPoint.pageX);
+		// 	let yAbs = Math.abs(this.initialPoint.pageY - this.finalPoint.pageY);
+		// 	if (xAbs > 20 || yAbs > 20) {
+		// 	if (xAbs > yAbs) {
+		// 	if (this.finalPoint.pageX < this.initialPoint.pageX){
+		// 	/*СВАЙП ВЛЕВО*/
 			
 			
-			}
-			else{
-			/*СВАЙП ВПРАВО*/
+		// 	}
+		// 	else{
+		// 	/*СВАЙП ВПРАВО*/
 			
-			}
-			}
-			else {
-			if (this.finalPoint.pageY < this.initialPoint.pageY){
+		// 	}
+		// 	}
+		// 	else {
+		// 	if (this.finalPoint.pageY < this.initialPoint.pageY){
 			  
-				if(!this.moving) {
-					this.changeDistance();
-				}
+		// 		if(!this.moving) {
+		// 			//this.changeDistance();
+		// 		}
 			  
 			  
-			/*СВАЙП ВВЕРХ*/}
-			else {
-			  //this.indexControl('back');
-			/*СВАЙП ВНИЗ*/}
-			}
-			}else {
-			  event.target.click();
-			  event.preventDefault();
-			}
-			},this), false);
+		// 	/*СВАЙП ВВЕРХ*/}
+		// 	else {
+		// 	  //this.indexControl('back');
+		// 	/*СВАЙП ВНИЗ*/}
+		// 	}
+		// 	}else {
+		// 	  event.target.click();
+		// 	  event.preventDefault();
+		// 	}
+		// 	},this), false);
 		
 	  this.stats = new Stats();
       document.body.appendChild( this.stats.dom );
-	  this.container.addEventListener('mousemove',bind(this.onMouseMove,this),false);
+	  //this.container.addEventListener('mousemove',bind(this.onMouseMove,this),false);
 	 
 	 
 	  
 	  this.animate();
-
-	  
-	  
-	  
-	  
+	  //this.doFlare();
+	    
 	}
 	createPattern(startx,starty,scalex,scaley,ZXdir,z,x,group,pl){
 		let Isign = (scalex < startx)?'>':'<';
 		let Jsign = (scaley < starty)?'>':'<';
-		let ICounterValue = (scalex < startx)?-14:14;
+		let ICounterValue = (scalex < startx)?-28:28;
 		let shiftMin = -5;
 		let shiftMax = 4;
 		if(group.name == "gr1"){
-			ICounterValue = (scalex<startx)?-7:7;
-			shiftMin = -1;
-			shiftMax = 2;
+			ICounterValue = (scalex<startx)?-14:14;
+			shiftMin = -3;
+			shiftMax = 5;
 		}
 		
-		let JCounterValue = (scaley < starty)?-14:14;
+		let JCounterValue = (scaley < starty)?-28:28;
 		let variativescript =
 `		
 		
@@ -324,7 +316,7 @@ function bind(func, context) {
 	}
 	changeDistance() {
 		this.moving = true;
-			let moveVector = (this.stage)?new THREE.Vector3(748, 300, -100):new THREE.Vector3(1278.2, -88.6, -547.6);
+			let moveVector = (this.stage)?new THREE.Vector3(748, 300, -100):new THREE.Vector3(1278.3, -88.6, -547,6);
 			this.GroupArray.visible = true;
 			this.GroupArray3.visible = true;
 			(!this.stage)?(()=>{TweenMax.to(this.focPoint,2,{y: 350});})():(()=>{TweenMax.to(this.focPoint,2,{y: 300});})();
@@ -371,16 +363,16 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	
 	}
 	doFlare() {
-		TweenMax.to(this.light.position,2,{x: 910, y: -10, z: -20,ease: Power2.easeOut,
-			onComplete:()=>{
-			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeOut});
+
+			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeInOut});
 			TweenMax.to(this.shader.uniforms.Ypos,2,{value:1,
-				onComplete:()=>{
-					//TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,})
-				}});
-			}
-		})
-	}
+				// onComplete:()=>{
+				// 	TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,ease: Power2.easeInOut})
+				//}
+			});
+			
+		}
+	
 	
 	onMouseMove(event) {
 		
