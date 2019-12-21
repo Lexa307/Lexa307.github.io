@@ -146,11 +146,11 @@ function bind(func, context) {
 	  this.controls = new THREE.OrbitControls(this.camera);
 	  this.focPoint=new THREE.Vector3(748,350,152);
 	  this.controls.target = this.focPoint;
-	//   this.gui = new dat.GUI();
-	//   this.gui.add(this.lockLightControl,"lightOnMouse");
-	//   this.gui.add( this.Ypos,"ypos",0,1,0.01).onChange(bind(function(value) {
-	// 	this.BGshader.uniforms.Ypos.value = value;
-	//   },this));
+	//    this.gui = new dat.GUI();
+	//    this.gui.add(this.controls,"enabled").listen();
+	//    this.gui.add( this.Ypos,"ypos",0,1,0.01).onChange(bind(function(value) {
+	//  	this.shader.uniforms.Ypos.value = value;
+	//    },this));
 	  this.GroupArray = new THREE.Group();
 	  this.GroupArray2 = new THREE.Group();
 	  this.GroupArray3 = new THREE.Group();
@@ -199,26 +199,27 @@ function bind(func, context) {
 		this.scene.add(this.GroupArray);
 		this.GroupArray3.visible = true;
 	//this.createPattern(0,-150,300,700,true,0,0,this.GroupArray3,this.plane2);
-	this.createPattern(0,-150,300,700,true,0,0,this.GroupArray2,this.plane2);
-	this.createPattern(0,-150,300,700,false,0,300,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,400,700,true,0,0,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,400,700,false,0,400,this.GroupArray2,this.plane2);
 	
 	 // this.createPattern(0,-150,450,1200,true,450,0,this.GroupArray2,this.plane2);
 		  //front
 
-	this.createPattern(900,-150,600,700,true,0,0,this.GroupArray3,this.plane2);
+	this.createPattern(900,-150,500,700,true,0,0,this.GroupArray3,this.plane2);
 	//this.createPattern(900,-150,600,700,true,0,0,this.GroupArray,this.plane);
-	this.createPattern(0,-150,300,700,false,0,900,this.GroupArray2,this.plane2);
+	this.createPattern(0,-150,400,700,false,0,900,this.GroupArray3,this.plane2);
 	//this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
 	//this.createPattern(0,-150,300,700,false,0,600,this.GroupArray2,this.plane2);
 
 		 
 	
-	  this.camera.position.set(1278.3, -88.6, -547,6);
+	  this.camera.position.set(1277.6095415728942,  -63.707997999323766,  -562.526);
 	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 300, 900, 300 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
 	  this.cube2 = this.cube1.clone();
 	  this.cube1.position.set(748,300,152)//152
 	  this.cube2.position.set(-50,200,150)
 	  this.scene.add( this.cube1 );
+	  this.GroupArray2.position.x = -190.6;
 	  //this.controls.target = this.cube1.position;
 	  //this.scene.add( this.cube2 );
 
@@ -275,11 +276,13 @@ function bind(func, context) {
 	  this.stats = new Stats();
       document.body.appendChild( this.stats.dom );
 	  //this.container.addEventListener('mousemove',bind(this.onMouseMove,this),false);
-	 
+	//   this.gui.add( this.GroupArray2.position,"x",-300,300,0.01).onChange(bind(function(value) {
+	// 	this.GroupArray2.position.x = value;
+	//   },this)).listen();
 	 
 	  
 	  this.animate();
-	  //this.doFlare();
+	  this.doFlare();
 	    
 	}
 	createPattern(startx,starty,scalex,scaley,ZXdir,z,x,group,pl){
@@ -365,10 +368,10 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	doFlare() {
 
 			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeInOut});
-			TweenMax.to(this.shader.uniforms.Ypos,2,{value:1,
-				// onComplete:()=>{
-				// 	TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,ease: Power2.easeInOut})
-				//}
+			TweenMax.to(this.shader.uniforms.Ypos,2,{value:1,delay:2,
+				onComplete:()=>{
+					TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,ease: Power2.easeInOut})
+				}
 			});
 			
 		}
