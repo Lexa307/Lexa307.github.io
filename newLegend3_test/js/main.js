@@ -217,7 +217,7 @@ function bind(func, context) {
 		 
 	
 	  this.camera.position.set(1301.7511491451587,  -52.99202947107801,  -550.2436464669498);
-	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 300, 900, 300 ), new THREE.MeshBasicMaterial( {color: 0x1D1A1B} ) );
+	    this.cube1 = new THREE.Mesh(new THREE.BoxGeometry( 300, 900, 300 ), new THREE.MeshBasicMaterial( {color: 0x000000} ) );
 	  this.cube2 = this.cube1.clone();
 	  this.cube1.position.set(748,300,152)//152
 	  this.cube2.position.set(-50,200,150)
