@@ -205,12 +205,13 @@ function bind(func, context) {
 	 // this.createPattern(0,-150,450,1200,true,450,0,this.GroupArray2,this.plane2);
 		  //front
 
-	this.createPattern(900,-150,550,700,true,0,0,this.GroupArray3,this.plane2);
+	this.createPattern(900,-150,580,700,true,0,0,this.GroupArray3,this.plane2);
 	//this.createPattern(900,-150,600,700,true,0,0,this.GroupArray,this.plane);
-	this.createPattern(0,-150,350,700,false,0,900,this.GroupArray3,this.plane2);
+	this.createPattern(0,-150,320,700,false,0,900,this.GroupArray3,this.plane2);
 	//this.createPattern(900,-150,600,700,true,0,0,this.GroupArray2,this.plane2);
 	//this.createPattern(0,-150,300,700,false,0,600,this.GroupArray2,this.plane2);
 	this.GroupArray2.position.y = - 50;
+	this.GroupArray3.position.y = - 20;
 		 
 	
 	  this.camera.position.set(1301.7511491451587,  -52.99202947107801,  -550.2436464669498);
