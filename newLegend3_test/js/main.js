@@ -367,7 +367,7 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	}
 	doFlare() {
 
-			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeInOut, dalay:3});
+			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeInOut, delay:3});
 			TweenMax.to(this.shader.uniforms.Ypos,2,{value:1,
 				onComplete:()=>{
 					TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,ease: Power2.easeInOut})
