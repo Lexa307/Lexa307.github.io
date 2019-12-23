@@ -24,13 +24,13 @@ function bind(func, context) {
 	  }else{
 		this.mobile = false;
 		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
-		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 60000 );
+		this.camera = new THREE.PerspectiveCamera( 60, 1920 / 1080, 0.1, 60000 );
 	  }
   
 	  this.renderer.setPixelRatio( window.devicePixelRatio );
 	  this.renderer.setSize( window.innerWidth, window.innerHeight );
 	 
-
+	  
 	  
 	 this.loadRes();
 	  
@@ -47,7 +47,9 @@ function bind(func, context) {
 	  this.renderer.setSize( window.innerWidth, window.innerHeight );
 	  
 	  this.camera.aspect = window.innerWidth / window.innerHeight;
+	  this.shader.uniforms.u_resolution.value =  new THREE.Vector2(window.innerWidth,window.innerHeight);
 	  this.camera.updateProjectionMatrix();
+	  
 	}
 	
 	
@@ -98,6 +100,7 @@ function bind(func, context) {
 	  }
 	  this.composer = new THREE.EffectComposer( this.renderer );
 	  this.renderPass = new THREE.RenderPass(this.scene, this.camera);
+	  
 	  this.composer.addPass(this.renderPass);
 	  this.copyPass = new THREE.ShaderPass( THREE.CopyShader );
 	  
@@ -106,6 +109,7 @@ function bind(func, context) {
 		uniforms: {
 			"tDiffuse": { value: this.texture },
 			"tDiffuse2": { value: this.texture },
+			"u_resolution":{ value: new THREE.Vector2(window.innerWidth,window.innerHeight) },
 			"Ypos":{value: 1},
 			"color": { value: new THREE.Color( 0x1D1A1B )},
 		},
@@ -146,11 +150,9 @@ function bind(func, context) {
 	  this.controls = new THREE.OrbitControls(this.camera);
 	  this.focPoint=new THREE.Vector3(748,350,152);
 	  this.controls.target = this.focPoint;
-	//   this.gui = new dat.GUI();
-	//   this.gui.add(this.lockLightControl,"lightOnMouse");
-	//   this.gui.add( this.Ypos,"ypos",0,1,0.01).onChange(bind(function(value) {
-	// 	this.BGshader.uniforms.Ypos.value = value;
-	//   },this));
+	  this.gui = new dat.GUI();
+	  //this.gui.add(this.lockLightControl,"lightOnMouse");
+	
 	  this.GroupArray = new THREE.Group();
 	  this.GroupArray2 = new THREE.Group();
 	  this.GroupArray3 = new THREE.Group();
@@ -280,7 +282,7 @@ function bind(func, context) {
 	 
 	  
 	  this.animate();
-	  //this.doFlare();
+	  this.doFlare();
 	    
 	}
 	createPattern(startx,starty,scalex,scaley,ZXdir,z,x,group,pl){
@@ -367,9 +369,9 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 
 			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeInOut});
 			TweenMax.to(this.shader.uniforms.Ypos,2,{value:1,
-				// onComplete:()=>{
-				// 	TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,ease: Power2.easeInOut})
-				//}
+				onComplete:()=>{
+					TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,ease: Power2.easeInOut})
+				}
 			});
 			
 		}
