@@ -23,12 +23,12 @@ function bind(func, context) {
 		this.mobile = true;
 	  }else{
 		this.mobile = false;
-		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:true } ) } );})()  : new THREE.WebGLRenderer({antialias:true})
+		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: true,antialias:true } ) } );})()  : new THREE.WebGLRenderer({alpha: true,antialias:true})
 		this.camera = new THREE.PerspectiveCamera( 60, 1920 / 1080, 0.1, 60000 );
 	  }
   
 	  this.renderer.setPixelRatio( window.devicePixelRatio );
-	  this.renderer.setSize( window.innerWidth, window.innerHeight );
+	  this.renderer.setSize( window.innerWidth, (window.innerWidth/1.77) );
 	 
 	  
 	  
@@ -43,11 +43,11 @@ function bind(func, context) {
 		
 	  // this.container.width = window.innerWidth;
 	  // this.container.height = window.innerHeight;
-	  this.renderer.setPixelRatio( window.devicePixelRatio );
-	  this.renderer.setSize( window.innerWidth, window.innerHeight );
+	   this.renderer.setPixelRatio( window.devicePixelRatio );
+	   this.renderer.setSize( window.innerWidth, (window.innerWidth/1.77) );
 	  
-	  this.camera.aspect = window.innerWidth / window.innerHeight;
-	  this.shader.uniforms.u_resolution.value =  new THREE.Vector2(window.innerWidth,window.innerHeight);
+	   this.camera.aspect = 1920 / 1080;
+	//   this.shader.uniforms.u_resolution.value =  new THREE.Vector2(window.innerWidth,window.innerHeight);
 	  this.camera.updateProjectionMatrix();
 	  
 	}
@@ -91,7 +91,7 @@ function bind(func, context) {
 	  
 	  
 	  this.mouse = new THREE.Vector2(0,0);
-	  this.renderer.setSize( window.innerWidth, window.innerHeight );
+	  //this.renderer.setSize( window.innerWidth, window.innerHeight );
 	  //this.raycaster = new THREE.Raycaster();
 	  this.container;
 	  this.Ypos = {
@@ -136,20 +136,22 @@ function bind(func, context) {
 	 
 	  this.shaderPass = new THREE.ShaderPass(this.shader);
 	  this.composer.addPass(this.shaderPass);
-	  this.composer.addPass(this.copyPass);
-	  this.copyPass.renderToScreen = true;
+	//   this.composer.addPass(this.copyPass);
+	   this.shaderPass.renderToScreen = true;
 	  this.BGshaderPass = new THREE.ShaderPass(this.BGshader);
-	  this.composer.addPass(this.BGshaderPass);
+	  //this.composer.addPass(this.BGshaderPass);
 	  //this.scene.background = new THREE.Color(0x161616);
 	  
 	  this.stats = new Stats();
 	 // document.body.appendChild( this.stats.dom );
 	  this.container = document.createElement( 'div' );
+	  this.container.style.bottom = "0";
+	  this.renderer.domElement.bottom = "0";
 	  document.body.appendChild( this.container );//  размещение контейнера в body
 	  this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
-	  this.controls = new THREE.OrbitControls(this.camera);
+	  //this.controls = new THREE.OrbitControls(this.camera);
 	  this.focPoint=new THREE.Vector3(748,350,152);
-	  this.controls.target = this.focPoint;
+	  //this.controls.target = this.focPoint;
 	  this.gui = new dat.GUI();
 	  //this.gui.add(this.lockLightControl,"lightOnMouse");
 	
@@ -178,7 +180,7 @@ function bind(func, context) {
 	this.plane3 = new THREE.Mesh( this.geometry, this.material3 );
 	  //this.camera.lookAt(this.plane.position);
 
-	  this.scene.background=new THREE.Color(0x000000/*231F20*/);
+	  //this.scene.background=new THREE.Color(0x000000/*231F20*/);
 	  this.light = new THREE.PointLight({color:new THREE.Color(0xE8D7AA),intensity:2 });
 	  this.scene.add(this.light);
 	  let pointLightHelper = new THREE.PointLightHelper( this.light, 1 );

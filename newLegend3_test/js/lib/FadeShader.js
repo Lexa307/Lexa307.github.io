@@ -25,11 +25,11 @@ THREE.FadeShader = {
         if(vUv.y>Ypos){
             float mixValue = (distance(vUv,vec2(vUv.x,Ypos)));
             vec3 final = mix(texel.rgb,texel.rgb,mixValue);
-            gl_FragColor = vec4(final, mixValue );
+            gl_FragColor = vec4(final, Ypos );
         }else{
             float mixValue = (distance(vUv,vec2(vUv.x,Ypos)));
             vec3 final = mix(texel.rgb,texel2.rgb,mixValue);
-            gl_FragColor = vec4(final,mixValue );
+            gl_FragColor = vec4(final,Ypos );
         }
         //vec3 final = mix(texel2.rgb,texel.rgb,Ypos);
         
