@@ -110,7 +110,7 @@ function bind(func, context) {
 			"tDiffuse": { value: this.texture },
 			"tDiffuse2": { value: this.texture },
 			"u_resolution":{ value: new THREE.Vector2(window.innerWidth,window.innerHeight) },
-			"Ypos":{value: 1},
+			"Ypos":{value: 0},
 			"color": { value: new THREE.Color( 0x1D1A1B )},
 		},
 	
