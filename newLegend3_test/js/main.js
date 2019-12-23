@@ -111,7 +111,7 @@ function bind(func, context) {
 			"tDiffuse2": { value: this.texture },
 			"u_resolution":{ value: new THREE.Vector2(window.innerWidth,window.innerHeight) },
 			"Ypos":{value: 0},
-			"color": { value: new THREE.Color( 0x1D1A1B )},
+			"color": { value: new THREE.Color( 0x000000 )},
 		},
 	
 		vertexShader: THREE.FadeShader.vertexShader,
@@ -124,8 +124,8 @@ function bind(func, context) {
 
 		uniforms: {
 			"tDiffuse2": { value: this.composer.renderTarget2 },
-			"Ypos":{value: -0.5},
-			"color": { value: new THREE.Color( 0x1D1A1B )},
+			"Ypos":{value: -1.5},
+			"color": { value: new THREE.Color( 0x000000 )},
 		},
 	
 		vertexShader: THREE.BGFadeShader.vertexShader,
@@ -178,7 +178,7 @@ function bind(func, context) {
 	this.plane3 = new THREE.Mesh( this.geometry, this.material3 );
 	  //this.camera.lookAt(this.plane.position);
 
-	  this.scene.background=new THREE.Color(0x1D1A1B/*231F20*/);
+	  this.scene.background=new THREE.Color(0x000000/*231F20*/);
 	  this.light = new THREE.PointLight({color:new THREE.Color(0xE8D7AA),intensity:2 });
 	  this.scene.add(this.light);
 	  let pointLightHelper = new THREE.PointLightHelper( this.light, 1 );
