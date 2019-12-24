@@ -22,6 +22,10 @@ THREE.FadeShader = {
     void main() {
         vec4 texel = texture2D( tDiffuse, vUv );
         vec4 texel2 = texture2D( tDiffuse2, vUv );
+
+        if(texel2.a==0.){
+            discard;
+        }
         if(vUv.y>Ypos){
             float mixValue = (distance(vUv,vec2(vUv.x,Ypos)));
             vec3 final = mix(texel.rgb,texel.rgb,mixValue);
