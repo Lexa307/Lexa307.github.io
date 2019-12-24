@@ -24,7 +24,7 @@ function bind(func, context) {
 	  }else{
 		this.mobile = false;
 		this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: true,antialias:true } ) } );})()  : new THREE.WebGLRenderer({alpha: true,antialias:true})
-		this.camera = new THREE.PerspectiveCamera( 60, 1920 / 1080, 0.1, 60000 );
+		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / (window.innerWidth/1.77), 0.1, 60000 );
 	  }
   
 	  this.renderer.setPixelRatio( window.devicePixelRatio );
@@ -46,7 +46,7 @@ function bind(func, context) {
 	   this.renderer.setPixelRatio( window.devicePixelRatio );
 	   this.renderer.setSize( window.innerWidth, (window.innerWidth/1.77) );
 	  
-	   this.camera.aspect = 1920 / 1080;
+	   this.camera.aspect = window.innerWidth / (window.innerWidth/1.77);
 	//   this.shader.uniforms.u_resolution.value =  new THREE.Vector2(window.innerWidth,window.innerHeight);
 	  this.camera.updateProjectionMatrix();
 	  
@@ -61,7 +61,7 @@ function bind(func, context) {
 	   this.stats.begin();
 	
 		//this.renderer.render( this.scene, this.camera );
-		this.composer.render();
+		this.composer.render(0.001);
 		this.updatePlanes(this.GroupArray);
 		this.updatePlanes(this.GroupArray2);
 		this.updatePlanes(this.GroupArray3);
@@ -139,7 +139,7 @@ function bind(func, context) {
 	   this.composer.addPass(this.copyPass);
 	   //this.copyPass.renderToScreen = true;
 	  this.BGshaderPass = new THREE.ShaderPass(this.BGshader);
-	  this.composer.addPass(this.BGshaderPass);
+	  //this.composer.addPass(this.BGshaderPass);
 	  //this.scene.background = new THREE.Color(0x161616);
 	  
 	  this.stats = new Stats();
@@ -181,7 +181,7 @@ function bind(func, context) {
 	  //this.camera.lookAt(this.plane.position);
 
 	  //this.scene.background=new THREE.Color(0x000000/*231F20*/);
-	  this.light = new THREE.PointLight({color:new THREE.Color(0xE8D7AA),intensity:2 });
+	  this.light = new THREE.PointLight({color:new THREE.Color(0xFFFFFF),intensity:2 });
 	  this.scene.add(this.light);
 	  let pointLightHelper = new THREE.PointLightHelper( this.light, 1 );
 	  this.scene.add( pointLightHelper );
@@ -311,8 +311,9 @@ function bind(func, context) {
 				}else{
 					tmp.position.set(${x},j,i+randomFromTo(shiftMin,shiftMax));
 				}
-
+				
 				tmp.amplitude=0.01+Math.random()*(0.01-0.005);
+				tmp.rotation.y = tmp.amplitude+randomFromTo(-Math.PI,Math.PI);
 				tmp.moving = true;
 				group.add(tmp);
 			}
@@ -369,10 +370,11 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 	}
 	doFlare() {
 
-			TweenMax.to(this.light.position,2,{x: 910, y: 680, z: -20,ease: Power2.easeInOut, delay:3});
-			TweenMax.to(this.shader.uniforms.Ypos,2,{value:1,delay:3,
+			TweenMax.to(this.light.position,3,{x: 910, y: 680, z: -20,ease: Power2.easeInOut, delay:1});
+			TweenMax.to(this.shader.uniforms.Ypos,3,{value:1,delay:1,
 				onComplete:()=>{
-					TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,ease: Power2.easeInOut})
+					this.composer.addPass(this.BGshaderPass);
+					TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,delay:1,ease: Power2.easeInOut})
 				}
 			});
 			

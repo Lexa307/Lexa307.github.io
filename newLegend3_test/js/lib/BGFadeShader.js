@@ -27,7 +27,7 @@ THREE.BGFadeShader = {
             float mixValue = (distance(vUv,vec2(vUv.x,Ypos)));
             vec3 final = mix(color,texel.rgb,mixValue);
 
-            gl_FragColor = vec4(final, Ypos );
+            gl_FragColor = vec4(final, 1. );
         }else{
 
             float mixValue = (distance(vUv,vec2(vUv.x,Ypos)));
