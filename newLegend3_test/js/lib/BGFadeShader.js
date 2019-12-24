@@ -15,18 +15,25 @@ THREE.BGFadeShader = {
     fragmentShader:`
     uniform vec3 color;
     uniform sampler2D tDiffuse2;
+    uniform sampler2D tDiffuse;
     varying vec2 vUv;
     uniform float Ypos;
     void main() {
         vec4 texel = texture2D( tDiffuse2, vUv );
+        if(vUv.x>0.8||vUv.x<0.3){
+            discard;
+        }
         if(vUv.y>Ypos){
             float mixValue = (distance(vUv,vec2(vUv.x,Ypos)));
             vec3 final = mix(color,texel.rgb,mixValue);
+
             gl_FragColor = vec4(final, Ypos );
         }else{
+
             float mixValue = (distance(vUv,vec2(vUv.x,Ypos)));
             vec3 final = mix(color,color,mixValue);
-            gl_FragColor = vec4(final,Ypos );
+         
+            gl_FragColor = vec4(final,0. );
         }
         //vec3 final = mix(texel2.rgb,texel.rgb,Ypos);
         

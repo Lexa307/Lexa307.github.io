@@ -136,10 +136,10 @@ function bind(func, context) {
 	 
 	  this.shaderPass = new THREE.ShaderPass(this.shader);
 	  this.composer.addPass(this.shaderPass);
-	//   this.composer.addPass(this.copyPass);
-	   this.shaderPass.renderToScreen = true;
+	   this.composer.addPass(this.copyPass);
+	   //this.copyPass.renderToScreen = true;
 	  this.BGshaderPass = new THREE.ShaderPass(this.BGshader);
-	  //this.composer.addPass(this.BGshaderPass);
+	  this.composer.addPass(this.BGshaderPass);
 	  //this.scene.background = new THREE.Color(0x161616);
 	  
 	  this.stats = new Stats();
