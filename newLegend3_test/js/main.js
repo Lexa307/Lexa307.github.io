@@ -58,7 +58,7 @@ function bind(func, context) {
 	animate () {
 	  
 		requestAnimationFrame( this.animate.bind(this) );
-	   this.stats.begin();
+	  // this.stats.begin();
 	
 		//this.renderer.render( this.scene, this.camera );
 		this.composer.render(0.001);
@@ -67,7 +67,7 @@ function bind(func, context) {
 		this.updatePlanes(this.GroupArray3);
 		this.camera.lookAt(this.focPoint);
 		
-	   this.stats.end();
+	  // this.stats.end();
   
 	}
 	loadRes(){
@@ -124,7 +124,7 @@ function bind(func, context) {
 
 		uniforms: {
 			"tDiffuse2": { value: this.composer.renderTarget2 },
-			"Ypos":{value: -1.5},
+			"Ypos":{value: -1},
 			"color": { value: new THREE.Color( 0x000000 )},
 		},
 	
@@ -144,14 +144,15 @@ function bind(func, context) {
 	  this.composer.addPass(this.shaderPass);
 	  
 	   this.composer.addPass(this.copyPass);
+	  
 	   
 	  
 	   //this.copyPass.renderToScreen = true;
 	  this.BGshaderPass = new THREE.ShaderPass(this.BGshader);
 	  //this.composer.addPass(this.BGshaderPass);
 	  //this.scene.background = new THREE.Color(0x161616);
-	  
-	  this.stats = new Stats();
+	  this.composer.addPass(this.BGshaderPass);
+	  //this.stats = new Stats();
 	 // document.body.appendChild( this.stats.dom );
 	  this.container = document.createElement( 'div' );
 	  this.container.style.bottom = "0";
@@ -161,7 +162,7 @@ function bind(func, context) {
 	  //this.controls = new THREE.OrbitControls(this.camera);
 	  this.focPoint=new THREE.Vector3(748,350,152);
 	  //this.controls.target = this.focPoint;
-	  this.gui = new dat.GUI();
+	  //this.gui = new dat.GUI();
 	  //this.gui.add(this.lockLightControl,"lightOnMouse");
 	
 	  this.GroupArray = new THREE.Group();
@@ -287,7 +288,7 @@ function bind(func, context) {
 		// 	},this), false);
 		
 	  this.stats = new Stats();
-      document.body.appendChild( this.stats.dom );
+      //document.body.appendChild( this.stats.dom );
 	  //this.container.addEventListener('mousemove',bind(this.onMouseMove,this),false);
 	 
 	 
@@ -389,7 +390,7 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 			TweenMax.to(this.shader.uniforms.Ypos,3,{value:1,delay:1,
 				onComplete:()=>{
 					
-					this.composer.addPass(this.BGshaderPass);
+					
 					
 					
 					TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,delay:1,ease: Power2.easeInOut})
