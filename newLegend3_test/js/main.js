@@ -135,6 +135,8 @@ function bind(func, context) {
 	} );
 	 
 	  this.shaderPass = new THREE.ShaderPass(this.shader);
+	  this.fxaaPass = new THREE.ShaderPass( THREE.FXAAShader );
+	  this.composer.addPass(this.fxaaPass);
 	  this.composer.addPass(this.shaderPass);
 	   this.composer.addPass(this.copyPass);
 	   //this.copyPass.renderToScreen = true;
