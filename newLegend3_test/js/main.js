@@ -157,6 +157,12 @@ function bind(func, context) {
 	  this.container = document.createElement( 'div' );
 	  this.container.style.bottom = "0";
 	  this.renderer.domElement.bottom = "0";
+	  this.stars = document.createElement( 'div' );
+	  this.stars.className = "stars";
+	  document.body.appendChild(this.stars);
+	  this.twinkling = document.createElement( 'div' );
+	  this.twinkling.className = "twinkling";
+	  this.stars.appendChild(this.twinkling);
 	  document.body.appendChild( this.container );//  размещение контейнера в body
 	  this.container.appendChild( this.renderer.domElement );// помещение рендерера в контейнер
 	  //this.controls = new THREE.OrbitControls(this.camera);
