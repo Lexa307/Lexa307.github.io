@@ -288,7 +288,7 @@ function bind(func, context) {
 	  fadediv.style.opacity = "1.0"
 	  console.log(fadediv);
 	  document.body.appendChild(fadediv);
-	  TweenMax.to(fadediv.style,2,{opacity:0})
+	  TweenMax.to(fadediv.style,2,{opacity:0,ease: Power2.easeInOut})
 	  this.animate();
 	  this.doFlare();
 	    
