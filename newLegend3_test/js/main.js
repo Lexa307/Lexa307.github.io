@@ -136,9 +136,15 @@ function bind(func, context) {
 	 
 	  this.shaderPass = new THREE.ShaderPass(this.shader);
 	  this.fxaaPass = new THREE.ShaderPass( THREE.FXAAShader );
-	  this.composer.addPass(this.fxaaPass);
+	  this.ssaaRenderPass = new THREE.SSAARenderPass(  this.scene,  this.camera );
+	  this.ssaaRenderPass.unbiased = false;
+	  
+	  this.ssaaRenderPass.sampleLevel = 3;
+	  this.composer.addPass(  this.ssaaRenderPass );
 	  this.composer.addPass(this.shaderPass);
 	   this.composer.addPass(this.copyPass);
+	  
+	  
 	   //this.copyPass.renderToScreen = true;
 	  this.BGshaderPass = new THREE.ShaderPass(this.BGshader);
 	  //this.composer.addPass(this.BGshaderPass);
@@ -381,7 +387,10 @@ TweenMax.to(this.camera.position,2, {x: moveVector.x, y: moveVector.y, z: moveV
 			TweenMax.to(this.light.position,3,{x: 910, y: 680, z: -20,ease: Power2.easeInOut, delay:1});
 			TweenMax.to(this.shader.uniforms.Ypos,3,{value:1,delay:1,
 				onComplete:()=>{
+					
 					this.composer.addPass(this.BGshaderPass);
+					
+					
 					TweenMax.to(this.BGshader.uniforms.Ypos,2,{value:1,delay:1,ease: Power2.easeInOut})
 				}
 			});
