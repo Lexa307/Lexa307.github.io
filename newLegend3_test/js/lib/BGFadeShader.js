@@ -20,7 +20,7 @@ THREE.BGFadeShader = {
     uniform float Ypos;
     void main() {
         vec4 texel = texture2D( tDiffuse2, vUv );
-        if(vUv.x>0.8||vUv.x<0.3){
+        if(texel.a==0.){
             discard;
         }
         if(vUv.y>Ypos){

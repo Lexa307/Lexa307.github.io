@@ -282,7 +282,13 @@ function bind(func, context) {
 	  //this.container.addEventListener('mousemove',bind(this.onMouseMove,this),false);
 	 
 	 
-	  
+	  let fadediv = document.createElement('div');
+	  fadediv.className = "fadediv";
+	  fadediv.style.background = "#000000"
+	  fadediv.style.opacity = "1.0"
+	  console.log(fadediv);
+	  document.body.appendChild(fadediv);
+	  TweenMax.to(fadediv.style,2,{opacity:0})
 	  this.animate();
 	  this.doFlare();
 	    
