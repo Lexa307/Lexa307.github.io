@@ -142,8 +142,9 @@ function bind(func, context) {
 	  this.ssaaRenderPass.sampleLevel = 3;
 	  this.composer.addPass(  this.ssaaRenderPass );
 	  this.composer.addPass(this.shaderPass);
-	   this.composer.addPass(this.copyPass);
 	  
+	   this.composer.addPass(this.copyPass);
+	   
 	  
 	   //this.copyPass.renderToScreen = true;
 	  this.BGshaderPass = new THREE.ShaderPass(this.BGshader);

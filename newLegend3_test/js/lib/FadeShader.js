@@ -23,7 +23,7 @@ THREE.FadeShader = {
         vec4 texel = texture2D( tDiffuse, vUv );
         vec4 texel2 = texture2D( tDiffuse2, vUv );
 
-        if(texel2.a==0.){
+        if(texel2.a<0.3){
             discard;
         }
         if(vUv.y>Ypos){
