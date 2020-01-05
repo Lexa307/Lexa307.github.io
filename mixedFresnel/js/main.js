@@ -137,9 +137,9 @@ function bind(func, context) {
           this.about.material.uniforms.time.value+=0.025;
         }
         
-        if(!this.menuTime.works){
-          this.works.material.uniforms.time.value+=0.025;
-        }
+        // if(!this.menuTime.works){
+        //   this.works.material.uniforms.time.value+=0.025;
+        // }
         
         if(!this.menuTime.contact){
           this.contact.material.uniforms.time.value+=0.025;
@@ -446,8 +446,8 @@ function bind(func, context) {
               );
               this.TGroup.visible = true;  
               this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
-              this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-              this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+              // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+              // this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
      
               
               TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
@@ -635,30 +635,32 @@ function bind(func, context) {
       this.TGroup.add(this.about);
       this.about.position.x=-1200;
       this.about.position.y = 150;
-      this.TGroup.add(this.works);
-      this.works.position.x=-1200;
-      this.works.position.y = -100;
+      
+     
+      // this.TGroup.add(this.works);
+      // this.works.position.x=-1200;
+      // this.works.position.y = -100;
       this.TGroup.add(this.contact);
       this.contact.position.x=-1200;
-      this.contact.position.y = -350;
-      let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 650, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
-      aboutPlane.name = 'about';
-      aboutPlane.position.x = -870;
-      aboutPlane.position.y = 200;
-      this.about.p = aboutPlane;
-      this.TGroup.add(aboutPlane);
+      this.contact.position.y = -450;
+      // let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 1650, 620 ),new THREE.MeshBasicMaterial({color:0xF20202,transparent:true,opacity:1}))
+      // aboutPlane.name = 'about';
+      // aboutPlane.position.x = -1940;
+      // aboutPlane.position.y = 200;
+      // this.about.p = aboutPlane;
+      // this.TGroup.add(aboutPlane);
   
-      let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
-      worksPlane.name = 'works';
-      worksPlane.position.x = -800;
-      worksPlane.position.y = -55;
-      this.works.p = worksPlane;
-      this.TGroup.add(worksPlane);
+      // let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
+      // worksPlane.name = 'works';
+      // worksPlane.position.x = -800;
+      // worksPlane.position.y = -55;
+      // this.works.p = worksPlane;
+      // this.TGroup.add(worksPlane);
   
       let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 790, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
       contactPlane.name = 'contact';
       contactPlane.position.x = -800;
-      contactPlane.position.y = -300
+      contactPlane.position.y = -400
       this.contact.p = contactPlane;
       this.TGroup.add(contactPlane);
   
@@ -747,8 +749,8 @@ function bind(func, context) {
               );
               this.TGroup.visible = true;  
               this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
-              this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-              this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+              // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+               this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
      
               
               TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
@@ -854,11 +856,11 @@ function bind(func, context) {
   
       if(window.innerWidth<=1024){
         this.adaptMode = true;
-        this.about.p.position.x = 0;
-        this.works.p.position.x = 0;
+        //this.about.p.position.x = 0;
+        // this.works.p.position.x = 0;
         this.contact.p.position.x = 0;
         this.about.position.x = -350;
-        this.works.position.x = -370;
+        // this.works.position.x = -370;
         this.contact.position.x = -380;
         if(!this.inMenu||!this.insideSphere){
           for(let i = 0; i<this.arrB.length;i++){
@@ -872,11 +874,11 @@ function bind(func, context) {
   
       }else{
         this.adaptMode = false;
-        this.about.p.position.x = -870;
-        this.works.p.position.x = -800;
+        //this.about.p.position.x = -870;
+        // this.works.p.position.x = -800;
         this.contact.p.position.x = -800;
         this.about.position.x=-1200;
-        this.works.position.x=-1200;
+        // this.works.position.x=-1200;
         this.contact.position.x = -1200;
         if(!this.inMenu||!this.insideSphere){
           for(let i = 0; i<this.arrB.length;i++){
@@ -927,9 +929,13 @@ function bind(func, context) {
           bevelOffset: 0,
           bevelSegments: 5
         } );
-          let geometry = new THREE.TextBufferGeometry( 'About', {
+          let geometry = new THREE.TextBufferGeometry( 
+`Hello! I'm Artem, a digital 
+ designer. I create digital 
+ expeients (Web Design / 
+ UI/UX Design / App Design)`, {
             font: font,
-            size: 150,
+            size: 80,
             height: 1,
             curveSegments: 12,
             bevelEnabled: false,
@@ -938,38 +944,27 @@ function bind(func, context) {
             bevelOffset: 0,
             bevelSegments: 5
           } );
-  
-          let geometry1 = new THREE.TextBufferGeometry( 'Works', {
-            font: font,
-            size: 150,
-            height: 1,
-            curveSegments: 12,
-            bevelEnabled: false,
-            bevelThickness: 10,
-            bevelSize: 8,
-            bevelOffset: 0,
-            bevelSegments: 5
-          } );
-  
-          let geometry2 = new THREE.TextBufferGeometry( 'Contact', {
-            font: font,
-            size: 150,
-            height: 1,
-            curveSegments: 12,
-            bevelEnabled: false,
-            bevelThickness: 10,
-            bevelSize: 8,
-            bevelOffset: 0,
-            bevelSegments: 5
-          } );
+          
         
+          let geometry1 = new THREE.TextBufferGeometry( 
+            `Email me`, {
+                        font: font,
+                        size: 80,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelEnabled: false,
+                        bevelThickness: 10,
+                        bevelSize: 8,
+                        bevelOffset: 0,
+                        bevelSegments: 5
+                      } );
+					
+					this.contact = new THREE.Mesh(geometry1,oceanMaterial.clone());
+          this.contact.name = 'contact';
           
           this.about = new THREE.Mesh(geometry,oceanMaterial.clone());
           this.about.name = 'about';
-          this.works = new THREE.Mesh(geometry1,oceanMaterial.clone());
-          this.works.name = 'works';
-          this.contact = new THREE.Mesh(geometry2,oceanMaterial.clone());
-          this.contact.name = 'contact';
+
   
           this.oceanText = new THREE.Mesh(oceanGeometry,oceanMaterial);
           this.oceanText.animating = false;
@@ -1045,9 +1040,9 @@ function bind(func, context) {
           if(intersects[0].object.name == 'about'){
             console.log('clicked about');
           }
-          if(intersects[0].object.name == 'works'){
-            console.log('clicked works');
-          }
+          // if(intersects[0].object.name == 'works'){
+          //   console.log('clicked works');
+          // }
           if(intersects[0].object.name == 'contact'){
             console.log('cliked contact');
           }
@@ -1226,11 +1221,11 @@ function bind(func, context) {
       this.fill(new THREE.Color(0xFFFFFF),1,this.about);
       TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
     }
-    if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
-      this.menuTime.works = 1;
-      this.fill(new THREE.Color(0xFFFFFF),1,this.works);
-      TweenMax.to(this.works.material.uniforms.time,1,{value:this.works.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.works = 0;}})
-    }
+    // if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
+    //   this.menuTime.works = 1;
+    //   this.fill(new THREE.Color(0xFFFFFF),1,this.works);
+    //   TweenMax.to(this.works.material.uniforms.time,1,{value:this.works.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.works = 0;}})
+    // }
     if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
       this.menuTime.contact = 1;
       this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
@@ -1556,7 +1551,7 @@ function bind(func, context) {
       }
       fill(color,time,textobj){
       
-        let menutexts = ['about','works','contact'];
+        let menutexts = ['about','contact'];
         for(let i = 0;i<menutexts.length;i++){
           if(textobj.name!=menutexts[i]){
            // TweenMax.to(this[menutexts[i]].material.uniforms.color.value,time,{r:255,g:255,b:255});
