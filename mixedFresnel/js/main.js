@@ -643,12 +643,12 @@ function bind(func, context) {
       this.TGroup.add(this.contact);
       this.contact.position.x=-1200;
       this.contact.position.y = -450;
-      // let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 1650, 620 ),new THREE.MeshBasicMaterial({color:0xF20202,transparent:true,opacity:1}))
-      // aboutPlane.name = 'about';
-      // aboutPlane.position.x = -1940;
-      // aboutPlane.position.y = 200;
-      // this.about.p = aboutPlane;
-      // this.TGroup.add(aboutPlane);
+      let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 1700, 850 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0.8}))
+      aboutPlane.name = 'about';
+      aboutPlane.position.x = -450;
+      aboutPlane.position.y = -150;
+      this.about.p = aboutPlane;
+      this.TGroup.add(aboutPlane);
   
       // let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
       // worksPlane.name = 'works';
@@ -958,11 +958,15 @@ function bind(func, context) {
                         bevelOffset: 0,
                         bevelSegments: 5
                       } );
-					
-					this.contact = new THREE.Mesh(geometry1,oceanMaterial.clone());
+          let oceanMaterial2 = oceanMaterial.clone();
+          oceanMaterial2.uniforms.frequency1.value = 0.03;
+          oceanMaterial2.uniforms.amplitude1.value = 2.03;
+          oceanMaterial2.uniforms.frequency2.value = 0.025;
+          oceanMaterial2.uniforms.amplitude2.value = 0.01;
+					this.contact = new THREE.Mesh(geometry1,oceanMaterial2.clone());
           this.contact.name = 'contact';
           
-          this.about = new THREE.Mesh(geometry,oceanMaterial.clone());
+          this.about = new THREE.Mesh(geometry,oceanMaterial2);
           this.about.name = 'about';
 
   
@@ -1218,7 +1222,10 @@ function bind(func, context) {
     intersects = this.raycaster.intersectObjects(this.TGroup.children );
     if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
       this.menuTime.about = 1;
-      this.fill(new THREE.Color(0xFFFFFF),1,this.about);
+
+      //this.fill(new THREE.Color(0xCBCBCB),1,this.contact);
+      this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+      
       TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
     }
     // if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
@@ -1229,6 +1236,7 @@ function bind(func, context) {
     if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
       this.menuTime.contact = 1;
       this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
+      this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
       TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
     }
     
@@ -1551,7 +1559,7 @@ function bind(func, context) {
       }
       fill(color,time,textobj){
       
-        let menutexts = ['about','contact'];
+        let menutexts = ['contact','about'];
         for(let i = 0;i<menutexts.length;i++){
           if(textobj.name!=menutexts[i]){
            // TweenMax.to(this[menutexts[i]].material.uniforms.color.value,time,{r:255,g:255,b:255});
