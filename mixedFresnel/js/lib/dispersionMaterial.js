@@ -12,7 +12,8 @@ THREE.DispersionMaterial = {
     time :  {value:9.95},
     reflectivity :  {value:0}, 
     start:{value:0.5},
-    end:{value:1.0}
+    end:{value:1.0},
+    opacity:{value:1.0}
   },
   defines:{DISPERSION_SAMPLES :  50},
     
@@ -28,6 +29,7 @@ THREE.DispersionMaterial = {
     uniform float time;
     uniform float start;
     uniform float end;
+    uniform float opacity;
     //varying vec2 vUv;
     uniform float dispersionBlendMultiplier;
     
@@ -65,7 +67,7 @@ THREE.DispersionMaterial = {
             
             
              
-        gl_FragColor = vec4(envColor.xyz, 1. );
+        gl_FragColor = vec4(envColor.xyz, opacity );
         
     }`,
     vertex_Shader : `#define PHYSICAL

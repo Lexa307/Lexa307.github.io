@@ -394,6 +394,7 @@ function bind(func, context) {
         defines: THREE.DispersionMaterial.defines,
         uniforms: THREE.DispersionMaterial.uniforms,
         side: THREE.DoubleSide,
+        transparent:true,
         vertexShader: THREE.DispersionMaterial.vertex_Shader,
       
         fragmentShader: THREE.DispersionMaterial.fragmentShader
@@ -448,7 +449,6 @@ function bind(func, context) {
               this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
               // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
               // this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-     
               
               TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
                 onUpdate:()=>{
@@ -474,6 +474,8 @@ function bind(func, context) {
                   }
                   
                 }});
+                console.log((this.inMenu)?0.2:1.)
+              TweenMax.to(this.insideSphere.material.uniforms.opacity,2,{value:(!this.inMenu==true)?0.2:1. , ease: Power2.easeInOut})
             }else{
               let tmpControlBezier;
               if(this.insideSphere.visible){
@@ -512,8 +514,11 @@ function bind(func, context) {
                   this.moving = false;
                   //this.oceanText.position.set(this.camera.position.x*0.98,300,this.camera.position.z*0.98)
                 }});
+                console.log((this.inMenu)?0.2:1.)
+              TweenMax.to(this.insideSphere.material.uniforms.opacity,2,{value:(!this.inMenu==true)?0.2:1. , ease: Power2.easeInOut})
     
             }
+            
             
             
           }
@@ -643,7 +648,7 @@ function bind(func, context) {
       this.TGroup.add(this.contact);
       this.contact.position.x=-1200;
       this.contact.position.y = -450;
-      let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 1700, 850 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0.8}))
+      let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 10000, 10000 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0.0}))
       aboutPlane.name = 'about';
       aboutPlane.position.x = -450;
       aboutPlane.position.y = -150;
