@@ -1229,7 +1229,7 @@ function bind(func, context) {
       this.menuTime.about = 0;
 
       //this.fill(new THREE.Color(0xCBCBCB),1,this.contact);
-      this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+      //this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
       
       //TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
     }
@@ -1240,8 +1240,8 @@ function bind(func, context) {
     // }
     if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
       this.menuTime.contact = 1;
-      this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
-      this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+     // this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
+     // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
       TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
     }
     
