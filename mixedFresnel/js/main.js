@@ -648,12 +648,12 @@ function bind(func, context) {
       this.TGroup.add(this.contact);
       this.contact.position.x=-1200;
       this.contact.position.y = -450;
-      let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 10000, 10000 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0.0}))
-      aboutPlane.name = 'about';
-      aboutPlane.position.x = -450;
-      aboutPlane.position.y = -150;
-      this.about.p = aboutPlane;
-      this.TGroup.add(aboutPlane);
+      // let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 10000, 10000 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0.0}))
+      // aboutPlane.name = 'about';
+      // aboutPlane.position.x = -450;
+      // aboutPlane.position.y = -150;
+      // this.about.p = aboutPlane;
+      // this.TGroup.add(aboutPlane);
   
       // let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
       // worksPlane.name = 'works';
@@ -1226,12 +1226,12 @@ function bind(func, context) {
       }
     intersects = this.raycaster.intersectObjects(this.TGroup.children );
     if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
-      this.menuTime.about = 1;
+      this.menuTime.about = 0;
 
       //this.fill(new THREE.Color(0xCBCBCB),1,this.contact);
       this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
       
-      TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
+      //TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
     }
     // if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
     //   this.menuTime.works = 1;
