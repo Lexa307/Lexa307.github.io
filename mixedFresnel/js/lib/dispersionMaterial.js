@@ -15,7 +15,7 @@ THREE.DispersionMaterial = {
     end:{value:1.0},
     opacity:{value:1.0}
   },
-  defines:{DISPERSION_SAMPLES :  40},
+  defines:{DISPERSION_SAMPLES :  30},
     
     
     
