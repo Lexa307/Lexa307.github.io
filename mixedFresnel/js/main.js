@@ -952,13 +952,14 @@ function bind(func, context) {
           
           let linematerial = new THREE.LineBasicMaterial( { color: 0xffffff } );
           let linepoints = [];
-          linepoints.push( new THREE.Vector3( 0, -40, 0 ) );
+          linepoints.push( new THREE.Vector3( 0, -45, 0 ) );
           linepoints.push( new THREE.Vector3( 0, -50, 0 ) );
           linepoints.push( new THREE.Vector3( 1100, -50, 0 ) );
 
-          linepoints.push( new THREE.Vector3( 0, -40, 0 ) );
-          linepoints.push( new THREE.Vector3( 1100, -40, 0 ) );
+          linepoints.push( new THREE.Vector3( 0, -45, 0 ) );
+          linepoints.push( new THREE.Vector3( 1100, -45, 0 ) );
           linepoints.push( new THREE.Vector3( 1100, -50, 0 ) );
+          
 
            let line = new THREE.Line( new THREE.BufferGeometry().setFromPoints( linepoints ), linematerial );
           let geometry1 = new THREE.TextBufferGeometry( 
