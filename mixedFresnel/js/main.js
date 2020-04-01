@@ -950,9 +950,13 @@ function bind(func, context) {
             bevelSegments: 5
           } );
           
-        
+          let linematerial = new THREE.LineBasicMaterial( { color: 0xffffff } );
+          let linepoints = [];
+          linepoints.push( new THREE.Vector3( 0, -50, 0 ) );
+          linepoints.push( new THREE.Vector3( 1100, -50, 0 ) );
+          let line = new THREE.Line( new THREE.BufferGeometry().setFromPoints( linepoints ), linematerial );
           let geometry1 = new THREE.TextBufferGeometry( 
-            `Email me`, {
+            `Feel free to mail me`, {
                         font: font,
                         size: 80,
                         height: 1,
@@ -970,6 +974,7 @@ function bind(func, context) {
           oceanMaterial2.uniforms.amplitude2.value = 0.01;
 					this.contact = new THREE.Mesh(geometry1,oceanMaterial2.clone());
           this.contact.name = 'contact';
+          this.contact.add(line);
           
           this.about = new THREE.Mesh(geometry,oceanMaterial2);
           this.about.name = 'about';
