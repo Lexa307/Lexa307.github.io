@@ -446,7 +446,7 @@ function bind(func, context) {
                   this.TGroup.position
                 );
                 this.TGroup.visible = true;  
-                this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+                // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
                 // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
                 // this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
                 
@@ -646,16 +646,20 @@ function bind(func, context) {
       this.camera.position.set( this.arrOrbits[this.index].getPointAt(0.5).x,this.arrOrbits[this.index].getPointAt(0.5).y,this.arrOrbits[this.index].getPointAt(0.5).z);
       this.camera.lookAt(this.scene.position);
       this.TGroup.add(this.about);
-      this.about.position.x=-1200;
-      this.about.position.y = 150;
+      this.about.position.x=500;
+      this.about.position.y = 350;
+      console.log(this.tittleAbout);
+      this.TGroup.add(this.tittleAbout);
+      this.tittleAbout.position.x=-1000;
+      this.tittleAbout.position.y = 300;
       
      
       // this.TGroup.add(this.works);
       // this.works.position.x=-1200;
       // this.works.position.y = -100;
       this.TGroup.add(this.contact);
-      this.contact.position.x=-1200;
-      this.contact.position.y = -450;
+      this.contact.position.x=500;
+      this.contact.position.y = -500;
       // let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 10000, 10000 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0.0}))
       // aboutPlane.name = 'about';
       // aboutPlane.position.x = -450;
@@ -761,7 +765,7 @@ function bind(func, context) {
                 this.TGroup.position
               );
               this.TGroup.visible = true;  
-              this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+              this.about.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
               // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
                this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
      
@@ -890,9 +894,9 @@ function bind(func, context) {
         //this.about.p.position.x = -870;
         // this.works.p.position.x = -800;
         this.contact.p.position.x = -800;
-        this.about.position.x=-1200;
+        this.about.position.x=-100;
         // this.works.position.x=-1200;
-        this.contact.position.x = -1200;
+        this.contact.position.x = -100;
         if(!this.inMenu||!this.insideSphere){
           for(let i = 0; i<this.arrB.length;i++){
             
@@ -942,36 +946,37 @@ function bind(func, context) {
           bevelOffset: 0,
           bevelSegments: 5
         } );
-          let geometry = new THREE.TextBufferGeometry( 
-`Hello! I'm Artem, a digital 
- designer. I create digital 
- expeients (Web Design / 
- UI/UX Design / App Design)`, {
-            font: font,
-            size: 80,
-            height: 1,
-            curveSegments: 12,
-            bevelEnabled: false,
-            bevelThickness: 10,
-            bevelSize: 8,
-            bevelOffset: 0,
-            bevelSegments: 5
-          } );
+
           
           let linematerial = new THREE.LineBasicMaterial( { color: 0xffffff } );
           let linepoints = [];
           linepoints.push( new THREE.Vector3( 0, -45, 0 ) );
           linepoints.push( new THREE.Vector3( 0, -50, 0 ) );
-          linepoints.push( new THREE.Vector3( 1100, -50, 0 ) );
+          linepoints.push( new THREE.Vector3( 560, -50, 0 ) );
 
           linepoints.push( new THREE.Vector3( 0, -45, 0 ) );
-          linepoints.push( new THREE.Vector3( 1100, -45, 0 ) );
-          linepoints.push( new THREE.Vector3( 1100, -50, 0 ) );
+          linepoints.push( new THREE.Vector3( 560, -45, 0 ) );
+          linepoints.push( new THREE.Vector3( 560, -50, 0 ) );
           
 
            let line = new THREE.Line( new THREE.BufferGeometry().setFromPoints( linepoints ), linematerial );
           let geometry1 = new THREE.TextBufferGeometry( 
             `Feel free to mail me`, {
+                        font: font,
+                        size: 40,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelEnabled: false,
+                        bevelThickness: 10,
+                        bevelSize: 8,
+                        bevelOffset: 0,
+                        bevelSegments: 5
+                      } );
+          let geometry2 = new THREE.TextBufferGeometry( 
+`Interactive
+designer
+& Creative
+director`, {
                         font: font,
                         size: 80,
                         height: 1,
@@ -992,13 +997,15 @@ function bind(func, context) {
           this.contact.name = 'contact';
           // this.contact.add(line);
           
-          this.about = new THREE.Mesh(geometry,oceanMaterial2);
-          this.about.name = 'about';
-
+          
+          this.tittleAbout = new THREE.Mesh(geometry2,this.contact.material);
+          this.tittleAbout.name = `tittleAbout`;
+        
+          
   
           this.oceanText = new THREE.Mesh(oceanGeometry,oceanMaterial);
           this.oceanText.animating = false;
-          this.menuTime = {'about':0,'works':0,'contact':0};
+          this.menuTime = {'about':0,'tittleAbout':0,'contact':0};
   
           //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
           
@@ -1006,10 +1013,42 @@ function bind(func, context) {
           resCounter++;
         
         },this ));
+        loader.load( 'fonts/PP Woodland Light_Regular (1).json', bind(function ( font ) {
+          let geometry = new THREE.TextBufferGeometry( 
+`Hi, I'm Artem Sokolov, a Russian
+digital designer and art director based
+in Saint Petersburg. I’ve been working
+in the digital area for more than 4 years.
+My work has been varied – from branding,
+apps, UX/UI, websites and digital tools –
+but always with a human-centered approach
+and a keen eye for detail. My work has been
+recognized on Awwwards, CSSDA and many
+more. Let's get in touch, for any project
+inquires or just drop me a message.`, {
+                        font: font,
+                        size: 40,
+                        height: 1,
+                        curveSegments: 12,
+                        bevelEnabled: false,
+                        bevelThickness: 10,
+                        bevelSize: 8,
+                        bevelOffset: 0,
+                        bevelSegments: 5
+                      } );
+
+
+
+          this.about = new THREE.Mesh(geometry,this.contact.material.clone());
+          this.about.name = 'about';
+          this.about.material.uniforms.color.value = new THREE.Color(0xCCCCCC);
+          resCounter++;
+
+        },this));
   
   let s;
   s = setInterval(()=>{
-    if(resCounter==8){
+    if(resCounter==9){
       clearInterval(s);
       this.Init();
       
@@ -1249,26 +1288,26 @@ function bind(func, context) {
     if(this.insideSphere.visible){
         this.raycaster.setFromCamera( this.mouse, this.insideCamera );
       }
-    intersects = this.raycaster.intersectObjects(this.TGroup.children );
-    if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
-      this.menuTime.about = 0;
+    // intersects = this.raycaster.intersectObjects(this.TGroup.children );
+    // if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
+    //   this.menuTime.about = 0;
 
-      //this.fill(new THREE.Color(0xCBCBCB),1,this.contact);
-      //this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+    //   //this.fill(new THREE.Color(0xCBCBCB),1,this.contact);
+    //   //this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
       
-      //TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
-    }
+    //   //TweenMax.to(this.about.material.uniforms.time,1,{value:this.about.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.about = 0;}})
+    // }
     // if(intersects.length>0&&intersects[ 0 ].object.name=='works'){
     //   this.menuTime.works = 1;
     //   this.fill(new THREE.Color(0xFFFFFF),1,this.works);
     //   TweenMax.to(this.works.material.uniforms.time,1,{value:this.works.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.works = 0;}})
     // }
-    if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
-      this.menuTime.contact = 1;
-     // this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
-     // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
-      TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
-    }
+    // if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
+    //   this.menuTime.contact = 1;
+    //  // this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
+    //  // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+    //  // TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
+    // }
     
   
           
@@ -1589,7 +1628,7 @@ function bind(func, context) {
       }
       fill(color,time,textobj){
       
-        let menutexts = ['contact','about'];
+        let menutexts = [,'about'];
         for(let i = 0;i<menutexts.length;i++){
           if(textobj.name!=menutexts[i]){
            // TweenMax.to(this[menutexts[i]].material.uniforms.color.value,time,{r:255,g:255,b:255});
