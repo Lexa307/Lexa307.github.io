@@ -22,7 +22,8 @@ function bind(func, context) {
         this.insideCamera = new THREE.PerspectiveCamera( 95, window.innerWidth / window.innerHeight, 0.1, 10000 );//75
       }
       
-      
+      this.insideCamera.add(new THREE.Group());
+      this.insideCamera.children[0].position.x = 10;
       this.scene.background= new THREE.Color(0x020202);
       this.renderer = this.selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'})
       this.renderer.shadowMap.enabled = true;
@@ -128,9 +129,7 @@ function bind(func, context) {
          this.TGroup.lookAt(this.camera.position);
          
         }else{
-          if(!this.lockControls.isLocked){
-            this.insideCamera.lookAt(this.target);
-          }
+
          this.TGroup.lookAt(this.insideCamera.position);
          this.insideSphere.material.uniforms.time.value = this.time;
          this.renderer.render( this.scene, this.insideCamera );
@@ -417,7 +416,26 @@ function bind(func, context) {
               }else{
                 console.log("insert control here");
                 
-                this.lockControls.lock();
+
+                if(this.lockControls.isLocked){
+                  this.lockControls.unlock();
+                  this.moving = true;
+                  
+                  this.raycaster.setFromCamera( new THREE.Vector2(), this.insideCamera ); 
+                  var intersect = this.raycaster.intersectObjects( this.scene.children );
+                  let tempTarget = new THREE.Vector3(intersect[0].point.x,intersect[0].point.y,intersect[0].point.z);
+                  TweenMax.to(tempTarget,3,{x:this.target.x, y:this.target.y, z:this.target.z,ease:Power2.easeInOut,
+                    onComplete:()=>{
+                      this.moving = false;
+                    },
+                    onUpdate:()=>{
+                      this.insideCamera.lookAt(tempTarget);
+                    }})
+                  // this.insideCamera.lookAt(this.target);
+
+                }else{
+                  this.lockControls.lock();
+                }
                 // newPos = new THREE.Vector3(this.insideCamera.position.x,100,this.insideCamera.position.z);
                 // newPos.x *=-60.1;
                 // this.TGroup.scale.set(0.3,0.3,0.3);

@@ -139,7 +139,6 @@ THREE.PointerLockControls = function ( camera, domElement ) {
 	this.lock = function () {
 
 		this.domElement.requestPointerLock();
-
 	};
 
 	this.unlock = function () {
