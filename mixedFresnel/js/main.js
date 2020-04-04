@@ -135,19 +135,10 @@ function bind(func, context) {
          this.insideSphere.material.uniforms.time.value = this.time;
          this.renderer.render( this.scene, this.insideCamera );
         }
-        if(!this.menuTime.about){
           this.about.material.uniforms.time.value+=0.025;
-        }
-        
-        // if(!this.menuTime.works){
-        //   this.works.material.uniforms.time.value+=0.025;
-        // }
-        
-        if(!this.menuTime.contact){
           this.contact.material.uniforms.time.value+=0.025;
-        }
-        
-        
+          this.tittleAbout.material.uniforms.time.value+=0.025;
+
         for(let i=0;i<7;i++){
    
          this.arrB[i].material.uniforms.time.value = this.time;
@@ -648,7 +639,6 @@ function bind(func, context) {
       this.TGroup.add(this.about);
       this.about.position.x=500;
       this.about.position.y = 350;
-      console.log(this.tittleAbout);
       this.TGroup.add(this.tittleAbout);
       this.tittleAbout.position.x=-1000;
       this.tittleAbout.position.y = 300;
@@ -674,12 +664,15 @@ function bind(func, context) {
       // this.works.p = worksPlane;
       // this.TGroup.add(worksPlane);
   
-      let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 790, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
+      let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 600, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
       contactPlane.name = 'contact';
-      contactPlane.position.x = -800;
-      contactPlane.position.y = -400
+      // contactPlane.position.x = -800;
+      // contactPlane.position.y = -400
       this.contact.p = contactPlane;
-      this.TGroup.add(contactPlane);
+      this.contact.add(contactPlane);
+      contactPlane.position.x = -800;
+
+      //this.TGroup.add(contactPlane);
   
   
       this.scene.add(this.TGroup);
@@ -893,7 +886,7 @@ function bind(func, context) {
         this.adaptMode = false;
         //this.about.p.position.x = -870;
         // this.works.p.position.x = -800;
-        this.contact.p.position.x = -800;
+        this.contact.p.position.x = 265;
         this.about.position.x=-100;
         // this.works.position.x=-1200;
         this.contact.position.x = -100;
@@ -974,9 +967,9 @@ function bind(func, context) {
                       } );
           let geometry2 = new THREE.TextBufferGeometry( 
 `Interactive
-designer
-& Creative
-director`, {
+      designer
+  & Creative
+       director`, {
                         font: font,
                         size: 80,
                         height: 1,
@@ -998,7 +991,7 @@ director`, {
           // this.contact.add(line);
           
           
-          this.tittleAbout = new THREE.Mesh(geometry2,this.contact.material);
+          this.tittleAbout = new THREE.Mesh(geometry2,oceanMaterial2.clone());
           this.tittleAbout.name = `tittleAbout`;
         
           
@@ -1006,15 +999,8 @@ director`, {
           this.oceanText = new THREE.Mesh(oceanGeometry,oceanMaterial);
           this.oceanText.animating = false;
           this.menuTime = {'about':0,'tittleAbout':0,'contact':0};
-  
-          //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
-          
-          //this.fontLoaded = true;
-          resCounter++;
-        
-        },this ));
-        loader.load( 'fonts/PP Woodland Light_Regular (1).json', bind(function ( font ) {
-          let geometry = new THREE.TextBufferGeometry( 
+          loader.load( 'fonts/PP Woodland Light_Regular (1).json', bind(function ( font ) {
+            let geometry = new THREE.TextBufferGeometry( 
 `Hi, I'm Artem Sokolov, a Russian
 digital designer and art director based
 in Saint Petersburg. I’ve been working
@@ -1026,25 +1012,33 @@ and a keen eye for detail. My work has been
 recognized on Awwwards, CSSDA and many
 more. Let's get in touch, for any project
 inquires or just drop me a message.`, {
-                        font: font,
-                        size: 40,
-                        height: 1,
-                        curveSegments: 12,
-                        bevelEnabled: false,
-                        bevelThickness: 10,
-                        bevelSize: 8,
-                        bevelOffset: 0,
-                        bevelSegments: 5
-                      } );
-
-
-
-          this.about = new THREE.Mesh(geometry,this.contact.material.clone());
-          this.about.name = 'about';
-          this.about.material.uniforms.color.value = new THREE.Color(0xCCCCCC);
+                          font: font,
+                          size: 40,
+                          height: 1,
+                          curveSegments: 12,
+                          bevelEnabled: false,
+                          bevelThickness: 10,
+                          bevelSize: 8,
+                          bevelOffset: 0,
+                          bevelSegments: 5
+                        } );
+  
+  
+  
+            this.about = new THREE.Mesh(geometry,this.contact.material.clone());
+            this.about.name = 'about';
+            this.about.material.uniforms.color.value = new THREE.Color(0xCCCCCC);
+            resCounter++;
+  
+          },this));
+  
+          //textMesh.position.set( 6498.349068563988,  1177.689926040678,  2585.312866564084);
+          
+          //this.fontLoaded = true;
           resCounter++;
+        
+        },this ));
 
-        },this));
   
   let s;
   s = setInterval(()=>{
@@ -1288,7 +1282,7 @@ inquires or just drop me a message.`, {
     if(this.insideSphere.visible){
         this.raycaster.setFromCamera( this.mouse, this.insideCamera );
       }
-    // intersects = this.raycaster.intersectObjects(this.TGroup.children );
+    intersects = this.raycaster.intersectObjects(this.contact.children );
     // if(intersects.length>0&&intersects[ 0 ].object.name=='about'){
     //   this.menuTime.about = 0;
 
@@ -1302,12 +1296,12 @@ inquires or just drop me a message.`, {
     //   this.fill(new THREE.Color(0xFFFFFF),1,this.works);
     //   TweenMax.to(this.works.material.uniforms.time,1,{value:this.works.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.works = 0;}})
     // }
-    // if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
-    //   this.menuTime.contact = 1;
-    //  // this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
-    //  // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
-    //  // TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
-    // }
+    if(intersects.length>0&&intersects[ 0 ].object.name=='contact'){
+      this.menuTime.contact = 1;
+     // this.fill(new THREE.Color(0xFFFFFF),1,this.contact);
+     // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+      TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
+    }
     
   
           
