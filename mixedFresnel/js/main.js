@@ -413,6 +413,48 @@ function bind(func, context) {
                 newPos.x*=1.1;
                 newPos.z*=1.1;
                 this.TGroup.scale.set(1,1,1);
+                let tmpControlBezier;
+                // if(!this.insideSphere.visible){
+                   this.TGroup.position.set(newPos.x,500,newPos.z);
+                   tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
+                   console.log( this.TGroup.position)
+                   let tmpfloat = {value:0};
+                   let focusBezier =  new THREE.QuadraticBezierCurve3(
+                     (this.insideSphere.visible)?new THREE.Vector3(350,20,0):new THREE.Vector3(),
+                     tmpControlBezier,
+                     this.TGroup.position
+                   );
+                   this.TGroup.visible = true;  
+                   // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
+                   // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+                   // this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
+                   
+                   TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
+                     onUpdate:()=>{
+                       if(this.insideSphere.visible){
+                         this.target.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
+                       }else{
+                         this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
+                       }
+                       
+         
+                       
+                     },
+                     onComplete:()=>{
+                       this.inMenu = true;
+                       this.moving = false;
+                       for(let i = 0; i<this.arrB.length;i++){
+                         this.arrB[i].visible = false;
+                       }
+                       if(this.insideSphere.visible){
+                         
+                        
+                         
+                       }
+                       
+                     }});
+                     console.log((this.inMenu)?0.2:1.)
+                   TweenMax.to(this.insideSphere.material.uniforms.opacity,2,{value:(!this.inMenu==true)?0.2:1. , ease: Power2.easeInOut})
               }else{
                 console.log("insert control here");
                 
@@ -443,56 +485,16 @@ function bind(func, context) {
                 // this.TGroup.visible = true;
               }
     
-              let tmpControlBezier;
-              if(!this.insideSphere.visible){
-                this.TGroup.position.set(newPos.x,500,newPos.z);
-                tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
-                console.log( this.TGroup.position)
-                let tmpfloat = {value:0};
-                let focusBezier =  new THREE.QuadraticBezierCurve3(
-                  (this.insideSphere.visible)?new THREE.Vector3(350,20,0):new THREE.Vector3(),
-                  tmpControlBezier,
-                  this.TGroup.position
-                );
-                this.TGroup.visible = true;  
-                // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
-                // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-                // this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-                
-                TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
-                  onUpdate:()=>{
-                    if(this.insideSphere.visible){
-                      this.target.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-                    }else{
-                      this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-                    }
-                    
-      
-                    
-                  },
-                  onComplete:()=>{
-                    this.inMenu = true;
-                    this.moving = false;
-                    for(let i = 0; i<this.arrB.length;i++){
-                      this.arrB[i].visible = false;
-                    }
-                    if(this.insideSphere.visible){
-                      
-                     
-                      
-                    }
-                    
-                  }});
-                  console.log((this.inMenu)?0.2:1.)
-                TweenMax.to(this.insideSphere.material.uniforms.opacity,2,{value:(!this.inMenu==true)?0.2:1. , ease: Power2.easeInOut})
-              }else{
+             
+             // }else{
                 // this.TGroup.position.set(newPos.x,this.insideCamera.position.y,newPos.z);
                 // tmpControlBezier = new THREE.Vector3(-100,this.insideCamera.position.y,200);
                 // console.log( this.TGroup.position)
-              }
+             // }
              // this.TGroup.position.set(newPos.x,500,newPos.z);
 
             }else{
+              this.moving = true;
               let tmpControlBezier;
               if(this.insideSphere.visible){
                 //tmpControlBezier = new THREE.Vector3(100,this.insideCamera.position.y,200);
