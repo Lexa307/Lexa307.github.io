@@ -96,7 +96,7 @@ function bind(func, context) {
       
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
-      this.adapt();
+      //this.adapt();
     }
     
     changeImaage(){
@@ -277,12 +277,6 @@ function bind(func, context) {
         frequency2:0.025,
         amplitude2:70.0
       }
-      // this.composerScene = new THREE.EffectComposer( this.renderer, new THREE.WebGLRenderTarget( window.innerWidth*2 , window.innerHeight*2 , this.rtParameters ) );
-      // this.effectColorify = new THREE.ShaderPass(THREE.ColorifyShader);
-    
-      // this.renderPass = new THREE.RenderPass( this.scene, this.camera );
-      // this.composerScene.addPass(this.renderPass);
-      // this.composerScene.addPass(this.effectColorify);
       this.d=document.createElement('div');
   
       this.d.style.width='100%';
@@ -302,7 +296,6 @@ function bind(func, context) {
       
   
       this.raycaster= new THREE.Raycaster();
-      //this.raycaster.far=1700;
       this.mouse = new THREE.Vector2();
       this.d.addEventListener( 'mousemove', bind(this.onMouseMove,this), false );
       this.d.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
@@ -346,7 +339,6 @@ function bind(func, context) {
           }   );
         let meshB = new THREE.Mesh(this.bigtestgeometry,	meshBMaterial);
         
-        //meshBMaterial.maxScaleHover = meshBMaterial.uniforms.uWiggleScale.value+0.075;
         let x = Math.cos(2 * Math.PI * i / 7) * 6000 + 0;
         let y = Math.sin(2 * Math.PI * i / 7) * 6000 + 0;
           let distanceScale = (this.mobile)?7600:7100;
@@ -355,7 +347,6 @@ function bind(func, context) {
         let OCurveEndVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.1) / 7) * distanceScale +0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.1) / 7) * distanceScale +0));
         
         this.textPositions.push(new THREE.Vector3(Math.cos(2 * Math.PI * i / 7) * 8000,meshB.position.y+300, Math.sin(2 * Math.PI * i / 7) * 8000))
-        //let material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
   
         let LCurveControlVector = new THREE.Vector3((Math.cos(2 * Math.PI * (i+0.5) / 7) * 10000 + 0),meshB.position.y+300,(Math.sin(2 * Math.PI * (i+0.5) / 7) * 10000 + 0));
         this.arrOrbits.push(new THREE.QuadraticBezierCurve3(
@@ -364,20 +355,13 @@ function bind(func, context) {
           OCurveEndVector
         ));
         
-        // let points = this.arrOrbits[i].getPoints(50);
-        // let geometry = new THREE.BufferGeometry().setFromPoints( points );
-        // let curveObject = new THREE.Line( geometry, material );
-        // this.scene.add(curveObject);
         this.arrCurves.push(LCurveControlVector);
         meshB.name = i+'';
         meshB.position.set(x,300,y);
         meshB.lookAt(this.scene.position);
        
         this.arrB.push(meshB);
-  
         this.scene.add(meshB);
-        
-  
       }
       this.material = new THREE.ShaderMaterial( {
         extensions: {
@@ -388,9 +372,7 @@ function bind(func, context) {
         side: THREE.DoubleSide,
         transparent:true,
         vertexShader: THREE.DispersionMaterial.vertex_Shader,
-      
         fragmentShader: THREE.DispersionMaterial.fragmentShader
-      
       } );
       this.insideSphere = new THREE.Mesh(this.bigtestgeometry,this.material);
       this.insideSphere.visible = false;
@@ -402,16 +384,16 @@ function bind(func, context) {
       this.recompileShader(this.arrB[this.index-1],20);
       
      document.addEventListener('keydown', bind(function(event) {
-        if(!this.moving&&event.key==' '){
+        if(!this.moving && event.key == ' '){
 
-          if(!this.inMenu&&this.insideSphere.visible){
+          if(!this.inMenu && this.insideSphere.visible){
             if(this.lockControls.isLocked){
               this.lockControls.unlock();
               this.moving = true;
               
               this.raycaster.setFromCamera( new THREE.Vector2(), this.insideCamera ); 
               var intersect = this.raycaster.intersectObjects( this.scene.children );
-              let tempTarget = new THREE.Vector3(intersect[0].point.x,intersect[0].point.y,intersect[0].point.z);
+              let tempTarget = new THREE.Vector3(intersect[0].point.x, intersect[0].point.y, intersect[0].point.z);
               TweenMax.to(tempTarget,3,{x:this.target.x, y:this.target.y, z:this.target.z,ease:Power2.easeInOut,
                 onComplete:()=>{
                   this.moving = false;
@@ -429,9 +411,9 @@ function bind(func, context) {
           }
     },this));
       this.controls.enabled = false;
-      document.body.appendChild( this.d);
+      document.body.appendChild(this.d);
       this.gui = new dat.GUI();
-      this.gui.add(this.controlsParams,'OrbitControls').onChange(bind(function(value) {
+      this.gui.add(this.controlsParams, 'OrbitControls').onChange(bind(function(value) {
         if(value){
           this.moving = true;
           this.controls.enabled = true;
@@ -472,7 +454,7 @@ function bind(func, context) {
       f1.add(this.caseParams,'amplitude2',0,100,1).onChange(bind(function(value) {
         this.oceanText.material.uniforms.amplitude2.value = value;
       },this));
-      for(let i = 0; i<7; i++){
+      for(let i = 0; i < 7; i++){
         this.arrB[i].material.uniforms.uWiggleScale.value = this.settings.uWiggleScale;
         this.arrB[i].material.uniforms.uWiggleDisplacement.value = this.settings.uWiggleDisplacement;
         this.arrB[i].material.uniforms.uWiggleSpeed.value = this.settings.uWiggleSpeed;
@@ -501,9 +483,6 @@ function bind(func, context) {
          f.add(this.settings, 'uWiggleScale', 0.001, 1, 0.001).onChange(bind(function(value) {
           this.arrB[i].material.uniforms.uWiggleScale.value = value;
         },this));
-        //  f.add(this.settings, 'uWiggleDisplacement', 0.001, 30, 0.001).onChange(bind(function(value) {
-        //   this.arrB[i].material.uniforms.uWiggleDisplacement.value = value;
-        // },this));
          f.add(this.settings, 'uWiggleSpeed', 0.001, 1, 0.001).onChange(bind(function(value) {
           this.arrB[i].material.uniforms.uWiggleSpeed.value = value;
         },this));
@@ -520,88 +499,68 @@ function bind(func, context) {
         let f1 = f.addFolder('bubble ' + (i+1));
   
   
-        f1.add(this.settings,'mRefractionRatio',0,1,0.001).onChange(bind(function(value) {
+        f1.add(this.settings, 'mRefractionRatio', 0, 1, 0.001).onChange(bind(function(value) {
         this.arrB[i].material.uniforms.mRefractionRatio.value = value;
-        },this));
-        f1.add(this.settings,'mFresnelBias',0,1,0.001).onChange(bind(function(value) {
+        }, this));
+        f1.add(this.settings, 'mFresnelBias', 0, 1, 0.001).onChange(bind(function(value) {
           this.arrB[i].material.uniforms.mFresnelBias.value = value;
-        },this));
-        f1.add(this.settings,'mFresnelPower',0,5,0.001).onChange(bind(function(value) {
+        }, this));
+        f1.add(this.settings, 'mFresnelPower', 0,5, 0.001).onChange(bind(function(value) {
           this.arrB[i].material.uniforms.mFresnelPower.value = value;
-        },this));
-        f1.add(this.settings,'mFresnelScale',0,1,0.001).onChange(bind(function(value) {
+        }, this));
+        f1.add(this.settings, 'mFresnelScale', 0, 1, 0.001).onChange(bind(function(value) {
           this.arrB[i].material.uniforms.mFresnelScale.value = value;
    
-        },this));
+        }, this));
   
       }
   
-      this.light = new THREE.PointLight(0xff0000, 0.8,500);
-      this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z);
+      this.light = new THREE.PointLight(0xff0000, 0.8, 500);
+      this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z);
       this.scene.add(this.light);
-      //TweenMax.to(this.material.uniforms.progress,5,{value:5,repeat:-1,yoyo:true});
-      this.camera.position.set( this.arrOrbits[this.index].getPointAt(0.5).x,this.arrOrbits[this.index].getPointAt(0.5).y,this.arrOrbits[this.index].getPointAt(0.5).z);
+      this.camera.position.set( this.arrOrbits[ this.index ].getPointAt(0.5).x, this.arrOrbits[ this.index ].getPointAt(0.5).y, this.arrOrbits[ this.index ].getPointAt(0.5).z);
       this.camera.lookAt(this.scene.position);
+
       this.TGroup.add(this.about);
+
       this.about.position.x=500;
       this.about.position.y = 350;
+
       this.TGroup.add(this.tittleAbout);
+
       this.tittleAbout.position.x=-1000;
       this.tittleAbout.position.y = 300;
-      
-     
-      // this.TGroup.add(this.works);
-      // this.works.position.x=-1200;
-      // this.works.position.y = -100;
+
       this.TGroup.add(this.contact);
+
       this.contact.position.x=500;
       this.contact.position.y = -500;
-      // let aboutPlane = new THREE.Mesh(new THREE.PlaneGeometry( 10000, 10000 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0.0}))
-      // aboutPlane.name = 'about';
-      // aboutPlane.position.x = -450;
-      // aboutPlane.position.y = -150;
-      // this.about.p = aboutPlane;
-      // this.TGroup.add(aboutPlane);
+
   
-      // let worksPlane = new THREE.Mesh(new THREE.PlaneGeometry( 760, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
-      // worksPlane.name = 'works';
-      // worksPlane.position.x = -800;
-      // worksPlane.position.y = -55;
-      // this.works.p = worksPlane;
-      // this.TGroup.add(worksPlane);
-  
-      let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 600, 120 ),new THREE.MeshBasicMaterial({color:0x020202,transparent:true,opacity:0}))
+      let contactPlane = new THREE.Mesh(new THREE.PlaneGeometry( 600, 120 ), new THREE.MeshBasicMaterial({color:0x020202, transparent:true, opacity:0}))
       contactPlane.name = 'contact';
-      // contactPlane.position.x = -800;
-      // contactPlane.position.y = -400
       this.contact.p = contactPlane;
       this.contact.add(contactPlane);
       contactPlane.position.x = -800;
 
-      //this.TGroup.add(contactPlane);
-  
-  
       this.scene.add(this.TGroup);
   
       this.Cgroup = new THREE.Group();
   
       this.Cgroup.add(this.oceanText);
-      this.oceanText.position.x=-100;
+      this.oceanText.position.x =-100;
       this.oceanText.position.y = 0;
       this.scene.add(this.Cgroup);
       this.distanceScale = 0.96;
-      this.Cgroup.position.set(this.camera.position.x* this.distanceScale,300,this.camera.position.z* this.distanceScale)
+      this.Cgroup.position.set(this.camera.position.x * this.distanceScale, 300, this.camera.position.z * this.distanceScale)
   
       this.generateGeometry(this.index);
   
-      let newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
-      newPos.x*=1.01;
-      newPos.z*=1.01;
-      this.TGroup.position.set(newPos.x,500,newPos.z);
+      let newPos = new THREE.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+      newPos.x *= 1.01;
+      newPos.z *= 1.01;
+      this.TGroup.position.set(newPos.x, 500, newPos.z);
       this.TGroup.visible = false;
-      //this.container.addEventListener("DOMMouseScroll", bind(this.mouseHandle, this),false);
-      //this.container.addEventListener('scroll',bind(this.onScroll,this),false);
-  
   
       this.d.addEventListener('touchstart', bind(function(event) {
         event.preventDefault();
@@ -628,117 +587,10 @@ function bind(func, context) {
         }
         else {
         if (this.finalPoint.pageY < this.initialPoint.pageY){
-          if(!this.moving){
-            this.moving = true;
-            if(!this.inMenu){
-              
-              let newPos ;
-              if(!this.insideSphere.visible){
-                newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
-                newPos.x*=1.1;
-                newPos.z*=1.1;
-                this.TGroup.scale.set(1,1,1);
-              }else{
-                newPos = new THREE.Vector3(this.insideCamera.position.x,100,this.insideCamera.position.z);
-                newPos.x *=-60.1;
-                this.TGroup.scale.set(0.3,0.3,0.3);
-                
-                this.TGroup.visible = true;
-              }
-    
-              let tmpControlBezier;
-              if(!this.insideSphere.visible){
-                this.TGroup.position.set(newPos.x,500,newPos.z);
-                tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
-              }else{
-                this.TGroup.position.set(newPos.x,this.insideCamera.position.y,newPos.z);
-                tmpControlBezier = new THREE.Vector3(-100,this.insideCamera.position.y,200);
-                console.log( this.TGroup.position)
-              }
-             // this.TGroup.position.set(newPos.x,500,newPos.z);
-             console.log( this.TGroup.position)
-              let tmpfloat = {value:0};
-              let focusBezier =  new THREE.QuadraticBezierCurve3(
-                (this.insideSphere.visible)?new THREE.Vector3(350,20,0):new THREE.Vector3(),
-                tmpControlBezier,
-                this.TGroup.position
-              );
-              this.TGroup.visible = true;  
-              this.about.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-              // this.works.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-               this.contact.material.uniforms.color.value = new THREE.Color(0xCBCBCB);
-     
-              
-              TweenMax.to(tmpfloat,2,{value:1,ease: (!this.insideSphere.visible)?Power2.easeOut: Power2.easeInOut,
-                onUpdate:()=>{
-                  if(this.insideSphere.visible){
-                    this.target.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-                  }else{
-                    this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-                  }
-                  
-    
-                  
-                },
-                onComplete:()=>{
-                  this.inMenu = true;
-                  this.moving = false;
-                  for(let i = 0; i<this.arrB.length;i++){
-                    this.arrB[i].visible = false;
-                  }
-                  if(this.insideSphere.visible){
-                    
-                   
-                    
-                  }
-                  
-                }});
-            }else{
-              let tmpControlBezier;
-              if(this.insideSphere.visible){
-                tmpControlBezier = new THREE.Vector3(100,this.insideCamera.position.y,200);
-              }else{
-                tmpControlBezier = this.index+1>this.arrOrbits.length-1?this.arrB[0].position:this.arrB[this.index+1].position;
-                for(let i = 0; i<this.arrB.length;i++){
-                  this.arrB[i].visible = true;
-                }
-              }
-              
-              let tmpfloat = {value:0};
-              let focusBezier =  new THREE.QuadraticBezierCurve3(
-                this.TGroup.position,
-                tmpControlBezier,
-                (this.insideSphere.visible)?new THREE.Vector3(350,20,0):new THREE.Vector3(),
-              );
-                
-    
-     
-              
-              TweenMax.to(tmpfloat,2,{value:1,ease: Power2.easeInOut,
-                onUpdate:()=>{
-                  
-                 
-                  if(this.insideSphere.visible){
-                    this.target.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-                  }else{
-                    this.focus.set(focusBezier.getPointAt(tmpfloat.value).x,focusBezier.getPointAt(tmpfloat.value).y,focusBezier.getPointAt(tmpfloat.value).z)
-                  }
-                  
-                },
-                onComplete:()=>{
-                  this.TGroup.visible = false;
-                  this.inMenu = false;
-                  this.moving = false;
-                  //this.oceanText.position.set(this.camera.position.x*0.98,300,this.camera.position.z*0.98)
-                }});
-    
-            }
-            
-            
-          }
-          //this.indexControl('next');
+          this.showMenu();   
         /*СВАЙП ВВЕРХ*/}
         else{
+          this.closeMenu();
           //this.indexControl('back');
         /*СВАЙП ВНИЗ*/}
         }
@@ -747,10 +599,10 @@ function bind(func, context) {
           event.preventDefault();
         }
         },this), false);
-        document.body.appendChild(file_container);
+  document.body.appendChild(file_container);
   window.addEventListener("resize",bind(this.onWindowResize,this), false);
   window.addEventListener('click', bind(this.onClick,this), false);
-  for(let i = 0; i< this.arrB.length; i++){
+  for(let i = 0; i < this.arrB.length; i++){
     this.arrB[i].material.uniforms.dispersionBlendMultiplier.value = 1;
   }
   this.arrB[3].material.uniforms.dispersionBlendMultiplier.value = 4;//face sphere
@@ -758,8 +610,8 @@ function bind(func, context) {
   this.arrB[4].material.uniforms.dispersionBlendMultiplier.value = 1.5;
   this.adapt();
   if(this.adaptMode){
-    for(let i = 0; i<this.arrB.length; i++){
-      if(i!=this.index){
+    for(let i = 0; i < this.arrB.length; i++){
+      if(i != this.index){
         this.arrB[i].visible = false;
       }
     }
@@ -769,38 +621,37 @@ function bind(func, context) {
   
     }
     adapt(){
-  
-      if(window.innerWidth<=1024){
+      if(window.innerWidth <= 1024){
         this.adaptMode = true;
-        //this.about.p.position.x = 0;
-        // this.works.p.position.x = 0;
-        this.contact.p.position.x = 0;
-        this.about.position.x = -350;
-        // this.works.position.x = -370;
-        this.contact.position.x = -380;
-        if(!this.inMenu||!this.insideSphere){
-          for(let i = 0; i<this.arrB.length;i++){
-            if(i!=this.index){
+        this.TGroup.scale.set(0.7, 0.7, 0.7);
+        this.tittleAbout.position.x =-500;
+        this.tittleAbout.position.y = 900;
+
+        this.about.position.x = -500;
+        this.about.position.y = 300;
+        this.contact.position.x = -500;
+        this.contact.position.y = -600;
+        if(!this.inMenu || !this.insideSphere){
+          for(let i = 0; i < this.arrB.length; i++){
+            if(i != this.index){
               this.arrB[i].visible = false;
             }
           }
         }
-        
-     
-  
+
       }else{
         this.adaptMode = false;
-        //this.about.p.position.x = -870;
-        // this.works.p.position.x = -800;
+        this.tittleAbout.position.x =-1000;
+        this.tittleAbout.position.y = 300;
+        this.TGroup.scale.set(1, 1, 1);
+
         this.contact.p.position.x = 265;
-        this.about.position.x=-100;
-        // this.works.position.x=-1200;
+        this.about.position.x =-100;
+
         this.contact.position.x = -100;
-        if(!this.inMenu||!this.insideSphere){
-          for(let i = 0; i<this.arrB.length;i++){
-            
+        if(!this.inMenu || !this.insideSphere){
+          for(let i = 0; i < this.arrB.length; i++){
               this.arrB[i].visible = true;
-            
           }
         }
   
@@ -886,6 +737,21 @@ function bind(func, context) {
                         bevelOffset: 0,
                         bevelSegments: 5
                       } );
+          let mobileGeometry2 = new THREE.TextBufferGeometry( 
+`Interactive
+designer
+& Creative
+director`,              {
+                          font: font,
+                          size: 90,
+                          height: 1,
+                          curveSegments: 12,
+                          bevelEnabled: false,
+                          bevelThickness: 10,
+                          bevelSize: 8,
+                          bevelOffset: 0,
+                          bevelSegments: 5
+                        } ); 
           geometry1.merge(line.geometry)
           let oceanMaterial2 = oceanMaterial.clone();
           oceanMaterial2.uniforms.frequency1.value = 0.03;
@@ -897,7 +763,7 @@ function bind(func, context) {
           // this.contact.add(line);
           
           
-          this.tittleAbout = new THREE.Mesh(geometry2,oceanMaterial2.clone());
+          this.tittleAbout = new THREE.Mesh((this.mobile)?mobileGeometry2:geometry2,oceanMaterial2.clone());
           this.tittleAbout.name = `tittleAbout`;
         
           
@@ -906,6 +772,7 @@ function bind(func, context) {
           this.oceanText.animating = false;
           this.menuTime = {'about':0,'tittleAbout':0,'contact':0};
           loader.load( 'fonts/PP Woodland Light_Regular (1).json', bind(function ( font ) {
+            this.font2 = font;
             let geometry = new THREE.TextBufferGeometry( 
 `Hi, I'm Artem Sokolov, a Russian
 digital designer and art director based
@@ -917,21 +784,45 @@ but always with a human-centered approach
 and a keen eye for detail. My work has been
 recognized on Awwwards, CSSDA and many
 more. Let's get in touch, for any project
-inquires or just drop me a message.`, {
-                          font: font,
-                          size: 40,
-                          height: 1,
-                          curveSegments: 12,
-                          bevelEnabled: false,
-                          bevelThickness: 10,
-                          bevelSize: 8,
-                          bevelOffset: 0,
-                          bevelSegments: 5
-                        } );
+inquires or just drop me a message.`, 
+            {
+              font: font,
+              size: 40,
+              height: 1,
+              curveSegments: 12,
+              bevelEnabled: false,
+              bevelThickness: 10,
+              bevelSize: 8,
+              bevelOffset: 0,
+              bevelSegments: 5
+            } );
+            let mobileGeometry = new THREE.TextBufferGeometry( 
+`Hi, I'm Artem Sokolov, a Russian digital
+designer and art director based in Saint
+Petersburg. I’ve been working in the
+digital area for more than 4 years. My work
+has been varied – from branding, apps,
+UX/UI, websites and digital tools – but
+always with a human-centered approach
+and a keen eye for detail. My work has
+been recognized on Awwwards, CSSDA
+and many more. Let's get in touch, for any
+project inquires or just drop me a
+message.`, {
+              font: font,
+              size: 35,
+              height: 1,
+              curveSegments: 12,
+              bevelEnabled: false,
+              bevelThickness: 10,
+              bevelSize: 8,
+              bevelOffset: 0,
+              bevelSegments: 5
+            } );
+
   
   
-  
-            this.about = new THREE.Mesh(geometry,this.contact.material.clone());
+            this.about = new THREE.Mesh((this.mobile)?mobileGeometry:geometry,this.contact.material.clone());
             this.about.name = 'about';
             this.about.material.uniforms.color.value = new THREE.Color(0xCCCCCC);
             resCounter++;
@@ -961,6 +852,7 @@ inquires or just drop me a message.`, {
     }
     showMenu(){
       if(this.moving||this.inMenu) return;
+      this.adapt();
       this.moving = true;
       let newPos ;
 
@@ -968,11 +860,11 @@ inquires or just drop me a message.`, {
         newPos = new THREE.Vector3(this.camera.position.x,this.camera.position.y,this.camera.position.z);
         newPos.x*=1.1;
         newPos.z*=1.1;
-        this.TGroup.scale.set(1,1,1);
+        // this.TGroup.scale.set(1,1,1);
       }else{
         newPos = new THREE.Vector3(this.insideCamera.position.x,100,this.insideCamera.position.z);
         newPos.x *=-60.1;
-        this.TGroup.scale.set(0.3,0.3,0.3);
+        (this.mobile)?this.TGroup.scale.set(0.2,0.2,0.2):this.TGroup.scale.set(0.3,0.3,0.3);
         
         this.TGroup.visible = true;
       }
