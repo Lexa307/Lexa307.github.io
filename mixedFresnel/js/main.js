@@ -203,7 +203,7 @@ function bind(func, context) {
       this.fovard = 0.001;
       this.insideSphere = null;
       this.target = new THREE.Vector3(350,20,0);
-  
+      this.timer = null;
       
       //this.OrbitFlag = true;
       this.settings = {
@@ -383,32 +383,26 @@ function bind(func, context) {
       this.recompileShader(this.arrB[this.index+1],20);
       this.recompileShader(this.arrB[this.index-1],20);
       
-     document.addEventListener('keydown', bind(function(event) {
-        if(!this.moving && event.key == ' '){
+    //  document.addEventListener('keydown', bind(function(event) {
+    //     if(!this.moving && event.key == ' '){
 
-          if(!this.inMenu && this.insideSphere.visible){
-            if(this.lockControls.isLocked){
-              this.lockControls.unlock();
-              this.moving = true;
-              
-              this.raycaster.setFromCamera( new THREE.Vector2(), this.insideCamera ); 
-              var intersect = this.raycaster.intersectObjects( this.scene.children );
-              let tempTarget = new THREE.Vector3(intersect[0].point.x, intersect[0].point.y, intersect[0].point.z);
-              TweenMax.to(tempTarget,3,{x:this.target.x, y:this.target.y, z:this.target.z,ease:Power2.easeInOut,
-                onComplete:()=>{
-                  this.moving = false;
-                },
-                onUpdate:()=>{
-                  this.insideCamera.lookAt(tempTarget);
-                }})
-              // this.insideCamera.lookAt(this.target);
 
-            }else{
-              this.lockControls.lock();
-            }
-          }
-            
-          }
+    // },this));
+    document.addEventListener('mousedown',bind(event =>{
+      if(!this.inMenu && this.insideSphere.visible && !this.moving){
+        this.sphereAnim = TweenMax.to(this,3,{time:10.34});
+      this.timer = setInterval(()=>{
+        this.timer = clearInterval(this.timer);
+        this.lockCamera();
+      },3000)
+      }
+    },this));
+    document.addEventListener('mouseup',bind(event =>{
+      if(!this.inMenu && this.insideSphere.visible && !this.moving){
+        this.sphereAnim = TweenMax.to(this,1,{time:10.32});
+        this.timer = clearInterval(this.timer);
+      this.unlockCamera();
+      }
     },this));
       this.controls.enabled = false;
       document.body.appendChild(this.d);
@@ -628,7 +622,7 @@ function bind(func, context) {
         this.tittleAbout.position.y = 900;
 
         this.about.position.x = -500;
-        this.about.position.y = 300;
+        this.about.position.y = 250;
         this.contact.position.x = -500;
         this.contact.position.y = -600;
         if(!this.inMenu || !this.insideSphere){
@@ -773,6 +767,7 @@ director`,              {
           this.menuTime = {'about':0,'tittleAbout':0,'contact':0};
           loader.load( 'fonts/PP Woodland Light_Regular (1).json', bind(function ( font ) {
             this.font2 = font;
+
             let geometry = new THREE.TextBufferGeometry( 
 `Hi, I'm Artem Sokolov, a Russian
 digital designer and art director based
@@ -876,10 +871,10 @@ message.`, {
       }else{
         this.TGroup.position.set(newPos.x,this.insideCamera.position.y,newPos.z);
         tmpControlBezier = new THREE.Vector3(-100,this.insideCamera.position.y,200);
-        console.log( this.TGroup.position)
+        // console.log( this.TGroup.position)
       }
      // this.TGroup.position.set(newPos.x,500,newPos.z);
-     console.log( this.TGroup.position)
+    //  console.log( this.TGroup.position)
       let tmpfloat = {value:0};
       let focusBezier =  new THREE.QuadraticBezierCurve3(
         (this.insideSphere.visible)?new THREE.Vector3(350,20,0):new THREE.Vector3(),
@@ -1035,6 +1030,7 @@ message.`, {
         }
   
       }
+
       firstAnim(){
         this.renderer.sortObjects = false;
         this.camera.position.y = 5000;
@@ -1139,7 +1135,7 @@ message.`, {
         if(!this.moving&&this.insideSphere.visible&&!this.lockControls.isLocked){
           this.insideCamera.position.z += ( this.mouse.x*4 - this.insideCamera.position.z  ) * 1.1;
           this.insideCamera.position.y += ( - this.mouse.y+20 - this.insideCamera.position.y ) * 1.1;
-          this.insideCamera.lookAt( this.target );
+         this.insideCamera.lookAt( this.target );
         }
         
     
@@ -1161,7 +1157,6 @@ message.`, {
     if(intersects.length>0){
       
       if(this.last!=null&&this.last.material.uuid!=intersects[ 0 ].object.material.uuid&&intersects[ 0 ].object.name!='inside'){
-        console.log('y2')
         TweenMax.to(this.last.material.uniforms.dispersion,2,{value:0.8,ease: Power2.easeInOut});
               TweenMax.to(this.last.material.uniforms.refractionRatio,2,{value:0.93,ease: Power2.easeOut});
         const tmpConstP = 0.215-0.075;
@@ -1213,9 +1208,45 @@ message.`, {
      // this.about.material.uniforms.color.value = new THREE.Color(0xFFFFFF);
       TweenMax.to(this.contact.material.uniforms.time,1,{value:this.contact.material.uniforms.time.value+Math.PI,onComplete:()=>{this.menuTime.contact = 0;}})
     }
+
     
   
           
+      }
+
+      unlockCamera(){
+        if(!this.inMenu && this.insideSphere.visible && !this.moving){
+          if(this.lockControls.isLocked){
+            this.moving = true;
+            this.lockControls.unlock();
+            
+            
+            this.raycaster.setFromCamera( new THREE.Vector2(), this.insideCamera ); 
+            var intersect = this.raycaster.intersectObjects( this.scene.children );
+            let tempTarget = new THREE.Vector3(intersect[0].point.x, intersect[0].point.y, intersect[0].point.z);
+            this.insideCamera.lookAt(tempTarget);
+            TweenMax.to(tempTarget,3,{x:this.target.x, y:this.target.y, z:this.target.z,ease:Power2.easeInOut,
+              onComplete:()=>{
+                this.moving = false;
+              },
+              onUpdate:()=>{
+                this.insideCamera.lookAt(tempTarget);
+              }})
+            // this.insideCamera.lookAt(this.target);
+
+          }else{
+            
+          }
+        }
+          
+        }
+      
+      lockCamera(){
+        if(!this.inMenu && this.insideSphere.visible && !this.moving){
+          if(!this.lockControls.isLocked){
+            this.lockControls.lock();
+          }
+        }
       }
   
       onScroll(event){
