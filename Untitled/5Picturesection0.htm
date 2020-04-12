@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<TITLE>
+CA Report Template Builder - Untitled Document
+</TITLE>
+</HEAD>
+<BODY ONUNLOAD="close_winrep();">
+<SCRIPT>
+var win = null;
+function close_winrep()
+{
+ if (win && !win.closed)
+ {
+  win.close();
+ }
+}
+function show_rep(rep_pict)
+{
+ if (win && !win.closed)
+ {
+  win.frames[1].location.replace(rep_pict + "_2.htm");
+  win.focus();
+  return;
+ }
+ win = window.open(rep_pict + ".htm", "RTBViewReportPicture","titlebar=no,scrollbars=yes,top=0,left=0,resizable=yes,height=350,width=400");
+}
+</SCRIPT>
+<P><IMG src='images/diagram0.jpeg' usemap ='#mapdiagram'>
+<MAP name='mapdiagram'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd0'; show_rep(rep);" alt='Авторизация' shape='rect' coords='255,118,375,198'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd1'; show_rep(rep);" alt='Вход на сайт' shape='rect' coords='25,248,135,323'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd2'; show_rep(rep);" alt='Подключение к матчу' shape='rect' coords='870,498,990,578'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd3'; show_rep(rep);" alt='Поиск игры' shape='rect' coords='615,498,785,578'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd4'; show_rep(rep);" alt='Приобретение набора карт' shape='rect' coords='855,383,1005,463'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd5'; show_rep(rep);" alt='Просмотр доступных карт' shape='rect' coords='920,198,1070,278'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd6'; show_rep(rep);" alt='Просмотр колоды' shape='rect' coords='615,248,785,328'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd7'; show_rep(rep);" alt='Просмотр наборов карт' shape='rect' coords='615,348,785,428'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd8'; show_rep(rep);" alt='Просмотр профиля' shape='rect' coords='615,108,785,188'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd9'; show_rep(rep);" alt='Регистрация' shape='rect' coords='255,368,375,448'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd10'; show_rep(rep);" alt='Редактирование колоды' shape='rect' coords='920,293,1070,373'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd11'; show_rep(rep);" alt='Пользователь' shape='rect' coords='260,253,375,313'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd12'; show_rep(rep);" alt='J1' shape='rect' coords='160,263,200,303'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd13'; show_rep(rep);" alt='J2' shape='rect' coords='430,258,470,298'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd14'; show_rep(rep);" alt='J3' shape='rect' coords='505,258,545,298'>
+<AREA HREF="JAVASCRIPT:var rep='PictureTabLkd15'; show_rep(rep);" alt='J4' shape='rect' coords='820,263,860,303'>
+</MAP>
+</IMG>
+</P>
+</BODY>
+</HTML>
