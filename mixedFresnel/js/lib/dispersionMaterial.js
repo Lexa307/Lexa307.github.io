@@ -4,7 +4,7 @@ THREE.DispersionMaterial = {
     envMap :  {value:null},
     refractionRatio:  {value:1.0},
     dispersion :  {value:1.0},
-    dispersionBlendMultiplier :  {value:4},
+    dispersionBlendMultiplier :  {value:6},
     uWiggleScale :  {value:0.004},
     uWiggleDisplacement :  {value:18.},
     uWiggleSpeed :  {value:0.003},
@@ -15,7 +15,7 @@ THREE.DispersionMaterial = {
     end:{value:1.0},
     opacity:{value:1.0}
   },
-  defines:{DISPERSION_SAMPLES :  30},
+  defines:{DISPERSION_SAMPLES :  40},
     
     
     

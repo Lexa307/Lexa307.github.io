@@ -329,7 +329,7 @@ function bind(func, context) {
                 "uWiggleSpeed": { type: 'f', value: 0.125 },
                 "refractionRatio":{ type: 'f', value: 0.93 }, 
                     "dispersion": { type: 'f', value: 0.8 }, 
-                "dispersionBlendMultiplier":{ type: 'f', value: 3.0 },
+                "dispersionBlendMultiplier":{ type: 'f', value: 6.0 },
                 "cameraPosition":{value:this.camera.position},
                 "tCube": 			{ type: "t", value:this.sceneParams[i].uniformsOut.tCube, }, //  textureCube }
                 
