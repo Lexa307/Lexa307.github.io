@@ -217,7 +217,7 @@ function bind(func, context) {
         uWiggleSpeed:  0.125 ,
         refractionRatio: 0.93,
         dispersionSamples: 30,
-        dispersionBlendMultiplier:3,
+        dispersionBlendMultiplier:6,
         dispersion: 0.8,
         mRefractionRatio: 1.0,
         mFresnelBias: 1,
