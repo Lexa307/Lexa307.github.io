@@ -50,53 +50,19 @@ class Slider{
     }
 
     mouseHandle(event){
-        if(event.deltaY==100){
-            this.animationMove('next')
-        }else{
-            this.animationMove('back');
+        //event.preventDefault();
+
+        if (event.deltaY < 0) {
+          // Zoom in
+          this.animationMove('back');
+
         }
-        let isTouchPadDefined = this.isTouchPad || typeof this.isTouchPad !== "undefined";
-        if (!isTouchPadDefined) {
-            if (this.eventCount === 0) {
-              this.eventCountStart = new Date().getTime();
-            }
-            this.eventCount++;
-            if (new Date().getTime() - this.eventCountStart > 100) {
-                    if (this.eventCount > 10) {
-                      this.isTouchPad = true;
-                    } else {
-                      this.isTouchPad = false;
-                    }
-                isTouchPadDefined = true;
-            }
+        else {
+          // Zoom out
+          this.animationMove('next');
         }
-        if (isTouchPadDefined) {
-            if (!event) event = event;
-            let direction = (event.detail<0 || event.wheelDelta>0) ? 1 : -1;
-            if (this.isTouchPad) {
-              this.newTime = new Date().getTime();
-                if ( this.newTime - this.oldTime > 550 ) {
-                    if (direction < 0) {
-                        // swipe down
-                        this.animationMove('next');
-                    } else {
-                        // swipe up
-                        this.animationMove('back');
-                    }
-                    setTimeout(function() {this.oldTime = new Date().getTime();}, 500);
-                }
-            } else {
-                if (direction < 0) {
-                  this.animationMove('next');
-                  
-                    // swipe down
-                } else {
-                    // swipe up
-                    this.animationMove('back');
-                }
-            }
-          }
-        //}
+      
+        
       }
 
     loadRes(){
@@ -129,7 +95,8 @@ class Slider{
                     .to(this.sceneSeparatorPlane.material,1,{opacity:0},0)
                     .to(this.camera.position,4,{z:-70,},0)
                     .addPause()
-                    window.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
+                    document.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
+                    document.onwheel =  bind(this.mouseHandle, this);
                     this.animate();
                 },this))
                 
