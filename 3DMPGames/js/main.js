@@ -17,11 +17,13 @@ class Slider{
         }else{
         this.mobile = false;
         this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: true,antialias:true } ) } );})()  : new THREE.WebGLRenderer({alpha: true,antialias:true})
-        this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / (window.innerHeight), 0.1, 60000 );
+        this.camera = new THREE.PerspectiveCamera( 54, window.innerWidth / (window.innerHeight), 0.1, 60000 );
         }
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, (window.innerHeight) );//(window.innerWidth/1.77)
         document.body.appendChild( this.renderer.domElement );
+        this.moving = false;
+        this.focus = new THREE.Vector3(0,0,-300);
         this.loadRes();
     }
 
@@ -38,6 +40,7 @@ class Slider{
         this.renderer.render( this.scene, this.camera );
         this.raycaster.setFromCamera( this.mouse, this.camera );
         var intersects = this.raycaster.intersectObjects( this.scene.children );
+
         if (intersects.length == 0){
             // this.scene.getObjectByName ( "about" ).material.color = new THREE.Color( 0xffffff);
             // this.scene.getObjectByName ( "about1" ).material.color = new THREE.Color( 0xffffff);
@@ -53,13 +56,14 @@ class Slider{
                 // this.scene.getObjectByName ( "games" ).material.color = new THREE.Color( 0xff0000);
                 // this.scene.getObjectByName ( "games1" ).material.color = new THREE.Color( 0xff0000);
             }
-        } 
+        }
+        this.camera.lookAt(this.focus); 
         
         
     }
 
     animationMove(direction){ 
-        if(TweenMax.isTweening(this.camera.position)){return;}
+        if(this.moving){return;}
         if(direction == 'next'){
             if (this.tl.reversed()) {
                 this.tl.reversed( false );
@@ -82,12 +86,12 @@ class Slider{
         }
       }
       onMouseMove ( event ) {
-        if(TweenMax.isTweening(this.camera.position)){return;}
+        //if(TweenMax.isTweening(this.camera.position)){return;}
         this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-        this.camera.position.x= this.mouse.x*0.1;
-        this.camera.position.y= this.mouse.y*0.01;
+        TweenMax.to(this.focus,0.5,{x:this.mouse.x*2,y:this.mouse.y*0.5,ease: Power2.easeOut})
+        // this.camera.position.x= this.mouse.x*0.3;
+        // this.camera.position.y= this.mouse.y*0.01;
 
 
       }
@@ -123,13 +127,21 @@ class Slider{
         this.mouse = new THREE.Vector2(0,0);
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 20.0;
-        var light = new THREE.AmbientLight( 0xFFFFFF ); 
+        var light = new THREE.AmbientLight( 0xFFFFFF,1 ); 
         this.scene.add( light );
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
             loader.load( 'fullscene.glb', bind( function ( gltf ) {
                 this.scene.add( gltf.scene );
                 this.fscene = gltf.scene;
                 this.fscene.children[0].position.y = 4; //bomb Y position fix
+                this.fscene.getObjectByName("console").position.x = -50;
+                this.fscene.getObjectByName("money").position.y = 27;
+                this.fscene.getObjectByName("nyancat").position.multiplyScalar(1.5);
+                this.fscene.getObjectByName("sword").position.y = -10;
+
+                this.fscene.children[2].position.z = 27
+                this.fscene.children[2].children[0].material.roughness = 0.3;
+
 
                 //this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
                 //this.controls.target = new THREE.Vector3(0,  0,  0);
@@ -140,7 +152,14 @@ class Slider{
                     gltf.scene.rotation.y -=Math.PI/2;
                     gltf.scene.position.z = -90;
                     gltf.scene.position.y = -2.5;
-                    //gltf.scene.position.multiplyScalar(1.5);
+
+
+                    for(let i = 0; i < this.pscene.children.length; i++ ){
+                        console.log(i);
+                        this.pscene.children[i].position.z *= 1.5;
+                        this.pscene.children[i].position.x *= 1.4;
+                    }
+                    // gltf.scene.position.multiplyScalar(1.5);
                     this.sceneSeparatorPlane = new THREE.Mesh( //separates scenes with opacity
                         new THREE.PlaneGeometry( 200, 200, 1,1 ),
                         new THREE.MeshBasicMaterial( {color: 0x3F3683, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
@@ -151,40 +170,57 @@ class Slider{
                         new THREE.MeshBasicMaterial( {color: 0x3F3683, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
                     );
                     this.scene.add( this.sceneSeparatorPlane2 );
-                    this.sceneSeparatorPlane2.position.z = -130;
-                    this.sceneSeparatorPlane.position.z = -65;
+                    this.sceneSeparatorPlane2.position.z = -156;
+                    this.sceneSeparatorPlane.position.z = -75;
                     this.camera.position.set( 0,  0,  65.5);
                     this.camera.lookAt(new THREE.Vector3(0,0,0));
                     this.light1 = new THREE.PointLight( 0xFFFFFF, 0.8, 11000 );
                     this.light1.position.set( 11.31182850514277,  9.871880217076887,  53.44 );
                     this.scene.add( this.light1 );
-                    TweenMax.to(this.pscene.children[2].position,4,{y:this.pscene.children[2].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[3].position,4,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[4].position,4,{y:this.pscene.children[4].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+                    this.pscene.children[3].position.x = 3;
+                    // TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[4].position,10,{y:this.pscene.children[4].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+
+                    TweenMax.to(this.pscene.children[2].rotation,10,{y:this.pscene.children[2].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[3].rotation,10,{y:this.pscene.children[3].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[4].rotation,10,{y:this.pscene.children[4].rotation.y-0.13,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+
                     for(let i = 0; i < this.fscene.children.length; i++){
-                        TweenMax.to(this.fscene.children[i].position,4,{y:this.fscene.children[i].position.y+Math.sign(THREE.Math.randFloat(-1,1)),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
+                        TweenMax.to(this.fscene.children[i].position,10,{y:this.fscene.children[i].position.y+Math.sign(THREE.Math.randFloat(-1,1)),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
+                        TweenMax.to(this.fscene.children[i].rotation,10,{y:this.fscene.children[i].rotation.y+THREE.Math.randFloat(-0.2,0.2),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
                         TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
+                        TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
                     }
+                    this.moving = true;
                     this.tl = new TimelineMax()
-                    .addPause()
-                    .to(this.sceneSeparatorPlane.material,1,{opacity:0},0)
+                    // .addPause()
+                    //.set(this,{moving:true})
+                    //.set(this.light1.position,{x:11.31182850514277,y:9.871880217076887,z: 53.44})
+                    .to(this.sceneSeparatorPlane.material,2,{opacity:0},1.5)
                     .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
+                    .set(this,{moving:false})
                     .addPause(4,()=>{
+                        this.moving = false;
                         for(let i = 0; i < this.fscene.children.length; i++){
                             TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
+                            TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
                         }
                     })
                     .add("mid", 4)
                     .set(this.fscene.children[1].position,{x:-25, y: 0})
                     .set(this.fscene.position,{z: -220})
-                    .to(this.sceneSeparatorPlane2.material,2,{opacity:0},"mid")
+                    .set(this,{moving:true})
+                    .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
                     .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
                         onStart:()=>{
                             for(let i = 0; i < this.fscene.children.length; i++){
                                 TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).play()
+                                TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).play()
                             }
                         }
                     },"mid")
+                    .set(this,{moving:false})
                     .addPause()
 
                     document.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
