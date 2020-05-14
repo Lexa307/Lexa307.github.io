@@ -178,9 +178,9 @@ class Slider{
                     this.light1.position.set( 11.31182850514277,  9.871880217076887,  53.44 );
                     this.scene.add( this.light1 );
                     this.pscene.children[3].position.x = 3;
-                    // TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[4].position,10,{y:this.pscene.children[4].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[4].position,10,{y:this.pscene.children[4].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
 
                     TweenMax.to(this.pscene.children[2].rotation,10,{y:this.pscene.children[2].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
                     TweenMax.to(this.pscene.children[3].rotation,10,{y:this.pscene.children[3].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
