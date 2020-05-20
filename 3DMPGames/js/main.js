@@ -177,14 +177,14 @@ class Slider{
                     this.light1 = new THREE.PointLight( 0xFFFFFF, 0.8, 11000 );
                     this.light1.position.set( 11.31182850514277,  9.871880217076887,  53.44 );
                     this.scene.add( this.light1 );
-                    this.pscene.children[3].position.x = 3;
-                    TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[4].position,10,{y:this.pscene.children[4].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+                    this.pscene.children[2].position.x = 3;
+                    TweenMax.to(this.pscene.children[1].position,10,{y:this.pscene.children[1].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
 
-                    TweenMax.to(this.pscene.children[2].rotation,10,{y:this.pscene.children[2].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[3].rotation,10,{y:this.pscene.children[3].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[4].rotation,10,{y:this.pscene.children[4].rotation.y-0.13,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[1].rotation,10,{y:this.pscene.children[1].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[2].rotation,10,{y:this.pscene.children[2].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    TweenMax.to(this.pscene.children[3].rotation,10,{y:this.pscene.children[3].rotation.y-0.13,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
 
                     for(let i = 0; i < this.fscene.children.length; i++){
                         TweenMax.to(this.fscene.children[i].position,10,{y:this.fscene.children[i].position.y+Math.sign(THREE.Math.randFloat(-1,1)),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
