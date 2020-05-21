@@ -170,7 +170,7 @@ class Slider{
                     this.scene.add( this.sceneSeparatorPlane );
                     this.sceneSeparatorPlane2 = new THREE.Mesh( 
                         new THREE.PlaneGeometry( 500, 500, 1,1 ),
-                        new THREE.MeshBasicMaterial( {color: 0x3F3683, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
+                        new THREE.MeshBasicMaterial( {color: 0x00bfff, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
                     );
                     this.scene.add( this.sceneSeparatorPlane2 );
                     this.sceneSeparatorPlane2.position.z = -156;
@@ -225,41 +225,58 @@ class Slider{
 
                         this.insertText("ABOUT US",font,0.8,0,-169,"about");
                         // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-169,"about1");
+                        this.clouds = new THREE.Group();
                         this.scene.background = new THREE.TextureLoader().load('img/bg.jpg',bind((texture)=>{
-                            // this.scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0025 );
-                            this.animate();
-                            this.tl = new TimelineMax()
-                            // .addPause()
-                            //.set(this,{moving:true})
-                            //.set(this.light1.position,{x:11.31182850514277,y:9.871880217076887,z: 53.44})
-                            .to(this.sceneSeparatorPlane.material,2,{opacity:0},1.5)
-                            .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
-                            .set(this,{moving:false})
-                            .addPause(4,()=>{
-                                this.moving = false;
-                                for(let i = 0; i < this.fscene.children.length; i++){
-                                    TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
-                                    TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
-                                    this.fscene.children[i].position.set(this.fscene.initpos[i].x,this.fscene.initpos[i].y,this.fscene.initpos[i].z);
+                            new THREE.TextureLoader().load('img/smoke.png',bind((smokeTexture)=>{
+                                this.smokeMaterial = new THREE.MeshLambertMaterial({color: 0xFFFFFF, map: smokeTexture, transparent: true});
+                                let smokeGeo = new THREE.PlaneGeometry(10,10);
+                                for(let i = 0; i < 6; i++ ){
+                                    this.clouds.add(new THREE.Mesh(smokeGeo,this.smokeMaterial));
+                                    this.clouds.children[this.clouds.children.length-1].scale.set(1.2,1.2,1.2);
+                                    this.clouds.children[this.clouds.children.length-1].rotation.z = Math.PI+i;
+                                    this.clouds.children[this.clouds.children.length-1].position.set((i*2)-4,-4,-(i/100))
+                                    TweenMax.to( this.clouds.children[this.clouds.children.length-1].rotation,100,{z:Math.PI*2,repeat:-1,yoyo:true})
                                 }
-
-                            })
-                            .add("mid", 4)
-                            .set(this.fscene.children[1].position,{x:-25, y: 0})
-                            .set(this.fscene.position,{z: -220})
-                            .set(this,{moving:true})
-                            .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
-                            .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
-                                onStart:()=>{
+                                // this.scene.add(this.clouds);
+                                this.clouds.position.z = 63;
+                                this.camera.attach(this.clouds);
+                                this.scene.add(this.camera);
+                            
+                                this.animate();
+                                this.tl = new TimelineMax()
+                                // .addPause()
+                                //.set(this,{moving:true})
+                                .set(this.smokeMaterial,{opacity:0})
+                                .to(this.sceneSeparatorPlane.material,2,{opacity:0},1.5)
+                                .to(this.smokeMaterial,2,{opacity:1},1.5)
+                                .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
+                                .set(this,{moving:false})
+                                .addPause(4,()=>{
+                                    this.moving = false;
                                     for(let i = 0; i < this.fscene.children.length; i++){
-                                        TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).play()
-                                        TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).play()
+                                        TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
+                                        TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
+                                        this.fscene.children[i].position.set(this.fscene.initpos[i].x,this.fscene.initpos[i].y,this.fscene.initpos[i].z);
                                     }
-                                }
-                            },"mid")
-                            .set(this,{moving:false})
-                            .addPause()
 
+                                })
+                                .add("mid", 4)
+                                .set(this.fscene.children[1].position,{x:-25, y: 0})
+                                .set(this.fscene.position,{z: -220})
+                                .set(this,{moving:true})
+                                .to(this.smokeMaterial,1,{opacity:0},"mid")
+                                .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
+                                .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
+                                    onStart:()=>{
+                                        for(let i = 0; i < this.fscene.children.length; i++){
+                                            TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).play()
+                                            TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).play()
+                                        }
+                                    }
+                                },"mid")
+                                .set(this,{moving:false})
+                                .addPause()
+                            },this))
                         },this));
 
                         
