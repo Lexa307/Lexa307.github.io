@@ -97,29 +97,29 @@ class Slider{
       }
     insertText(text,font,scale,Ypos,Zpos,name){
         let s2Text1 = new THREE.Mesh(new THREE.TextBufferGeometry( text, 
-                        {
-                            font: font,
-                            size: scale,
-                            height: 0,
-                            curveSegments: 12,
-                            bevelEnabled: false,
-                        } 
-                        ), new THREE.MeshLambertMaterial());
-                        s2Text1.geometry.computeBoundingBox(); 
-                        s2Text1.geometry.translate( - 0.5 * ( s2Text1.geometry.boundingBox.max.x - s2Text1.geometry.boundingBox.min.x), 0, 0 );
-                        //s2Text1.geometry.computeBoundingBox(); 
-                        //s2Text1.position.x = - 0.5 * ( s2Text1.geometry.boundingBox.max.x - s2Text1.geometry.boundingBox.min.x );
-                        s2Text1.position.y = Ypos;
-                        s2Text1.position.z = Zpos;
-                        s2Text1.updateMatrixWorld( true );
-                        s2Text1.geometry.boundingBox.applyMatrix4( s2Text1.matrixWorld );
-                        // s2Text1.geometry.boundingBox.min.sub(s2Text1.position);
-                        // s2Text1.geometry.boundingBox.max.sub(s2Text1.position);
-                        s2Text1.name = name;
-                        //var helper = new THREE.Box3Helper( s2Text1.geometry.boundingBox, 0xffff00 );
-                        
-                        //this.scene.add( helper );
-                        this.scene.add(s2Text1);
+            {
+                font: font,
+                size: scale,
+                height: 0,
+                curveSegments: 12,
+                bevelEnabled: false,
+            } 
+            ), new THREE.MeshLambertMaterial());
+            s2Text1.geometry.computeBoundingBox(); 
+            s2Text1.geometry.translate( - 0.5 * ( s2Text1.geometry.boundingBox.max.x - s2Text1.geometry.boundingBox.min.x), 0, 0 );
+            //s2Text1.geometry.computeBoundingBox(); 
+            //s2Text1.position.x = - 0.5 * ( s2Text1.geometry.boundingBox.max.x - s2Text1.geometry.boundingBox.min.x );
+            s2Text1.position.y = Ypos;
+            s2Text1.position.z = Zpos;
+            s2Text1.updateMatrixWorld( true );
+            s2Text1.geometry.boundingBox.applyMatrix4( s2Text1.matrixWorld );
+            // s2Text1.geometry.boundingBox.min.sub(s2Text1.position);
+            // s2Text1.geometry.boundingBox.max.sub(s2Text1.position);
+            s2Text1.name = name;
+            //var helper = new THREE.Box3Helper( s2Text1.geometry.boundingBox, 0xffff00 );
+            
+            //this.scene.add( helper );
+            this.scene.add(s2Text1);
                 
     }
 
@@ -141,7 +141,10 @@ class Slider{
 
                 this.fscene.children[2].position.z = 27
                 this.fscene.children[2].children[0].material.roughness = 0.3;
-
+                this.fscene.initpos = []
+                for(let i = 0; i < this.fscene.children.length; i++){
+                    this.fscene.initpos.push(this.fscene.children[i].position.clone());
+                }
 
                 //this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
                 //this.controls.target = new THREE.Vector3(0,  0,  0);
@@ -199,6 +202,15 @@ class Slider{
                         TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
                         TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
                     }
+                    for(let i = 0; i < Math.floor((this.fscene.children.length-1)/2); i++){
+                        let buf = this.fscene.children[i].position.clone();
+                        this.fscene.children[i].position.set(
+                            this.fscene.children[this.fscene.children.length-1-i].position.x,
+                            this.fscene.children[this.fscene.children.length-1-i].position.y,
+                            this.fscene.children[this.fscene.children.length-1-i].position.z
+                        )
+                        this.fscene.children[this.fscene.children.length-1-i].position.set(buf.x,buf.y,buf.z);
+                    }
                     this.moving = true;
                    
 
@@ -228,7 +240,9 @@ class Slider{
                                 for(let i = 0; i < this.fscene.children.length; i++){
                                     TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
                                     TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
+                                    this.fscene.children[i].position.set(this.fscene.initpos[i].x,this.fscene.initpos[i].y,this.fscene.initpos[i].z);
                                 }
+
                             })
                             .add("mid", 4)
                             .set(this.fscene.children[1].position,{x:-25, y: 0})
