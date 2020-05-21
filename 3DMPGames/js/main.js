@@ -176,7 +176,7 @@ class Slider{
                     this.camera.lookAt(new THREE.Vector3(0,0,0));
                     this.light1 = new THREE.PointLight( 0xFFFFFF, 0.8, 11000 );
                     this.light1.position.set( 11.31182850514277,  9.871880217076887,  53.44 );
-                    this.light2 = new THREE.PointLight( );
+                    this.light2 = new THREE.PointLight( 0xFFFFFF, 1, 100 );
                     this.light2.position.set( 0,  0,  -74 );
                     this.scene.add( this.light1 );
                     this.scene.add( this.light2 );
