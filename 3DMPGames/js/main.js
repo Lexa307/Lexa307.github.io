@@ -151,7 +151,7 @@ class Slider{
                     this.pscene = gltf.scene;
                     gltf.scene.rotation.y -=Math.PI/2;
                     gltf.scene.position.z = -90;
-                    gltf.scene.position.y = -2.5;
+                    gltf.scene.position.y = -1.5;//-2.5;
 
 
                     for(let i = 0; i < this.pscene.children.length; i++ ){
@@ -176,8 +176,15 @@ class Slider{
                     this.camera.lookAt(new THREE.Vector3(0,0,0));
                     this.light1 = new THREE.PointLight( 0xFFFFFF, 0.8, 11000 );
                     this.light1.position.set( 11.31182850514277,  9.871880217076887,  53.44 );
+                    this.light2 = new THREE.PointLight( );
+                    this.light2.position.set( 0,  0,  -74 );
                     this.scene.add( this.light1 );
+                    this.scene.add( this.light2 );
                     this.pscene.children[2].position.x = 3;
+                    this.pscene.children[2].position.y = 3.5;
+                    
+                     this.pscene.children[3].position.z = 17;
+                    this.pscene.children[3].position.y = -3;
                     TweenMax.to(this.pscene.children[1].position,10,{y:this.pscene.children[1].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
                     TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
                     TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
@@ -202,11 +209,12 @@ class Slider{
                     let Floader = new THREE.FontLoader();
                     Floader.load( 'fonts/Montserrat Medium_Regular.json', bind(function ( font ) {
                         this.insertText("OUR GAMES",font,0.8,0,-90,"games");
-                        this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-90,"games1");
+                        // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-90,"games1");
 
                         this.insertText("ABOUT US",font,0.8,0,-169,"about");
-                        this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-169,"about1");
+                        // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-169,"about1");
                         this.scene.background = new THREE.TextureLoader().load('img/bg.jpg',bind((texture)=>{
+                            // this.scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0025 );
                             this.animate();
                             this.tl = new TimelineMax()
                             // .addPause()
