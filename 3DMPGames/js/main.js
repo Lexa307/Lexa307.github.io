@@ -9,7 +9,7 @@ class Slider{
     constructor(selector){
         
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x3F3683);
+        //new THREE.Color(0x40182a)//new THREE.Color(0x3F3683);
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
         this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
         this.camera = new THREE.PerspectiveCamera( 75, (window.innerWidth) / (window.innerWidth/1.77), 0.1, 60000 );
@@ -161,12 +161,12 @@ class Slider{
                     }
                     // gltf.scene.position.multiplyScalar(1.5);
                     this.sceneSeparatorPlane = new THREE.Mesh( //separates scenes with opacity
-                        new THREE.PlaneGeometry( 200, 200, 1,1 ),
+                        new THREE.PlaneGeometry( 500, 500, 1,1 ),
                         new THREE.MeshBasicMaterial( {color: 0x3F3683, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
                     );
                     this.scene.add( this.sceneSeparatorPlane );
                     this.sceneSeparatorPlane2 = new THREE.Mesh( 
-                        new THREE.PlaneGeometry( 200, 200, 1,1 ),
+                        new THREE.PlaneGeometry( 500, 500, 1,1 ),
                         new THREE.MeshBasicMaterial( {color: 0x3F3683, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
                     );
                     this.scene.add( this.sceneSeparatorPlane2 );
@@ -193,35 +193,7 @@ class Slider{
                         TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
                     }
                     this.moving = true;
-                    this.tl = new TimelineMax()
-                    // .addPause()
-                    //.set(this,{moving:true})
-                    //.set(this.light1.position,{x:11.31182850514277,y:9.871880217076887,z: 53.44})
-                    .to(this.sceneSeparatorPlane.material,2,{opacity:0},1.5)
-                    .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
-                    .set(this,{moving:false})
-                    .addPause(4,()=>{
-                        this.moving = false;
-                        for(let i = 0; i < this.fscene.children.length; i++){
-                            TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
-                            TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
-                        }
-                    })
-                    .add("mid", 4)
-                    .set(this.fscene.children[1].position,{x:-25, y: 0})
-                    .set(this.fscene.position,{z: -220})
-                    .set(this,{moving:true})
-                    .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
-                    .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
-                        onStart:()=>{
-                            for(let i = 0; i < this.fscene.children.length; i++){
-                                TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).play()
-                                TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).play()
-                            }
-                        }
-                    },"mid")
-                    .set(this,{moving:false})
-                    .addPause()
+                   
 
                     document.addEventListener( 'mousewheel', bind(this.mouseHandle, this), false);
                     document.onwheel =  bind(this.mouseHandle, this);
@@ -234,8 +206,41 @@ class Slider{
 
                         this.insertText("ABOUT US",font,0.8,0,-169,"about");
                         this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-169,"about1");
+                        this.scene.background = new THREE.TextureLoader().load('img/bg.jpg',bind((texture)=>{
+                            this.animate();
+                            this.tl = new TimelineMax()
+                            // .addPause()
+                            //.set(this,{moving:true})
+                            //.set(this.light1.position,{x:11.31182850514277,y:9.871880217076887,z: 53.44})
+                            .to(this.sceneSeparatorPlane.material,2,{opacity:0},1.5)
+                            .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
+                            .set(this,{moving:false})
+                            .addPause(4,()=>{
+                                this.moving = false;
+                                for(let i = 0; i < this.fscene.children.length; i++){
+                                    TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
+                                    TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
+                                }
+                            })
+                            .add("mid", 4)
+                            .set(this.fscene.children[1].position,{x:-25, y: 0})
+                            .set(this.fscene.position,{z: -220})
+                            .set(this,{moving:true})
+                            .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
+                            .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
+                                onStart:()=>{
+                                    for(let i = 0; i < this.fscene.children.length; i++){
+                                        TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).play()
+                                        TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).play()
+                                    }
+                                }
+                            },"mid")
+                            .set(this,{moving:false})
+                            .addPause()
 
-                        this.animate();
+                        },this));
+
+                        
                     },this));
                 },this))
             },this));
