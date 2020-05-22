@@ -41,20 +41,20 @@ class Slider{
         requestAnimationFrame( this.animate.bind(this) );
         
         this.raycaster.setFromCamera( this.mouse, this.camera );
-        this.scene.getObjectByName ( "about" ).material.color = new THREE.Color( 0xffffff);
-        this.scene.getObjectByName ( "games" ).material.color = new THREE.Color( 0xffffff);
+        this.scene.getObjectByName ( "about" ).material.color.set( 0xffffff);
+        this.scene.getObjectByName ( "games" ).material.color.set( 0xffffff);
         //var intersects = this.raycaster.intersectObjects( this.scene.children );
         var inverseMatrix = new THREE.Matrix4(), ray = new THREE.Ray();
         inverseMatrix.getInverse(this.scene.getObjectByName( "about" ).matrixWorld);
         ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
 
-        if(ray.isIntersectionBox(this.scene.getObjectByName ( "about" ).geometry.boundingBox) === true && !this.moving){
-            this.scene.getObjectByName ( "about" ).material.color = new THREE.Color( 0xff0000)
+        if(ray.intersectsBox(this.scene.getObjectByName ( "about" ).geometry.boundingBox) === true && !this.moving){
+            this.scene.getObjectByName ( "about" ).material.color.set( 0x4f4e4e)
         }
         inverseMatrix.getInverse(this.scene.getObjectByName( "games" ).matrixWorld);
         ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
-        if(ray.isIntersectionBox(this.scene.getObjectByName ( "games" ).geometry.boundingBox) === true && !this.moving){
-            this.scene.getObjectByName ( "games" ).material.color = new THREE.Color( 0xff0000)
+        if(ray.intersectsBox(this.scene.getObjectByName ( "games" ).geometry.boundingBox) === true && !this.moving){
+            this.scene.getObjectByName ( "games" ).material.color.set( 0x4f4e4e)
         }
         this.camera.lookAt(this.focus); 
         this.renderer.render( this.scene, this.camera );
@@ -266,7 +266,7 @@ class Slider{
                                 .set(this.fscene.children[1].position,{x:-25, y: 0})
                                 .set(this.fscene.position,{z: -220})
                                 .set(this,{moving:true})
-                                .to(this.smokeMaterial,1,{opacity:0},"mid")
+                                .to(this.smokeMaterial.color,3,{r:91/255, g:75/255, b:112/255},"mid")
                                 .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
                                 .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
                                     onStart:()=>{
