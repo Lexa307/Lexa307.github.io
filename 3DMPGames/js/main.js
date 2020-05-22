@@ -12,7 +12,7 @@ class Slider{
         //new THREE.Color(0x40182a)//new THREE.Color(0x3F3683);
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
         this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
-        this.camera = new THREE.PerspectiveCamera( 75, (window.innerWidth) / (window.innerWidth/1.77), 0.1, 60000 );
+        this.camera = new THREE.PerspectiveCamera( 54, (window.innerWidth) / (window.innerWidth/1.77), 0.1, 60000 );
         this.mobile = true;
         }else{
         this.mobile = false;
@@ -23,6 +23,8 @@ class Slider{
         this.renderer.setSize( window.innerWidth, (window.innerHeight) );//(window.innerWidth/1.77)
         document.body.appendChild( this.renderer.domElement );
         this.moving = false;
+        this.index = 0;
+        this.mouse = new THREE.Vector2();
         this.focus = new THREE.Vector3(0,0,-300);
         this.loadRes();
     }
@@ -37,28 +39,25 @@ class Slider{
 
     animate () {
         requestAnimationFrame( this.animate.bind(this) );
-        this.renderer.render( this.scene, this.camera );
+        
         this.raycaster.setFromCamera( this.mouse, this.camera );
-        var intersects = this.raycaster.intersectObjects( this.scene.children );
+        this.scene.getObjectByName ( "about" ).material.color = new THREE.Color( 0xffffff);
+        this.scene.getObjectByName ( "games" ).material.color = new THREE.Color( 0xffffff);
+        //var intersects = this.raycaster.intersectObjects( this.scene.children );
+        var inverseMatrix = new THREE.Matrix4(), ray = new THREE.Ray();
+        inverseMatrix.getInverse(this.scene.getObjectByName( "about" ).matrixWorld);
+        ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
 
-        if (intersects.length == 0){
-            // this.scene.getObjectByName ( "about" ).material.color = new THREE.Color( 0xffffff);
-            // this.scene.getObjectByName ( "about1" ).material.color = new THREE.Color( 0xffffff);
-            // this.scene.getObjectByName ( "games" ).material.color = new THREE.Color( 0xffffff);
-            // this.scene.getObjectByName ( "games1" ).material.color = new THREE.Color( 0xffffff);
-        }else{
-            if(this.raycaster.ray.intersectsBox(this.scene.getObjectByName ( "about" ).geometry.boundingBox)){
-                // this.scene.getObjectByName ( "about" ).material.color = new THREE.Color( 0xff0000);
-                // this.scene.getObjectByName ( "about1" ).material.color = new THREE.Color( 0xff0000);
-            } 
-            if (intersects[ 0 ].object.name == "games"||"games1"){
-
-                // this.scene.getObjectByName ( "games" ).material.color = new THREE.Color( 0xff0000);
-                // this.scene.getObjectByName ( "games1" ).material.color = new THREE.Color( 0xff0000);
-            }
+        if(ray.isIntersectionBox(this.scene.getObjectByName ( "about" ).geometry.boundingBox) === true && !this.moving){
+            this.scene.getObjectByName ( "about" ).material.color = new THREE.Color( 0xff0000)
+        }
+        inverseMatrix.getInverse(this.scene.getObjectByName( "games" ).matrixWorld);
+        ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
+        if(ray.isIntersectionBox(this.scene.getObjectByName ( "games" ).geometry.boundingBox) === true && !this.moving){
+            this.scene.getObjectByName ( "games" ).material.color = new THREE.Color( 0xff0000)
         }
         this.camera.lookAt(this.focus); 
-        
+        this.renderer.render( this.scene, this.camera );
         
     }
 
@@ -70,7 +69,7 @@ class Slider{
             }
             this.tl.play();
         }
-        if(direction == 'back'){
+        if(direction == 'back'&&this.index > 1){
             this.tl.reverse();
         }
     }
@@ -92,7 +91,7 @@ class Slider{
         TweenMax.to(this.focus,0.5,{x:this.mouse.x*2,y:this.mouse.y*0.5,ease: Power2.easeOut})
         // this.camera.position.x= this.mouse.x*0.3;
         // this.camera.position.y= this.mouse.y*0.01;
-
+        
 
       }
     insertText(text,font,scale,Ypos,Zpos,name){
@@ -112,7 +111,7 @@ class Slider{
             s2Text1.position.y = Ypos;
             s2Text1.position.z = Zpos;
             s2Text1.updateMatrixWorld( true );
-            s2Text1.geometry.boundingBox.applyMatrix4( s2Text1.matrixWorld );
+            // s2Text1.geometry.boundingBox.applyMatrix4( s2Text1.matrixWorld );
             // s2Text1.geometry.boundingBox.min.sub(s2Text1.position);
             // s2Text1.geometry.boundingBox.max.sub(s2Text1.position);
             s2Text1.name = name;
@@ -124,9 +123,9 @@ class Slider{
     }
 
     loadRes(){
-        this.mouse = new THREE.Vector2(0,0);
+        
         this.raycaster = new THREE.Raycaster();
-        this.raycaster.far = 20.0;
+        this.raycaster.far = 30.0;
         var light = new THREE.AmbientLight( 0xFFFFFF,1 ); 
         this.scene.add( light );
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
@@ -186,7 +185,7 @@ class Slider{
                     this.pscene.children[2].position.x = 3;
                     this.pscene.children[2].position.y = 3.5;
                     
-                     this.pscene.children[3].position.z = 17;
+                    this.pscene.children[3].position.z = 17;
                     this.pscene.children[3].position.y = -3;
                     TweenMax.to(this.pscene.children[1].position,10,{y:this.pscene.children[1].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
                     TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
@@ -234,9 +233,11 @@ class Slider{
                                     this.clouds.add(new THREE.Mesh(smokeGeo,this.smokeMaterial));
                                     this.clouds.children[this.clouds.children.length-1].scale.set(1.2,1.2,1.2);
                                     this.clouds.children[this.clouds.children.length-1].rotation.z = Math.PI+i;
-                                    this.clouds.children[this.clouds.children.length-1].position.set((i*2)-4,-4,-(i/100))
+                                    this.clouds.children[this.clouds.children.length-1].position.set((i*2)-4,-4.4,-(i/100))
                                     TweenMax.to( this.clouds.children[this.clouds.children.length-1].rotation,100,{z:Math.PI*2,repeat:-1,yoyo:true})
                                 }
+                                this.smokeMaterial.depthTest = false;
+                                this.smokeMaterial.depthWrite = false;
                                 // this.scene.add(this.clouds);
                                 this.clouds.position.z = 63;
                                 this.camera.attach(this.clouds);
@@ -251,6 +252,7 @@ class Slider{
                                 .to(this.smokeMaterial,2,{opacity:1},1.5)
                                 .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
                                 .set(this,{moving:false})
+                                .set(this,{index:1})
                                 .addPause(4,()=>{
                                     this.moving = false;
                                     for(let i = 0; i < this.fscene.children.length; i++){
@@ -274,6 +276,7 @@ class Slider{
                                         }
                                     }
                                 },"mid")
+                                .set(this,{index:2})
                                 .set(this,{moving:false})
                                 .addPause()
                             },this))
