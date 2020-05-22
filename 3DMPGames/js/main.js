@@ -187,14 +187,21 @@ class Slider{
                     
                     this.pscene.children[3].position.z = 17;
                     this.pscene.children[3].position.y = -3;
-                    TweenMax.to(this.pscene.children[1].position,10,{y:this.pscene.children[1].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+                    for(let i = 1; i< this.pscene.children.length; i++){
+                        TweenMax.to(this.pscene.children[i].position,10,{y:this.pscene.children[i].position.y-THREE.Math.randFloat(0.3,1),yoyo:true,repeat:-1,delay:2*i*THREE.Math.randFloat(0,1),ease: Power2.easeInOut})
+                        TweenMax.to(this.pscene.children[1].rotation,10,{y:this.pscene.children[1].rotation.y-THREE.Math.randFloat(-0.5,0.5),yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    }
+                    // TweenMax.to(this.pscene.children[1].position,10,{y:this.pscene.children[1].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[4].position,10,{y:this.pscene.children[4].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[5].position,10,{y:this.pscene.children[5].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
 
-                    TweenMax.to(this.pscene.children[1].rotation,10,{y:this.pscene.children[1].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[2].rotation,10,{y:this.pscene.children[2].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    TweenMax.to(this.pscene.children[3].rotation,10,{y:this.pscene.children[3].rotation.y-0.13,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
-
+                    // TweenMax.to(this.pscene.children[1].rotation,10,{y:this.pscene.children[1].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[2].rotation,10,{y:this.pscene.children[2].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[3].rotation,10,{y:this.pscene.children[3].rotation.y-0.13,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[4].rotation,10,{y:this.pscene.children[4].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
+                    // TweenMax.to(this.pscene.children[5].rotation,10,{y:this.pscene.children[5].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
                     for(let i = 0; i < this.fscene.children.length; i++){
                         TweenMax.to(this.fscene.children[i].position,10,{y:this.fscene.children[i].position.y+Math.sign(THREE.Math.randFloat(-1,1)),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
                         TweenMax.to(this.fscene.children[i].rotation,10,{y:this.fscene.children[i].rotation.y+THREE.Math.randFloat(-0.2,0.2),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
@@ -266,6 +273,8 @@ class Slider{
                                 .set(this.fscene.children[1].position,{x:-25, y: 0})
                                 .set(this.fscene.position,{z: -220})
                                 .set(this,{moving:true})
+                                .to(this.smokeMaterial,1,{opacity:0},"mid")
+                                .to(this.smokeMaterial,1,{opacity:1},"mid+=2")
                                 .to(this.smokeMaterial.color,3,{r:91/255, g:75/255, b:112/255},"mid")
                                 .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
                                 .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
