@@ -137,9 +137,7 @@ class Slider{
                 this.fscene.getObjectByName("money").position.y = 27;
                 this.fscene.getObjectByName("nyancat").position.multiplyScalar(1.5);
                 this.fscene.getObjectByName("sword").position.y = -16;
-                this.fscene.getObjectByName("pistol").position.x = -30;
-                this.fscene.getObjectByName("pistol").position.y = 12;
-                this.fscene.getObjectByName("pistol").position.z = 20;
+                this.fscene.getObjectByName("pistol").position.set(-30,12,20)
                 this.fscene.children[2].position.z = 27
                 this.fscene.children[2].children[0].material.roughness = 0.3;
                 this.fscene.initpos = []
@@ -170,8 +168,8 @@ class Slider{
                     );
                     this.scene.add( this.sceneSeparatorPlane );
                     this.sceneSeparatorPlane2 = new THREE.Mesh( 
-                        new THREE.PlaneGeometry( 500, 500, 1,1 ),
-                        new THREE.MeshBasicMaterial( {color: 0x00bfff, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
+                        new THREE.PlaneGeometry( 500, 300, 1,1 ),
+                        new THREE.MeshBasicMaterial( {color: 0x00bfff, side: THREE.DoubleSide, transparent:true, opacity:1} ) //color: 0x00bfff,
                     );
                     this.scene.add( this.sceneSeparatorPlane2 );
                     this.sceneSeparatorPlane2.position.z = -156;
@@ -234,67 +232,112 @@ class Slider{
                         this.insertText("ABOUT US",font,0.8,0,-169,"about");
                         // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-169,"about1");
                         this.clouds = new THREE.Group();
-                        this.scene.background = new THREE.TextureLoader().load('img/bg.jpg',bind((texture)=>{
+                        this.scene.background = new THREE.TextureLoader().load('img/bg3.jpg',bind((texture)=>{
                             new THREE.TextureLoader().load('img/smoke.png',bind((smokeTexture)=>{
-                                this.smokeMaterial = new THREE.MeshLambertMaterial({color: 0xFFFFFF, map: smokeTexture, transparent: true});
-                                let smokeGeo = new THREE.PlaneGeometry(10,10);
-                                for(let i = 0; i < 6; i++ ){
-                                    this.clouds.add(new THREE.Mesh(smokeGeo,this.smokeMaterial));
-                                    this.clouds.children[this.clouds.children.length-1].scale.set(1.2,1.2,1.2);
-                                    this.clouds.children[this.clouds.children.length-1].rotation.z = Math.PI+i;
-                                    this.clouds.children[this.clouds.children.length-1].position.set((i*2)-4,-4.4,-(i/100))
-                                    TweenMax.to( this.clouds.children[this.clouds.children.length-1].rotation,100,{z:Math.PI*2,repeat:-1,yoyo:true}).timeScale( 0.1 )
-                                }
-                                this.smokeMaterial.depthTest = false;
-                                this.smokeMaterial.depthWrite = false;
-                                // this.scene.add(this.clouds);
-                                this.clouds.position.z = 63;
-                                this.camera.attach(this.clouds);
-                                this.scene.add(this.camera);
-                            
-                                this.animate();
-                                this.tl = new TimelineMax()
-                                // .addPause()
-                                //.set(this,{moving:true})
-                                .set(this.smokeMaterial,{opacity:0})
-                                .to(this.sceneSeparatorPlane.material,2,{opacity:0},1.5)
-                                .to(this.smokeMaterial,2,{opacity:1},1.5)
-                                .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
-                                .set(this,{moving:false})
-                                .set(this,{index:1})
-                                .addPause(4,()=>{
-                                    this.moving = false;
-                                    for(let i = 0; i < this.fscene.children.length; i++){
-                                        TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
-                                        TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
-                                        this.fscene.children[i].position.set(this.fscene.initpos[i].x,this.fscene.initpos[i].y,this.fscene.initpos[i].z);
+                                new THREE.TextureLoader().load('img/bg4.jpg',bind((textureplane)=>{
+                                    this.sceneSeparatorPlane2.material.map =  textureplane;
+                                
+                                    this.smokeMaterial = new THREE.MeshLambertMaterial({color: 0xFFFFFF, map: smokeTexture, transparent: true});
+                                    let smokeGeo = new THREE.PlaneGeometry(10,10);
+                                    for(let i = 0; i < 6; i++ ){
+                                        this.clouds.add(new THREE.Mesh(smokeGeo,this.smokeMaterial));
+                                        this.clouds.children[this.clouds.children.length-1].scale.set(1.2,1.2,1.2);
+                                        this.clouds.children[this.clouds.children.length-1].rotation.z = Math.PI+i;
+                                        this.clouds.children[this.clouds.children.length-1].position.set((i*2)-4,-4.4,-(i/100))
+                                        TweenMax.to( this.clouds.children[this.clouds.children.length-1].rotation,100,{z:Math.PI*2,repeat:-1,yoyo:true}).timeScale( 0.1 )
+                                    }
+                                    let vertices1 = [];
+                                    let starsGeometry = new THREE.BufferGeometry();
+
+                                    let vertex = new THREE.Vector3();
+
+                                    for ( let i = 0; i < 10; i ++ ) {
+
+                                        vertex.x = THREE.Math.randFloat(-50,50);
+                                        vertex.y = THREE.Math.randFloat(-50,50);
+                                        vertex.z = Math.random() * 2 - 180;
+                                        vertex.multiplyScalar( 1.6 );
+
+                                        vertices1.push( vertex.x, vertex.y, vertex.z );
+
+                                    }
+                                    starsGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
+
+                                    
+                                    var starsMaterials = [
+                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 2, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 1, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 2, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 1, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 2, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 1, sizeAttenuation: false } )
+                                    ];
+                    
+                                    for (let i = 0; i < 6; i ++ ) {
+                    
+                                        let stars = new THREE.Points( starsGeometry, starsMaterials[ i % 6 ] );
+                                        TweenMax.to(starsMaterials[ i % 6 ],30,{size:0,repeat:-1,yoyo:true,delay:[i % 6]*6});
+                                        // stars.rotation.x = Math.random() * 6;
+                                        // stars.rotation.y = Math.random() * 6;
+                                        stars.rotation.z = Math.random() * 6;
+                                        // stars.scale.setScalar( i * 10 );
+                    
+                                        //stars.matrixAutoUpdate = false;
+                                        stars.updateMatrix();
+                    
+                                        this.scene.add( stars );
+                    
                                     }
 
-                                })
-                                .add("mid", 4)
-                                .set(this.fscene.children[1].position,{x:-45, y: 0})
-                                .set(this.fscene.position,{z: -220})
-                                .set(this,{moving:true})
-                                .to(this.clouds.scale,1,{x:0.7,y:0.7,z:0.7},"mid+=1")
-                                .to(this.smokeMaterial,1,{opacity:0},"mid")
-                                .to(this.smokeMaterial,1,{opacity:0.4},"mid+=2")
-                                .to(this.smokeMaterial.color,3,{r:91/255, g:75/255, b:112/255},"mid")
-                                .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
-                                .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
-                                    onStart:()=>{
+                                    this.smokeMaterial.depthTest = false;
+                                    this.smokeMaterial.depthWrite = false;
+                                    // this.scene.add(this.clouds);
+                                    this.clouds.position.z = 63;
+                                    this.camera.attach(this.clouds);
+                                    this.scene.add(this.camera);
+                                
+                                    this.animate();
+                                    this.tl = new TimelineMax()
+                                    // .addPause()
+                                    //.set(this,{moving:true})
+                                    .set(this.smokeMaterial,{opacity:0})
+                                    .to(this.sceneSeparatorPlane.material,2,{opacity:0},1.5)
+                                    .to(this.smokeMaterial,2,{opacity:1},1.5)
+                                    .to(this.camera.position,3,{z:-74,ease: Power2.easeInOut},0)
+                                    .set(this,{moving:false})
+                                    .set(this,{index:1})
+                                    .addPause(4,()=>{
+                                        this.moving = false;
                                         for(let i = 0; i < this.fscene.children.length; i++){
-                                            TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).play()
-                                            TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).play()
+                                            TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
+                                            TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
+                                            this.fscene.children[i].position.set(this.fscene.initpos[i].x,this.fscene.initpos[i].y,this.fscene.initpos[i].z);
                                         }
-                                    }
-                                },"mid")
-                                .set(this,{index:2})
-                                .set(this,{moving:false})
-                                .addPause()
+
+                                    })
+                                    .add("mid", 4)
+                                    .set(this.fscene.children[1].position,{x:-45, y: 0})
+                                    .set(this.fscene.position,{z: -220})
+                                    .set(this,{moving:true})
+                                    .to(this.clouds.scale,1,{x:0.7,y:0.7,z:0.7},"mid+=1")
+                                    .to(this.smokeMaterial,1,{opacity:0},"mid")
+                                    .to(this.smokeMaterial,1,{opacity:0.2},"mid+=2")
+                                    .to(this.smokeMaterial.color,3,{r:91/255, g:75/255, b:112/255},"mid")
+                                    .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
+                                    .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
+                                        onStart:()=>{
+                                            for(let i = 0; i < this.fscene.children.length; i++){
+                                                TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).play()
+                                                TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).play()
+                                            }
+                                        }
+                                    },"mid")
+                                    .set(this,{index:2})
+                                    .set(this,{moving:false})
+                                    .addPause()
+                                },this))
                             },this))
                         },this));
-
-                        
                     },this));
                 },this))
             },this));
