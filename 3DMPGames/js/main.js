@@ -136,8 +136,10 @@ class Slider{
                 this.fscene.getObjectByName("console").position.x = -50;
                 this.fscene.getObjectByName("money").position.y = 27;
                 this.fscene.getObjectByName("nyancat").position.multiplyScalar(1.5);
-                this.fscene.getObjectByName("sword").position.y = -10;
-
+                this.fscene.getObjectByName("sword").position.y = -16;
+                this.fscene.getObjectByName("pistol").position.x = -30;
+                this.fscene.getObjectByName("pistol").position.y = 12;
+                this.fscene.getObjectByName("pistol").position.z = 20;
                 this.fscene.children[2].position.z = 27
                 this.fscene.children[2].children[0].material.roughness = 0.3;
                 this.fscene.initpos = []
@@ -241,7 +243,7 @@ class Slider{
                                     this.clouds.children[this.clouds.children.length-1].scale.set(1.2,1.2,1.2);
                                     this.clouds.children[this.clouds.children.length-1].rotation.z = Math.PI+i;
                                     this.clouds.children[this.clouds.children.length-1].position.set((i*2)-4,-4.4,-(i/100))
-                                    TweenMax.to( this.clouds.children[this.clouds.children.length-1].rotation,100,{z:Math.PI*2,repeat:-1,yoyo:true})
+                                    TweenMax.to( this.clouds.children[this.clouds.children.length-1].rotation,100,{z:Math.PI*2,repeat:-1,yoyo:true}).timeScale( 0.1 )
                                 }
                                 this.smokeMaterial.depthTest = false;
                                 this.smokeMaterial.depthWrite = false;
@@ -270,11 +272,12 @@ class Slider{
 
                                 })
                                 .add("mid", 4)
-                                .set(this.fscene.children[1].position,{x:-25, y: 0})
+                                .set(this.fscene.children[1].position,{x:-45, y: 0})
                                 .set(this.fscene.position,{z: -220})
                                 .set(this,{moving:true})
+                                .to(this.clouds.scale,1,{x:0.7,y:0.7,z:0.7},"mid+=1")
                                 .to(this.smokeMaterial,1,{opacity:0},"mid")
-                                .to(this.smokeMaterial,1,{opacity:1},"mid+=2")
+                                .to(this.smokeMaterial,1,{opacity:0.4},"mid+=2")
                                 .to(this.smokeMaterial.color,3,{r:91/255, g:75/255, b:112/255},"mid")
                                 .to(this.sceneSeparatorPlane2.material,4,{opacity:0,ease: Power2.easeInOut},"mid")
                                 .to(this.camera.position,3,{z:-155,ease: Power2.easeInOut,
