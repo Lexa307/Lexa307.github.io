@@ -56,6 +56,25 @@ class Slider{
         if(ray.intersectsBox(this.scene.getObjectByName ( "games" ).geometry.boundingBox) === true && !this.moving){
             this.scene.getObjectByName ( "games" ).material.color.set( 0x4f4e4e)
         }
+        let c = 0;
+        for(let i of this.fscene.children){
+            inverseMatrix.getInverse(i.matrixWorld);
+            ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
+            // let oldPos = new THREE.Vector3().clone(i.position).x;
+            if(ray.intersectsBox(i.geometry.boundingBox) === true && !this.moving){
+                if(!i.hover){
+                    i.hover = true;
+                    TweenMax.to(i.position,1,{x:this.fscene.initpos[c].x + Math.sign(THREE.Math.randFloat(-1,1))});
+                }
+            }else{
+                if(i.hover){
+                    TweenMax.to(i.position,1,{x:this.fscene.initpos[c].x,onFinish:()=>{
+                        i.hover = false;
+                    }})
+                }
+            }
+            c++;
+        }
         this.camera.lookAt(this.focus); 
         this.renderer.render( this.scene, this.camera );
         
@@ -143,6 +162,21 @@ class Slider{
                 this.fscene.initpos = []
                 for(let i = 0; i < this.fscene.children.length; i++){
                     this.fscene.initpos.push(this.fscene.children[i].position.clone());
+
+                }
+                for (let i of this.fscene.children){
+                    console.log(`${i.name} computing` );
+                    i.geometry.computeBoundingBox();
+                    for(let j of i.children){
+                        console.log(j.type)
+                        if(j.isMesh){
+                            j.geometry.computeBoundingBox();
+                            i.geometry.boundingBox = i.geometry.boundingBox.union(j.geometry.boundingBox);
+                        }
+                    }
+                    i.updateMatrixWorld( true );
+                    // let helper = new THREE.Box3Helper( i.geometry.boundingBox, 0xffff00 );
+                    // i.add( helper );
                 }
 
                 //this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
