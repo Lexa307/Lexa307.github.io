@@ -226,10 +226,10 @@ class Slider{
 
                     let Floader = new THREE.FontLoader();
                     Floader.load( 'fonts/Montserrat Medium_Regular.json', bind(function ( font ) {
-                        this.insertText("OUR GAMES",font,0.8,0,-90,"games");
+                        this.insertText("Наши игры",font,0.8,0,-90,"games");
                         // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-90,"games1");
 
-                        this.insertText("ABOUT US",font,0.8,0,-169,"about");
+                        this.insertText("Наши будни",font,0.8,0,-169,"about");
                         // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-169,"about1");
                         this.clouds = new THREE.Group();
                         this.scene.background = new THREE.TextureLoader().load('img/bg3.jpg',bind((texture)=>{
@@ -251,10 +251,10 @@ class Slider{
 
                                     let vertex = new THREE.Vector3();
 
-                                    for ( let i = 0; i < 10; i ++ ) {
+                                    for ( let i = 0; i < 250; i ++ ) {
 
-                                        vertex.x = THREE.Math.randFloat(-50,50);
-                                        vertex.y = THREE.Math.randFloat(-50,50);
+                                        vertex.x = THREE.Math.randFloat(-70,70);
+                                        vertex.y = THREE.Math.randFloat(-70,70);
                                         vertex.z = Math.random() * 2 - 180;
                                         vertex.multiplyScalar( 1.6 );
 
