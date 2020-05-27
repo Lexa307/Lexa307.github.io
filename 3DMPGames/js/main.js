@@ -60,14 +60,15 @@ class Slider{
         for(let i of this.fscene.children){
             inverseMatrix.getInverse(i.matrixWorld);
             ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
-            // let oldPos = new THREE.Vector3().clone(i.position).x;
             if(ray.intersectsBox(i.geometry.boundingBox) === true && !this.moving){
                 if(!i.hover){
                     i.hover = true;
                     TweenMax.to(i.position,1,{x:this.fscene.initpos[c].x + Math.sign(THREE.Math.randFloat(-1,1))});
+                    TweenMax.to(i.rotation,1,{x:this.fscene.initrot[c].x + 0.1});
                 }
             }else{
                 if(i.hover){
+                    TweenMax.to(i.rotation,1,{x:this.fscene.initrot[c].x});
                     TweenMax.to(i.position,1,{x:this.fscene.initpos[c].x,onFinish:()=>{
                         i.hover = false;
                     }})
@@ -159,9 +160,11 @@ class Slider{
                 this.fscene.getObjectByName("pistol").position.set(-30,12,20)
                 this.fscene.children[2].position.z = 27
                 this.fscene.children[2].children[0].material.roughness = 0.3;
-                this.fscene.initpos = []
+                this.fscene.initpos = [];
+                this.fscene.initrot = [];
                 for(let i = 0; i < this.fscene.children.length; i++){
                     this.fscene.initpos.push(this.fscene.children[i].position.clone());
+                    this.fscene.initrot.push(this.fscene.children[i].rotation.clone());
 
                 }
                 for (let i of this.fscene.children){
