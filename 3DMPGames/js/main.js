@@ -43,18 +43,49 @@ class Slider{
         this.raycaster.setFromCamera( this.mouse, this.camera );
         this.scene.getObjectByName ( "about" ).material.color.set( 0xffffff);
         this.scene.getObjectByName ( "games" ).material.color.set( 0xffffff);
+        // this.scene.getObjectByName ( "about" ).morphTargetInfluences[ 0 ] = 0;
+        // this.scene.getObjectByName ( "games" ).morphTargetInfluences[ 0 ] = 0;
         //var intersects = this.raycaster.intersectObjects( this.scene.children );
         var inverseMatrix = new THREE.Matrix4(), ray = new THREE.Ray();
         inverseMatrix.getInverse(this.scene.getObjectByName( "about" ).matrixWorld);
         ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
 
-        if(ray.intersectsBox(this.scene.getObjectByName ( "about" ).geometry.boundingBox) === true && !this.moving){
-            this.scene.getObjectByName ( "about" ).material.color.set( 0x4f4e4e)
+        let about = this.scene.getObjectByName ( "about" );
+        if(ray.intersectsBox(about.geometry.boundingBox) === true && !this.moving){
+            if(!about.hover){//!TweenMax.isTweening(this.scene.getObjectByName ( "games" ).morphTargetInfluences)
+                about.material.color.set( 0x4f4e4e);
+                about.hover = true;
+                TweenMax.to(about.morphTargetInfluences,1,{[0]:0.2})
+            }else{
+                about.material.color.set( 0x4f4e4e);
+            }
+        }else{
+            if(about.hover){
+                about.hover = false;
+                TweenMax.to(about.morphTargetInfluences,1,{[0]:0.0});
+                about.material.color.set( 0xffffff);
+            }
         }
+
         inverseMatrix.getInverse(this.scene.getObjectByName( "games" ).matrixWorld);
         ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
-        if(ray.intersectsBox(this.scene.getObjectByName ( "games" ).geometry.boundingBox) === true && !this.moving){
-            this.scene.getObjectByName ( "games" ).material.color.set( 0x4f4e4e)
+
+        let games = this.scene.getObjectByName ( "games" );
+        if(ray.intersectsBox(games.geometry.boundingBox) === true && !this.moving){
+            if(!games.hover){//!TweenMax.isTweening(this.scene.getObjectByName ( "games" ).morphTargetInfluences)
+                games.material.color.set( 0x4f4e4e);
+                games.hover = true;
+                TweenMax.to(games.morphTargetInfluences,1,{[0]:0.2})
+            }else{
+                games.material.color.set( 0x4f4e4e);
+            }
+            // this.scene.getObjectByName ( "games" ).morphTargetInfluences[ 0 ] = 1;
+        }else{
+            if(games.hover){
+                games.hover = false;
+                TweenMax.to(games.morphTargetInfluences,1,{[0]:0.0});
+                games.material.color.set( 0xffffff);
+            }
         }
         let c = 0;
         for(let i of this.fscene.children){
@@ -115,7 +146,7 @@ class Slider{
 
       }
     insertText(text,font,scale,Ypos,Zpos,name){
-        let s2Text1 = new THREE.Mesh(new THREE.TextBufferGeometry( text, 
+        let origGeometry = new THREE.TextBufferGeometry( text, 
             {
                 font: font,
                 size: scale,
@@ -123,22 +154,42 @@ class Slider{
                 curveSegments: 12,
                 bevelEnabled: false,
             } 
-            ), new THREE.MeshLambertMaterial());
-            s2Text1.geometry.computeBoundingBox(); 
-            s2Text1.geometry.translate( - 0.5 * ( s2Text1.geometry.boundingBox.max.x - s2Text1.geometry.boundingBox.min.x), 0, 0 );
-            //s2Text1.geometry.computeBoundingBox(); 
-            //s2Text1.position.x = - 0.5 * ( s2Text1.geometry.boundingBox.max.x - s2Text1.geometry.boundingBox.min.x );
-            s2Text1.position.y = Ypos;
-            s2Text1.position.z = Zpos;
-            s2Text1.updateMatrixWorld( true );
-            // s2Text1.geometry.boundingBox.applyMatrix4( s2Text1.matrixWorld );
-            // s2Text1.geometry.boundingBox.min.sub(s2Text1.position);
-            // s2Text1.geometry.boundingBox.max.sub(s2Text1.position);
-            s2Text1.name = name;
-            //var helper = new THREE.Box3Helper( s2Text1.geometry.boundingBox, 0xffff00 );
-            
-            //this.scene.add( helper );
-            this.scene.add(s2Text1);
+        )
+        origGeometry.morphAttributes.position = [];
+        origGeometry.computeBoundingBox(); 
+        origGeometry.translate( - 0.5 * ( origGeometry.boundingBox.max.x - origGeometry.boundingBox.min.x), 0, 0 );
+        let spacedtext = "";
+        for(let i of text){spacedtext+=i;if(i!=' '){spacedtext+=' '}}
+        let morphGeometry = new THREE.TextBufferGeometry( spacedtext, 
+            {
+                font: font,
+                size: scale,
+                height: 0,
+                curveSegments: 12,
+                bevelEnabled: false,
+            } 
+        );
+        morphGeometry.computeBoundingBox(); 
+        morphGeometry.translate( - 0.5 * ( morphGeometry.boundingBox.max.x - morphGeometry.boundingBox.min.x), 0, 0 );
+        let positions2 = morphGeometry.attributes.position.array;
+        let spacedPositions = [];
+				for ( let i = 0; i < positions2.length; i += 3 ) {
+
+					let x = positions2[ i ];
+					let y = positions2[ i + 1 ];
+					let z = positions2[ i + 2 ];
+					spacedPositions.push(x,y,z);
+                }
+        origGeometry.morphAttributes.position[ 0 ] = new THREE.Float32BufferAttribute( spacedPositions, 3 );
+        let s2Text1 = new THREE.Mesh(origGeometry, new THREE.MeshLambertMaterial({morphTargets: true}));
+        s2Text1.position.y = Ypos;
+        s2Text1.position.z = Zpos;
+        s2Text1.updateMatrixWorld( true );
+        s2Text1.name = name;
+        //var helper = new THREE.Box3Helper( s2Text1.geometry.boundingBox, 0xffff00 );
+        
+        //this.scene.add( helper );
+        this.scene.add(s2Text1);
                 
     }
 
@@ -168,7 +219,6 @@ class Slider{
 
                 }
                 for (let i of this.fscene.children){
-                    console.log(`${i.name} computing` );
                     i.geometry.computeBoundingBox();
                     for(let j of i.children){
                         console.log(j.type)
@@ -198,7 +248,6 @@ class Slider{
                         this.pscene.children[i].position.z *= 1.5;
                         this.pscene.children[i].position.x *= 1.4;
                     }
-                    // gltf.scene.position.multiplyScalar(1.5);
                     this.sceneSeparatorPlane = new THREE.Mesh( //separates scenes with opacity
                         new THREE.PlaneGeometry( 500, 500, 1,1 ),
                         new THREE.MeshBasicMaterial( {color: 0x3F3683, side: THREE.DoubleSide, transparent:true, opacity:1} ) 
@@ -228,17 +277,7 @@ class Slider{
                         TweenMax.to(this.pscene.children[i].position,10,{y:this.pscene.children[i].position.y-THREE.Math.randFloat(0.3,1),yoyo:true,repeat:-1,delay:2*i*THREE.Math.randFloat(0,1),ease: Power2.easeInOut})
                         TweenMax.to(this.pscene.children[1].rotation,10,{y:this.pscene.children[1].rotation.y-THREE.Math.randFloat(-0.5,0.5),yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
                     }
-                    // TweenMax.to(this.pscene.children[1].position,10,{y:this.pscene.children[1].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[2].position,10,{y:this.pscene.children[2].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[3].position,10,{y:this.pscene.children[3].position.y-0.5,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[4].position,10,{y:this.pscene.children[4].position.y-0.4,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[5].position,10,{y:this.pscene.children[5].position.y-0.5,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-
-                    // TweenMax.to(this.pscene.children[1].rotation,10,{y:this.pscene.children[1].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[2].rotation,10,{y:this.pscene.children[2].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[3].rotation,10,{y:this.pscene.children[3].rotation.y-0.13,yoyo:true,repeat:-1,delay:0.5,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[4].rotation,10,{y:this.pscene.children[4].rotation.y-0.1,yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
-                    // TweenMax.to(this.pscene.children[5].rotation,10,{y:this.pscene.children[5].rotation.y-0.18,yoyo:true,repeat:-1,delay:3,ease: Power2.easeInOut})
+                    
                     for(let i = 0; i < this.fscene.children.length; i++){
                         TweenMax.to(this.fscene.children[i].position,10,{y:this.fscene.children[i].position.y+Math.sign(THREE.Math.randFloat(-1,1)),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
                         TweenMax.to(this.fscene.children[i].rotation,10,{y:this.fscene.children[i].rotation.y+THREE.Math.randFloat(-0.2,0.2),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
@@ -264,16 +303,12 @@ class Slider{
                     let Floader = new THREE.FontLoader();
                     Floader.load( 'fonts/Montserrat Medium_Regular.json', bind(function ( font ) {
                         this.insertText("Наши игры",font,0.8,0,-90,"games");
-                        // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-90,"games1");
-
                         this.insertText("Наши будни",font,0.8,0,-169,"about");
-                        // this.insertText("---CLICK TO KNOW MORE---",font,0.2,-1,-169,"about1");
                         this.clouds = new THREE.Group();
                         this.scene.background = new THREE.TextureLoader().load('img/bg3.jpg',bind((texture)=>{
                             new THREE.TextureLoader().load('img/smoke.png',bind((smokeTexture)=>{
                                 new THREE.TextureLoader().load('img/bg4.jpg',bind((textureplane)=>{
                                     this.sceneSeparatorPlane2.material.map =  textureplane;
-                                
                                     this.smokeMaterial = new THREE.MeshLambertMaterial({color: 0xFFFFFF, map: smokeTexture, transparent: true});
                                     let smokeGeo = new THREE.PlaneGeometry(10,10);
                                     for(let i = 0; i < 6; i++ ){
@@ -285,10 +320,9 @@ class Slider{
                                     }
                                     let vertices1 = [];
                                     let starsGeometry = new THREE.BufferGeometry();
-
                                     let vertex = new THREE.Vector3();
 
-                                    for ( let i = 0; i < 250; i ++ ) {
+                                    for ( let i = 0; i < 100; i ++ ) {
 
                                         vertex.x = THREE.Math.randFloat(-70,70);
                                         vertex.y = THREE.Math.randFloat(-70,70);
@@ -296,10 +330,8 @@ class Slider{
                                         vertex.multiplyScalar( 1.6 );
 
                                         vertices1.push( vertex.x, vertex.y, vertex.z );
-
                                     }
                                     starsGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
-
                                     
                                     var starsMaterials = [
                                         new THREE.PointsMaterial( { color: 0xFFD700, size: 2, sizeAttenuation: false } ),
@@ -311,24 +343,15 @@ class Slider{
                                     ];
                     
                                     for (let i = 0; i < 6; i ++ ) {
-                    
                                         let stars = new THREE.Points( starsGeometry, starsMaterials[ i % 6 ] );
                                         TweenMax.to(starsMaterials[ i % 6 ],30,{size:0,repeat:-1,yoyo:true,delay:[i % 6]*6});
-                                        // stars.rotation.x = Math.random() * 6;
-                                        // stars.rotation.y = Math.random() * 6;
                                         stars.rotation.z = Math.random() * 6;
-                                        // stars.scale.setScalar( i * 10 );
-                    
-                                        //stars.matrixAutoUpdate = false;
                                         stars.updateMatrix();
-                    
                                         this.scene.add( stars );
-                    
                                     }
 
                                     this.smokeMaterial.depthTest = false;
                                     this.smokeMaterial.depthWrite = false;
-                                    // this.scene.add(this.clouds);
                                     this.clouds.position.z = 63;
                                     this.camera.attach(this.clouds);
                                     this.scene.add(this.camera);
@@ -353,7 +376,7 @@ class Slider{
 
                                     })
                                     .add("mid", 4)
-                                    .set(this.fscene.children[1].position,{x:-45, y: 0})
+                                    // .set(this.fscene.children[1].position,{x:-45, y: 0})
                                     .set(this.fscene.position,{z: -220})
                                     .set(this,{moving:true})
                                     .to(this.clouds.scale,1,{x:0.7,y:0.7,z:0.7},"mid+=1")
