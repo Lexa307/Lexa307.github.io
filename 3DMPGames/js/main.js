@@ -41,29 +41,21 @@ class Slider{
         requestAnimationFrame( this.animate.bind(this) );
         
         this.raycaster.setFromCamera( this.mouse, this.camera );
-        this.scene.getObjectByName ( "about" ).material.color.set( 0xffffff);
-        this.scene.getObjectByName ( "games" ).material.color.set( 0xffffff);
-        // this.scene.getObjectByName ( "about" ).morphTargetInfluences[ 0 ] = 0;
-        // this.scene.getObjectByName ( "games" ).morphTargetInfluences[ 0 ] = 0;
-        //var intersects = this.raycaster.intersectObjects( this.scene.children );
         var inverseMatrix = new THREE.Matrix4(), ray = new THREE.Ray();
         inverseMatrix.getInverse(this.scene.getObjectByName( "about" ).matrixWorld);
         ray.copy(this.raycaster.ray).applyMatrix4(inverseMatrix);
 
         let about = this.scene.getObjectByName ( "about" );
         if(ray.intersectsBox(about.geometry.boundingBox) === true && !this.moving){
-            if(!about.hover){//!TweenMax.isTweening(this.scene.getObjectByName ( "games" ).morphTargetInfluences)
-                about.material.color.set( 0x4f4e4e);
+            if(!about.hover){
                 about.hover = true;
                 TweenMax.to(about.morphTargetInfluences,1,{[0]:0.2})
-            }else{
-                about.material.color.set( 0x4f4e4e);
             }
         }else{
             if(about.hover){
                 about.hover = false;
                 TweenMax.to(about.morphTargetInfluences,1,{[0]:0.0});
-                about.material.color.set( 0xffffff);
+               
             }
         }
 
@@ -72,19 +64,15 @@ class Slider{
 
         let games = this.scene.getObjectByName ( "games" );
         if(ray.intersectsBox(games.geometry.boundingBox) === true && !this.moving){
-            if(!games.hover){//!TweenMax.isTweening(this.scene.getObjectByName ( "games" ).morphTargetInfluences)
-                games.material.color.set( 0x4f4e4e);
+            if(!games.hover){
                 games.hover = true;
                 TweenMax.to(games.morphTargetInfluences,1,{[0]:0.2})
-            }else{
-                games.material.color.set( 0x4f4e4e);
             }
-            // this.scene.getObjectByName ( "games" ).morphTargetInfluences[ 0 ] = 1;
         }else{
             if(games.hover){
                 games.hover = false;
                 TweenMax.to(games.morphTargetInfluences,1,{[0]:0.0});
-                games.material.color.set( 0xffffff);
+                
             }
         }
         let c = 0;
