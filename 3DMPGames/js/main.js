@@ -262,13 +262,13 @@ class Slider{
                     this.pscene.children[3].position.z = 17;
                     this.pscene.children[3].position.y = -3;
                     for(let i = 1; i< this.pscene.children.length; i++){
-                        TweenMax.to(this.pscene.children[i].position,10,{y:this.pscene.children[i].position.y-THREE.Math.randFloat(0.3,1),yoyo:true,repeat:-1,delay:2*i*THREE.Math.randFloat(0,1),ease: Power2.easeInOut})
+                        TweenMax.to(this.pscene.children[i].position,5,{y:this.pscene.children[i].position.y-THREE.Math.randFloat(0.3,1),yoyo:true,repeat:-1,delay:2*i*THREE.Math.randFloat(0,1),ease: Power2.easeInOut})
                         TweenMax.to(this.pscene.children[1].rotation,10,{y:this.pscene.children[1].rotation.y-THREE.Math.randFloat(-0.5,0.5),yoyo:true,repeat:-1,delay:2,ease: Power2.easeInOut})
                     }
                     
                     for(let i = 0; i < this.fscene.children.length; i++){
-                        TweenMax.to(this.fscene.children[i].position,10,{y:this.fscene.children[i].position.y+Math.sign(THREE.Math.randFloat(-1,1)),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
-                        TweenMax.to(this.fscene.children[i].rotation,10,{y:this.fscene.children[i].rotation.y+THREE.Math.randFloat(-0.2,0.2),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
+                        TweenMax.to(this.fscene.children[i].position,5,{y:this.fscene.children[i].position.y+Math.sign(THREE.Math.randFloat(-1,1)),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
+                        TweenMax.to(this.fscene.children[i].rotation,5,{y:this.fscene.children[i].rotation.y+THREE.Math.randFloat(-0.2,0.2),yoyo:true,repeat:-1,delay:THREE.Math.randFloat(0.5,4),ease: Power2.easeInOut})
                         TweenMax.getTweensOf(this.fscene.children[i].position)[0].progress(0).pause()
                         TweenMax.getTweensOf(this.fscene.children[i].rotation)[0].progress(0).pause()
                     }
@@ -322,12 +322,12 @@ class Slider{
                                     starsGeometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
                                     
                                     var starsMaterials = [
-                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 2, sizeAttenuation: false } ),
-                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 1, sizeAttenuation: false } ),
-                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 2, sizeAttenuation: false } ),
-                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 1, sizeAttenuation: false } ),
-                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 2, sizeAttenuation: false } ),
-                                        new THREE.PointsMaterial( { color: 0xFFD700, size: 1, sizeAttenuation: false } )
+                                        new THREE.PointsMaterial( { color: 0xFFFFFF, size: 2, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFFFFF, size: 1, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFFFFF, size: 2, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFFFFF, size: 1, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFFFFF, size: 2, sizeAttenuation: false } ),
+                                        new THREE.PointsMaterial( { color: 0xFFFFFF, size: 1, sizeAttenuation: false } )
                                     ];
                     
                                     for (let i = 0; i < 6; i ++ ) {
