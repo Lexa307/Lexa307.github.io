@@ -12,7 +12,7 @@ class Slider{
         //new THREE.Color(0x40182a)//new THREE.Color(0x3F3683);
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
         this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
-        this.camera = new THREE.PerspectiveCamera( 54, (window.innerWidth) / (window.innerWidth/1.77), 0.1, 60000 );
+        this.camera = new THREE.PerspectiveCamera( 54, (window.innerWidth) / (window.innerHeight), 0.1, 60000 );
         this.mobile = true;
         }else{
         this.mobile = false;
@@ -28,7 +28,7 @@ class Slider{
         this.mouse = new THREE.Vector2();
         this.focus = new THREE.Vector3(0, 0, -300);
         this.scene.add(this.camera);
-        this.camera.position.set(10 ,0 ,0);
+        this.camera.position.set(1.8858926898938,  -111.40452894311582,  1.2071271382798952);
         this.loadRes();
     }
 
