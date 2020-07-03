@@ -24,7 +24,7 @@ class Slider{
         document.body.appendChild( this.renderer.domElement );
         this.moving = false;
         this.index = 0;
-        this.scene.background = new THREE.Color(0x000000);
+        this.scene.background = new THREE.Color(0xFFFFFF);
         this.mouse = new THREE.Vector2();
         this.focus = new THREE.Vector3(0, 0, -300);
         this.scene.add(this.camera);
@@ -50,10 +50,10 @@ class Slider{
     loadRes(){
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 30.0;
-        this.light = new THREE.PointLight( 0xFFFFFF,1 ); 
+        this.light = new THREE.PointLight( 0xFFFFFF,0.8 ); 
         this.light.position.set(10,5,0);
         this.ambientLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 0.7 );
-       // this.scene.add(this.ambientLight);
+        //this.scene.add(this.ambientLight);
         this.scene.add( this.light );
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
         loader.load( 'УАК.glb', bind( function ( gltf ) {
