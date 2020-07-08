@@ -28,7 +28,7 @@ class Slider{
         this.mouse = new THREE.Vector2();
         this.focus = new THREE.Vector3(0, 0, -300);
         this.scene.add(this.camera);
-        this.camera.position.set(1.8858926898938,  -111.40452894311582,  1.2071271382798952);
+        this.camera.position.set(-26.98140478336032, 68.30039766163038, 83.8035935469530);
         this.loadRes();
     }
 
@@ -55,11 +55,17 @@ class Slider{
         this.ambientLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 0.7 );
         //this.scene.add(this.ambientLight);
         this.scene.add( this.light );
-        var loader = new THREE.GLTFLoader().setPath( 'models/' );
-        loader.load( 'УАК.glb', bind( function ( gltf ) {
+        var loader = new THREE.GLTFLoader();
+        var dracoLoader = new THREE.DRACOLoader();
+		dracoLoader.setDecoderPath( 'js/lib/draco/' );
+		//dracoLoader.setDecoderConfig( { type: 'js' } );
+        loader.setPath( 'models/' );
+        loader.setDRACOLoader( dracoLoader );
+        loader.load( 'FULLRH1602.glb', bind( function ( gltf ) {
             this.scene.add( gltf.scene );
-            gltf.scene.children[2].material = new THREE.MeshLambertMaterial();
-            // gltf.scene.getObjectByName("back_handle").visible = false;//handle_back normal_back
+            console.log(gltf.scene);
+            gltf.scene.children[0].material = new THREE.MeshLambertMaterial({side:THREE.DoubleSide});
+            gltf.scene.children[0].rotation.x = Math.PI/2;
             this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
             this.controls.target = new THREE.Vector3(0,  0,  0);
             this.controls.update();
