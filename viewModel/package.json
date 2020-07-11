@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "http-server",
-    "webpack" : "webpack", 
+    "webpack": "webpack",
     "dev": "npm run webpack -- --mode development --watch",
     "build": "npm run webpack -p -- --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
