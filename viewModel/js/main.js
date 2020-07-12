@@ -3,6 +3,7 @@ import * as THREE from './lib/three.module.js';
 import { DRACOLoader } from './lib/DRACOLoader.js';
 import { OrbitControls } from './lib/OrbitControls.js';
 import { GLTFLoader } from './lib/GLTFLoader.js';
+import { STLLoader } from './lib/STLLoader.js';
         
 let scene = new THREE.Scene();
 let renderer,camera,mobile,controls,light;
@@ -22,7 +23,7 @@ renderer.setSize( window.innerWidth, (window.innerHeight) );//(window.innerWidth
 document.body.appendChild(  renderer.domElement );
 window.addEventListener( 'resize', onWindowResize, false );
 
-scene.background = new THREE.Color(0x0FFFFF);
+scene.background = new THREE.Color(0xFFFFFF);
 scene.add( camera);
 camera.position.set(-26.98140478336032, 68.30039766163038, 83.8035935469530);
 light = new THREE.PointLight( 0xFFFFFF,0.8 ); 
@@ -49,25 +50,31 @@ function loadRes(){
     
     let loader = new GLTFLoader();
     let dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath( 'js/lib/draco/' );
-    dracoLoader.preload();
-    // if(mobile)dracoLoader.setDecoderConfig( { type: 'js' } );
-    loader.setPath( 'models/' );
-    loader.setDRACOLoader( dracoLoader );
-    console.log("preload");
-    loader.load( 'FULLRH160.glb', function ( gltf ) {
-        let mesh = new THREE.Mesh( gltf.scene.children[0].geometry, new THREE.MeshLambertMaterial({side:THREE.DoubleSide}));
-        scene.add(mesh);
-        mesh.rotation.x = Math.PI/2;
-        mesh.scale.set(0.012,0.012,0.012);
-        controls = new OrbitControls(  camera,  renderer.domElement );
-        controls.target = new THREE.Vector3(0,  0,  0);
-        console.log(mesh);
-        alert(mesh);
-        // controls.addEventListener( 'change', render );
-        
-        // dracoLoader.dispose();
-        controls.update();
-        
-    });
+    let stlloader = new STLLoader();
+    if(mobile){
+        stlloader.setPath('models/')
+        stlloader.load('FULLRH160.stl',function(geometry){
+            let mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({side:THREE.DoubleSide}));
+            scene.add(mesh);
+            //mesh.rotation.x = Math.PI/2;
+        })
+    }else{
+        dracoLoader.setDecoderPath( 'js/lib/draco/' );
+        dracoLoader.preload();
+        loader.setPath( 'models/' );
+        loader.setDRACOLoader( dracoLoader );
+        console.log("preload");
+        loader.load( 'FULLRH160.glb', function ( gltf ) {
+            let mesh = new THREE.Mesh( gltf.scene.children[0].geometry, new THREE.MeshLambertMaterial({side:THREE.DoubleSide}));
+            scene.add(mesh);
+            mesh.rotation.x = Math.PI/2;
+            mesh.scale.set(0.012,0.012,0.012);
+            console.log(mesh);
+            controls.update();
+            
+        });
+    }
+    controls = new OrbitControls(  camera,  renderer.domElement );
+    controls.target = new THREE.Vector3(0,  0,  0);
+
 }
