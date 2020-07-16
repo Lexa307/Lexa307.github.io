@@ -12,7 +12,7 @@ class Slider{
         //new THREE.Color(0x40182a)//new THREE.Color(0x3F3683);
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
         this.renderer = selector ? (()=>{ return new THREE.WebGLRenderer( { canvas: selector, context: selector.getContext( 'webgl', { alpha: false,antialias:false } ) } );})()  : new THREE.WebGLRenderer()
-        this.camera = new THREE.PerspectiveCamera( 54, (window.innerWidth) / (window.innerWidth/1.77), 0.1, 60000 );
+        this.camera = new THREE.PerspectiveCamera( 54, (window.innerWidth/1.77) / (window.innerHeight/1.77), 0.1, 60000 );
         this.mobile = true;
         }else{
         this.mobile = false;
