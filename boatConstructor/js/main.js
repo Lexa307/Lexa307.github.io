@@ -52,14 +52,13 @@ class Slider{
         this.raycaster.far = 30.0;
         this.light = new THREE.PointLight( 0xFFFFFF,1 ); 
         this.light.position.set(10,5,0);
-        this.ambientLight = new THREE.HemisphereLight( 0x080820, 0x080820, 0.7 );
+        this.ambientLight = new THREE.AmbientLight( 0xFFFFFF );
         this.scene.add(this.ambientLight);
-        this.scene.add( this.light );
+         this.camera.add( this.light );
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
         loader.load( 'boat2.glb', bind( function ( gltf ) {
             this.scene.add( gltf.scene );
-            console.log(gltf.scene.children);
-            // gltf.scene.getObjectByName("back_handle").visible = false;//handle_back normal_back
+            console.log(gltf.scene.children[0]);
             this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
             this.controls.target = new THREE.Vector3(0,  0,  0);
             this.controls.update();
