@@ -43,22 +43,24 @@ class Slider{
     animate () {
         requestAnimationFrame( this.animate.bind(this) );
         // this.camera.lookAt(this.focus); 
-        this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z);
+        // this.light.position.set(this.camera.position.x,this.camera.position.y,this.camera.position.z);
         this.renderer.render( this.scene, this.camera ); 
     }
 
     loadRes(){
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 30.0;
-        this.light = new THREE.PointLight( 0xFFFFFF,1 ); 
-        this.light.position.set(10,5,0);
-        this.ambientLight = new THREE.AmbientLight( 0xFFFFFF );
-        this.scene.add(this.ambientLight);
-         this.camera.add( this.light );
+        var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+        this.camera.add( directionalLight );
+        // this.light.position.set(10,5,0);
+        this.ambientLight = new THREE.AmbientLight( 0xFFFFFF,0.8 );
+         this.scene.add(this.ambientLight);
+        // this.scene.add( this.light );
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
         loader.load( 'boat2.glb', bind( function ( gltf ) {
             this.scene.add( gltf.scene );
             console.log(gltf.scene.children[0]);
+            gltf.scene.children[0].getObjectByName('дно').material = new THREE.MeshPhongMaterial({side:THREE.DoubleSide,color:0x444444});
             this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
             this.controls.target = new THREE.Vector3(0,  0,  0);
             this.controls.update();
