@@ -47,20 +47,36 @@ class Slider{
         this.renderer.render( this.scene, this.camera ); 
     }
 
+    convertMaterials(object) {
+        for(let i of object.children ){
+            if(i.children.length>0){this.convertMaterials(i)}
+            else{
+                let tmpColor = i.material.color;
+                i.material = new THREE.MeshToonMaterial({side:THREE.DoubleSide,color:tmpColor});
+            }
+        }
+    }
+
     loadRes(){
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 30.0;
         var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-        this.camera.add( directionalLight );
-        // this.light.position.set(10,5,0);
+        this.scene.add( directionalLight );
+        directionalLight.position.set(0.1,-16,11);
+        // this.light.position.set(10,5,0);-10.917352316723136, y: 17.143082849738263, z: -2.720300965499309
+        var directionalLight2 = new THREE.DirectionalLight( 0xffffff, 0.5 );
+        directionalLight2.position.set(-10.917352316723136,  17.143082849738263,  -2.720300965499309);
+        this.scene.add(directionalLight2);
         this.ambientLight = new THREE.AmbientLight( 0xFFFFFF,0.8 );
          this.scene.add(this.ambientLight);
         // this.scene.add( this.light );
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
         loader.load( 'boat2.glb', bind( function ( gltf ) {
             this.scene.add( gltf.scene );
-            console.log(gltf.scene.children[0]);
-            gltf.scene.children[0].getObjectByName('дно').material = new THREE.MeshPhongMaterial({side:THREE.DoubleSide,color:0x444444});
+            this.convertMaterials(gltf.scene.children[0]);
+            //  this.convertMaterials(gltf.scene.children[0].getObjectByName('дно_внеш'));
+            //  this.convertMaterials(gltf.scene.children[0].getObjectByName('дно_внутр'));
+            // gltf.scene.children[0].getObjectByName('дно').material = 
             this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
             this.controls.target = new THREE.Vector3(0,  0,  0);
             this.controls.update();
