@@ -29,6 +29,7 @@ class Slider{
         this.focus = new THREE.Vector3(0, 0, -300);
         this.scene.add(this.camera);
         this.camera.position.set(10 ,0 ,0);
+        this.gui = new dat.GUI();
         this.loadRes();
     }
 
@@ -52,24 +53,27 @@ class Slider{
             if(i.children.length>0){this.convertMaterials(i)}
             else{
                 let tmpColor = i.material.color;
-                i.material = new THREE.MeshToonMaterial({side:THREE.DoubleSide,color:tmpColor});
+                i.material = new THREE.MeshPhongMaterial({side:THREE.DoubleSide,color:tmpColor});
+                let materialFolder = this.gui.addFolder( i.name );
+                materialFolder.add(i.material,'reflectivity',0,1);
+                materialFolder.add(i.material,'refractionRatio',0,1);
+                i.castShadow = true;
+				i.receiveShadow = true;
             }
         }
     }
 
     loadRes(){
-        this.raycaster = new THREE.Raycaster();
-        this.raycaster.far = 30.0;
-        var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+        var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.9 );
         this.scene.add( directionalLight );
         directionalLight.position.set(0.1,-16,11);
         // this.light.position.set(10,5,0);-10.917352316723136, y: 17.143082849738263, z: -2.720300965499309
-        var directionalLight2 = new THREE.DirectionalLight( 0xffffff, 0.5 );
+        var directionalLight2 = new THREE.DirectionalLight( 0xffffff, 0.9 );
         directionalLight2.position.set(-10.917352316723136,  17.143082849738263,  -2.720300965499309);
         this.scene.add(directionalLight2);
         this.ambientLight = new THREE.AmbientLight( 0xFFFFFF,0.8 );
          this.scene.add(this.ambientLight);
-        // this.scene.add( this.light );
+     
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
         loader.load( 'boat2.glb', bind( function ( gltf ) {
             this.scene.add( gltf.scene );
