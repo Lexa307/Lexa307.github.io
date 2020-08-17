@@ -75,9 +75,11 @@ class Slider{
          this.scene.add(this.ambientLight);
      
         var loader = new THREE.GLTFLoader().setPath( 'models/' );
-        loader.load( 'boat2.glb', bind( function ( gltf ) {
-            this.scene.add( gltf.scene );
-            this.convertMaterials(gltf.scene.children[0]);
+        loader.load( 'scene.glb', bind( function ( gltf ) {
+            for(let i of gltf.scene.children){
+                this.scene.add( gltf.scene );
+            }
+            //this.convertMaterials(gltf.scene.children[0]);
             //  this.convertMaterials(gltf.scene.children[0].getObjectByName('дно_внеш'));
             //  this.convertMaterials(gltf.scene.children[0].getObjectByName('дно_внутр'));
             // gltf.scene.children[0].getObjectByName('дно').material = 
